@@ -7,29 +7,27 @@
 %% Types: @article for journal papers, @inproceedings for conference/workshop papers,
 %%         @misc for preprints, @incollection for book chapters, @techreport for technical reports
 %%
-%% Total entries: 43
-%% @article (journal papers): 15
+%% Total entries: 34
+%% @article (journal papers): 11
 %% @incollection (peer-reviewed book chapters): 2
-%% Total peer-reviewed journal/scholarly: 17 (39.5%)
-%% @inproceedings (conference/workshop papers): 23
-%% @misc (preprints): 2
+%% Total peer-reviewed journal/scholarly: 13 (38.2%)
+%% @inproceedings (conference/workshop papers): 19
+%% @misc (preprints): 1
 %% @techreport (technical reports): 1
 %%
-%% NOTE ON JOURNAL RATIO: The 60% journal target is not met (17/43 = 39.5%).
-%% This is a known constraint of the adversarial NLP literature (Theme 2), which
-%% is predominantly published at ACL, EMNLP, COLING, AAAI conferences with no
-%% journal equivalents. All conference papers in Theme 2 are explicitly justified
-%% in annotations.md with rationale. Theme 1 (ASAG Methods) and Theme 3
-%% (Educational Validity) both exceed the 60% threshold individually:
-%%   Theme 1: 5 journal / 9 conference = 36% (ASAG also conference-heavy)
-%%   Theme 3: 8 journal / 1 conference = 89% (Education journals well-covered)
-%% The scarcity of journal papers in adversarial NLP directly supports this
-%% paper's novelty claim: no systematic perturbation-first evaluation protocol
-%% for ASAG exists in the journal literature.
+%% NOTE ON JOURNAL RATIO: 13/34 = 38.2% journal/scholarly. The adversarial NLP
+%% literature (Theme 2) is predominantly in conferences (ACL, EMNLP, COLING, AAAI).
+%% Theme 3 (Educational Validity) has 89% journal coverage. This scarcity itself
+%% supports the novelty claim.
 %%
-%% ACTION REQUIRED before final submission: Verify Kumar et al. 2020 (arXiv)
-%% and Latif et al. 2023 (arXiv) for peer-review status. If unpublished,
-%% confirm professor De Mauro accepts preprint citations.
+%% AUDIT NOTE (2026-02-20): 6 hallucinated entries removed (Korukonda 2021,
+%% Bai 2024, Latif 2023, Zhang 2020, Zou 2023, Horbach 2018). 3 low-relevance
+%% entries removed (Bontcheva 2016, Zanzotto 2020, Horbach & Palmer 2016).
+%% Latif 2023 replaced with verified Latif & Zhai 2024 (Computers & Education: AI).
+%% Naismith 2023 DOI corrected. Mizumoto 2023 model description corrected.
+%%
+%% ACTION REQUIRED: Kumar et al. 2020 (arXiv) remains as preprint — confirm
+%% professor De Mauro accepts this single preprint citation.
 
 %% ============================================================
 %% THEME 1: ASAG METHODS, MODELS, AND BENCHMARKS
@@ -131,57 +129,7 @@
   address   = {Portland}
 }
 
-@inproceedings{horbach2016,
-  author    = {Horbach, Andrea and Palmer, Alexis},
-  title     = {Investigating active learning for short-answer scoring},
-  booktitle = {Proceedings of the 11th Workshop on Innovative Use of {NLP} for Building Educational Applications (BEA 2016)},
-  year      = {2016},
-  pages     = {301--311},
-  publisher = {Association for Computational Linguistics},
-  address   = {San Diego}
-}
 
-@article{bontcheva2016,
-  author    = {Bontcheva, Kalina and Roberts, Ian and Derczynski, Leon and Rout, Dominic},
-  title     = {{GATE Teamware}: a web-based, collaborative text annotation framework},
-  journal   = {Language Resources and Evaluation},
-  year      = {2016},
-  volume    = {50},
-  number    = {3},
-  pages     = {651--677},
-  doi       = {10.1007/s10579-015-9330-1}
-}
-
-@inproceedings{zanzotto2020,
-  author    = {Zanzotto, Fabio Massimo and Santilli, Andrea and Ranaldi, Leonardo and Onorati, Dario and Guarasci, Raffaele and Trenta, Achille},
-  title     = {{Kermit}: Complementing transformer architectures with encoders of explicit syntactic interpretations},
-  booktitle = {Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP 2020)},
-  year      = {2020},
-  pages     = {256--267},
-  publisher = {Association for Computational Linguistics},
-  doi       = {10.18653/v1/2020.emnlp-main.18}
-}
-
-@article{korukonda2021,
-  author    = {Korukonda, Laxminarayana and Naik, Abhijit and Goo, David},
-  title     = {Short answer scoring using transformer-based architectures with domain adaptation},
-  journal   = {Education and Information Technologies},
-  year      = {2021},
-  volume    = {26},
-  number    = {6},
-  pages     = {7211--7232},
-  doi       = {10.1007/s10639-021-10563-5}
-}
-
-@inproceedings{horbach2018,
-  author    = {Horbach, Andrea and Solen, Margot and Ott, Nils and Zesch, Torsten},
-  title     = {Investigating position effects in short answer scoring},
-  booktitle = {Proceedings of the 15th Workshop on Innovative Use of {NLP} for Building Educational Applications (BEA 2018)},
-  year      = {2018},
-  pages     = {311--320},
-  publisher = {Association for Computational Linguistics},
-  address   = {New Orleans}
-}
 
 %% ============================================================
 %% THEME 2: ADVERSARIAL AND PERTURBATION-BASED EVALUATION
@@ -280,16 +228,6 @@
   year      = {2018}
 }
 
-@article{zhang2020,
-  author    = {Zhang, Junwei and Zhu, Xuan and Chen, Qingkun and Dai, Lixun and Liu, Shu and Jiang, Hong},
-  title     = {Exploring the vulnerability of natural language processing models via a meta-learned attack},
-  journal   = {Neurocomputing},
-  year      = {2020},
-  volume    = {409},
-  pages     = {175--184},
-  doi       = {10.1016/j.neucom.2020.06.003}
-}
-
 @inproceedings{wang2022,
   author    = {Wang, Siyao and Liu, Wenhao and Zhang, Ye and Zheng, Xiaokai and Gao, Shen},
   title     = {Measure and improve robustness in {NLP} models: A survey},
@@ -301,14 +239,6 @@
   doi       = {10.18653/v1/2022.naacl-main.339}
 }
 
-@article{zou2023,
-  author    = {Zou, Jianjun and Shen, Jianbing and Zhao, Shu and Zhang, Qi and Liu, Dan},
-  title     = {Robustness evaluation of transformer-based models in natural language processing: A survey},
-  journal   = {IEEE Transactions on Neural Networks and Learning Systems},
-  year      = {2023},
-  note      = {Early online},
-  doi       = {10.1109/TNNLS.2023.3276971}
-}
 
 %% ============================================================
 %% THEME 3: EDUCATIONAL ASSESSMENT VALIDITY AND RELIABILITY
@@ -460,23 +390,14 @@
   doi       = {10.1016/j.rmal.2023.100050}
 }
 
-@article{bai2024,
-  author    = {Bai, Liang and Yan, Yan and Tang, Kai and Li, Ying},
-  title     = {Automatic short answer grading with {LLMs}: a systematic review and empirical study},
-  journal   = {International Journal of Artificial Intelligence in Education},
+@article{latif2024,
+  author    = {Latif, Ehsan and Zhai, Xiaoming},
+  title     = {Fine-tuning {ChatGPT} for automatic scoring},
+  journal   = {Computers and Education: Artificial Intelligence},
   year      = {2024},
-  note      = {Early online},
-  doi       = {10.1007/s40593-024-00411-9}
-}
-
-@misc{latif2023,
-  author    = {Latif, Ehsan and Mai, Gengchen and Nyaaba, Matthew and Wu, Xuansheng and Liu, Ninghao and Lu, Guoyu and Li, Sheng and Liu, Tianming and Zhai, Xiaoming},
-  title     = {Automatic grading with large language models},
-  year      = {2023},
-  eprint    = {2310.05920},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.CL},
-  note      = {Preprint. Peer-review status unconfirmed as of February 2026.}
+  volume    = {6},
+  pages     = {100210},
+  doi       = {10.1016/j.caeai.2024.100210}
 }
 
 @inproceedings{naismith2023,
@@ -487,7 +408,7 @@
   pages     = {394--403},
   publisher = {Association for Computational Linguistics},
   address   = {Toronto},
-  doi       = {10.18653/v1/2023.bea-1.37}
+  doi       = {10.18653/v1/2023.bea-1.32}
 }
 
 @techreport{openai2023,

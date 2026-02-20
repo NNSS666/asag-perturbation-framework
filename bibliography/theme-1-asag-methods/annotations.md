@@ -8,7 +8,7 @@
 
 **Inclusion criteria:** Peer-reviewed journal articles (primary); conference papers where no journal equivalent exists and the work is foundational; English; 2013-2026; directly relevant to ASAG models, benchmarks, or datasets.
 
-**Type count:** Journal: 7 | Conference: 5 | Total: 12
+**Type count:** Journal: 3 | Conference: 4 | Total: 7
 
 **Deduplication note:** Filighera et al. (2024) is listed in this theme as the primary location (ASAG methods). It is also directly relevant to Theme 2 (Adversarial-perturbation) where it appears as a cross-reference only and is NOT duplicated in the master BibTeX.
 
@@ -158,30 +158,6 @@
 
 ---
 
-## Horbach and Palmer (2016)
-
-**Citation (Harvard):** Horbach, A. and Palmer, A. (2016) 'Investigating active learning for short-answer scoring', in *Proceedings of the 11th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2016)*. San Diego: Association for Computational Linguistics, pp. 301-311.
-
-**Journal:** BEA 2016 Workshop Proceedings | **Type:** Conference — justified: Active learning for ASAG annotation efficiency; no confirmed journal version; cited for annotation and labeling methodology context
-
-**Research Question:** Can active learning strategies reduce the annotation burden for training short-answer grading systems without sacrificing accuracy?
-
-**Methodology:** Active learning with uncertainty sampling and query-by-committee strategies applied to short-answer scoring on German language data; compared to passive learning baselines; SVM classifiers.
-
-**Key Findings:**
-- Active learning reduces annotation effort by ~50% to reach equivalent accuracy compared to random sampling
-- Uncertainty-based sampling outperforms query-by-committee on short-answer data
-- Active learning benefits diminish at higher annotation budgets
-
-**Relevance to This Paper:**
-- Theme: ASAG methods
-- How it supports our work: Provides context on annotation costs for ASAG datasets; relevant to our use of SRA datasets where annotation was expensive; the annotation efficiency problem motivates why perturbation-based evaluation (not requiring additional annotation) is valuable
-- Citation context: related-work-2.1
-
-**Limitations:** Workshop paper; German-language data (limited generalizability to English); SVM-based approach now surpassed by transformer methods
-
----
-
 ## Heilman and Madnani (2015)
 
 **Citation (Harvard):** Heilman, M. and Madnani, N. (2015) 'The impact of training data on automated short answer scoring performance', in *Proceedings of the 10th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2015)*. Denver: Association for Computational Linguistics, pp. 81-85.
@@ -254,102 +230,6 @@
 
 ---
 
----
+*Note: 3 journal papers in this theme (Burrows et al. 2015, Filighera et al. 2024, Ramesh & Sanampudi 2022). Four conference papers (Sung et al. 2019, Condor et al. 2021, Dzikovska et al. 2013, Heilman & Madnani 2015, Riordan et al. 2017, Mohler et al. 2011) are included as foundational works without journal equivalents.*
 
-## Horbach et al. (2018)
-
-**Citation (Harvard):** Horbach, A., Solen, M., Ott, N. and Zesch, T. (2018) 'Investigating position effects in short answer scoring', in *Proceedings of the 15th Workshop on Innovative Use of NLP for Building Educational Applications (BEA)*. New Orleans: Association for Computational Linguistics, pp. 311-320.
-
-**Journal:** BEA 2018 Workshop Proceedings | **Type:** Conference — justified: Examines surface-level bias (answer position) in automated scoring; no journal version confirmed; relevant to construct-irrelevant variance discussion
-
-**Research Question:** Do automated short answer scoring systems exhibit position effects (scoring based on where an answer is presented rather than its content)?
-
-**Methodology:** Analysis of ASAG systems for position bias; evaluated on CREG corpus (German) and SemEval 2013; systematic position permutation experiments.
-
-**Key Findings:**
-- Some automated scoring systems show significant position effects — answers appearing in certain positions receive systematically different scores
-- Position effects constitute a form of construct-irrelevant variance (the score is affected by a feature unrelated to student understanding)
-- Human raters show minimal position effects compared to automated systems
-
-**Relevance to This Paper:**
-- Theme: ASAG methods
-- How it supports our work: Demonstrates a specific construct-irrelevant variance problem (position bias) that complements our perturbation testing framework; our invariance perturbation family addresses analogous construct-irrelevant features (paraphrase, word order)
-- Citation context: related-work-2.1
-
-**Limitations:** Workshop paper; German corpus limited generalizability; pre-BERT models primarily
-
----
-
-## Bontcheva et al. (2016)
-
-**Citation (Harvard):** Bontcheva, K., Roberts, I., Derczynski, L. and Rout, D. (2016) 'GATE Teamware: a web-based, collaborative text annotation framework', *Language Resources and Evaluation*, 50(3), pp. 651-677. doi: 10.1007/s10579-015-9330-1
-
-**Journal:** Language Resources and Evaluation | **Impact Factor:** ~1.7 | **Type:** Journal
-
-**Research Question:** How can collaborative annotation frameworks support reliable annotation of text data for NLP tasks?
-
-**Methodology:** System description and evaluation of GATE Teamware collaborative annotation framework; tested on multiple NLP annotation tasks; inter-annotator agreement analysis.
-
-**Key Findings:**
-- Structured annotation workflows improve inter-annotator agreement compared to unstructured annotation
-- Adjudication mechanisms reduce annotation inconsistencies for subjective tasks
-- Tool successfully used for short text annotation tasks requiring domain expertise
-
-**Relevance to This Paper:**
-- Theme: ASAG methods
-- How it supports our work: Provides context for reliable annotation of ASAG training data; inter-annotator agreement in scoring labels directly affects the reliability ceiling for automated scoring systems; relevant to our use of SRA dataset annotation quality
-- Citation context: related-work-2.1
-
-**Limitations:** General NLP annotation tool; journal article about the tool itself; does not address grading quality directly
-
----
-
-## Zanzotto et al. (2020)
-
-**Citation (Harvard):** Zanzotto, F.M., Santilli, A., Ranaldi, L., Onorati, D., Guarasci, R. and Trenta, A. (2020) 'Kermit: complementing transformer architectures with encoders of explicit syntactic interpretations', in *Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP 2020)*. Association for Computational Linguistics, pp. 256-267. doi: 10.18653/v1/2020.emnlp-main.18
-
-**Journal:** EMNLP 2020 Proceedings | **Type:** Conference — justified: Explores complementing BERT with explicit syntactic structure, relevant to linguistic feature approaches used in hybrid grading models; no journal version
-
-**Research Question:** Can explicit syntactic representations complement transformer architectures for NLP tasks?
-
-**Methodology:** Kermit architecture combining BERT with explicit syntactic interpretations; evaluated on NLI, sentiment analysis, and structured prediction tasks; ablation of syntactic component.
-
-**Key Findings:**
-- Syntactic encodings complement transformer representations for tasks requiring structural understanding
-- Hybrid syntax-BERT models show improved performance on structured NLI tasks
-- Syntactic supervision reduces model reliance on surface-level lexical features
-
-**Relevance to This Paper:**
-- Theme: ASAG methods
-- How it supports our work: Informs the hybrid grader design (GRAD-02) which combines handcrafted linguistic features with SBERT embeddings; explicit syntactic features may improve construct-relevant grading by grounding features in linguistic structure
-- Citation context: methodology
-
-**Limitations:** Conference paper; NLI and sentiment tasks (not ASAG); syntactic encoding overhead may be prohibitive for deployment
-
----
-
-## Korukonda et al. (2021)
-
-**Citation (Harvard):** Korukonda, L., Naik, A. and Goo, D. (2021) 'Short answer scoring using transformer-based architectures with domain adaptation', *Education and Information Technologies*, 26(6), pp. 7211-7232. doi: 10.1007/s10639-021-10563-5
-
-**Journal:** Education and Information Technologies | **Impact Factor:** ~5.5 | **Type:** Journal
-
-**Research Question:** How does domain adaptation of transformer-based models affect short answer scoring performance across different educational domains?
-
-**Methodology:** BERT and RoBERTa with domain-specific pre-training evaluated on short answer scoring; tested on SemEval 2013 SciEntsBank and two proprietary STEM datasets; domain adaptation via continued pre-training on in-domain text; accuracy, F1, and QWK reported.
-
-**Key Findings:**
-- Domain-adapted BERT models outperform general BERT on STEM domain short answer scoring by 3-7 percentage points in accuracy
-- Domain adaptation reduces cross-question performance degradation compared to general BERT fine-tuning
-- QWK scores on within-question evaluation overestimate cross-domain generalizability by 10-15 points
-
-**Relevance to This Paper:**
-- Theme: ASAG methods
-- How it supports our work: Directly addresses domain-specific performance of transformer ASAG systems; the finding that QWK overstates cross-domain generalizability reinforces our paper's argument about metric insufficiency; domain-adapted transformer is a natural variant for the supervised grader comparison
-- Citation context: related-work-2.1
-
-**Limitations:** Proprietary STEM datasets limit reproducibility; domain adaptation requires substantial in-domain corpus; no adversarial or perturbation evaluation
-
----
-
-*Note: 7 journal papers in this theme (Burrows et al. 2015, Filighera et al. 2024, Ramesh & Sanampudi 2022, Bontcheva et al. 2016, Korukonda et al. 2021 — plus 2 additional from targeted searches needed). Five conference papers (Sung et al. 2019, Condor et al. 2021, Dzikovska et al. 2013, Heilman & Madnani 2015, Riordan et al. 2017) are included as foundational works without journal equivalents. The updated type count corrects the header: Journal: 7, Conference: 5, Total: 12.*
+*AUDIT NOTE (2026-02-20): Removed 5 entries — Korukonda et al. 2021 (hallucinated DOI), Horbach et al. 2018 (hallucinated paper), Bontcheva et al. 2016 (low relevance), Zanzotto et al. 2020 (low relevance), Horbach & Palmer 2016 (low relevance).*

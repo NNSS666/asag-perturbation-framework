@@ -10,9 +10,9 @@
 
 **Note on journal availability:** Adversarial NLP literature is predominantly in conferences (ACL, EMNLP, COLING). Journal versions are actively sought but sparse. Conference papers included below are tagged "Conference — justified" with specific rationale. Every pre-2023 conference paper has been checked for journal follow-up publications.
 
-**Type count:** Journal: 4 | Conference: 6 | Preprint: 1 | Total: 11
+**Type count:** Journal: 1 (cross-ref) | Conference: 6 | Preprint: 1 | Total: 8
 
-**Cross-reference note:** Filighera et al. (2024) is catalogued in Theme 1 (ASAG methods — primary home). It is referenced in this theme as a cross-reference but NOT duplicated in the master BibTeX file. The journal count of 4 in this theme counts: (1) Filighera et al. 2024 cross-referenced from Theme 1 as the only journal ASAG adversarial paper; plus (2) Zhang et al. 2020 (Computers & Education) below; plus two others.
+**Cross-reference note:** Filighera et al. (2024) is catalogued in Theme 1 (ASAG methods — primary home). It is referenced in this theme as a cross-reference but NOT duplicated in the master BibTeX file. It is the only journal-level ASAG adversarial paper identified.
 
 ---
 
@@ -240,32 +240,6 @@
 
 ---
 
----
-
-## Zhang et al. (2020)
-
-**Citation (Harvard):** Zhang, J., Zhu, X., Chen, Q., Dai, L., Liu, S. and Jiang, H. (2020) 'Exploring the vulnerability of natural language processing models via a meta-learned attack', *Neurocomputing*, 409, pp. 175-184. doi: 10.1016/j.neucom.2020.06.003
-
-**Journal:** Neurocomputing | **Impact Factor:** ~6.0 | **Type:** Journal
-
-**Research Question:** Can meta-learning produce transferable adversarial attacks on natural language processing models?
-
-**Methodology:** Meta-learning framework for generating transferable adversarial text examples; evaluated on sentiment analysis and NLI tasks; target models include BERT, RoBERTa, and LSTM; attack transferability across models measured.
-
-**Key Findings:**
-- Meta-learned adversarial attacks transfer more effectively across NLP model architectures than gradient-based methods
-- BERT and RoBERTa are vulnerable to transferred attacks even when the attack was developed for an LSTM target model
-- Transferability demonstrates that adversarial vulnerability is not architecture-specific but reflects shared reliance on surface-level features
-
-**Relevance to This Paper:**
-- Theme: Adversarial-perturbation
-- How it supports our work: The transferability finding supports our multi-model evaluation design: if adversarial vulnerability is architecture-general, comparing IVR/SSR/ASR across BERT, DeBERTa, and LLM graders will reveal shared vs. model-specific vulnerabilities; rule-based perturbations (which our framework uses) are inherently transferable
-- Citation context: related-work-2.2
-
-**Limitations:** Sentiment and NLI tasks (not educational grading); meta-learning approach computationally expensive; white-box attack setting (requires model access)
-
----
-
 ## Wang et al. (2022)
 
 **Citation (Harvard):** Wang, S., Liu, W., Zhang, Y., Zheng, X. and Gao, S. (2022) 'Measure and improve robustness in NLP models: a survey', in *Proceedings of the 2022 Conference of the North American Chapter of the Association for Computational Linguistics (NAACL 2022)*. Seattle: Association for Computational Linguistics, pp. 4569-4588. doi: 10.18653/v1/2022.naacl-main.339
@@ -290,28 +264,6 @@
 
 ---
 
-## Zou et al. (2023)
+*Note: This theme contains 1 journal paper cross-referenced (Filighera et al. 2024 in Theme 1). The adversarial NLP literature is predominantly conference-based (ACL, EMNLP, COLING, AAAI). This scarcity itself supports the novelty claim: no systematic perturbation-first evaluation protocol for educational AI grading exists in journal literature.*
 
-**Citation (Harvard):** Zou, J., Shen, J., Zhao, S., Zhang, Q. and Liu, D. (2023) 'Robustness evaluation of transformer-based models in natural language processing: a survey', *IEEE Transactions on Neural Networks and Learning Systems*, early online. doi: 10.1109/TNNLS.2023.3276971
-
-**Journal:** IEEE Transactions on Neural Networks and Learning Systems (TNNLS) | **Impact Factor:** ~14.2 | **Type:** Journal
-
-**Research Question:** How robust are transformer-based NLP models to various types of attacks and distributional perturbations?
-
-**Methodology:** Systematic survey of robustness evaluation for transformer NLP models (BERT, GPT variants); taxonomy of adversarial attacks (character-level, word-level, sentence-level) and distribution perturbations; analysis of evaluation metrics and improvement methods across 250+ papers.
-
-**Key Findings:**
-- Transformer models show systematic vulnerabilities across all attack levels: character substitution, synonym replacement, and sentence-level paraphrase all cause significant performance degradation
-- Word-level synonym substitution attacks are the most effective against BERT-family models, achieving high attack success rates with minimal semantic change
-- Robustness evaluation requires a multi-level testing protocol: single attack types do not reveal the full vulnerability profile
-
-**Relevance to This Paper:**
-- Theme: Adversarial-perturbation
-- How it supports our work: High-impact journal paper providing the robustness evaluation taxonomy that contextualizes our three-family perturbation framework; the "multi-level testing required" finding directly justifies our three-family design (invariance + sensitivity + gaming); TNNLS publication validates journal-quality adversarial NLP research exists for transformer models
-- Citation context: related-work-2.2
-
-**Limitations:** General NLP tasks; educational assessment not addressed; survey does not propose ASAG-specific evaluation protocol; "early online" status means pagination may change
-
----
-
-*Note: This theme contains 4 journal papers (Filighera et al. 2024 is primary in Theme 1 but counted here as the key ASAG adversarial journal reference; Zhang et al. 2020 in Neurocomputing; Zou et al. 2023 in TNNLS; plus cross-reference from above). The adversarial NLP literature is predominantly conference-based (ACL, EMNLP, COLING, AAAI). This scarcity in journals itself supports our paper's novelty claim: no systematic perturbation-first evaluation PROTOCOL for educational AI grading exists in journal literature. All conference papers in this theme are explicitly justified with rationale and checked for journal follow-ups.*
+*AUDIT NOTE (2026-02-20): Removed Zhang et al. 2020 (hallucinated — DOI resolves to a video compression paper) and Zou et al. 2023 (hallucinated — DOI unverifiable).*

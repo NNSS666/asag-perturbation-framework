@@ -8,9 +8,9 @@
 
 **Inclusion criteria:** Peer-reviewed journal articles (primary); well-cited conference papers from major NLP venues; English; 2019-2026; directly relevant to LLM-based grading, assessment, or evaluation of student responses.
 
-**Note:** LLM-in-assessment literature is rapidly growing but primarily in arXiv preprints and recent conference papers (2023-2025). Journal versions are sparse. This reflects the recency of the field rather than a quality issue. All preprints are flagged for peer-review status verification.
+**Note:** LLM-in-assessment literature is rapidly growing but primarily in arXiv preprints and recent conference papers (2023-2025). Journal versions are sparse. This reflects the recency of the field rather than a quality issue.
 
-**Type count:** Journal: 3 | Conference: 2 | Preprint: 2 | Technical Report: 1 | Total: 8
+**Type count:** Journal: 3 | Conference: 2 | Technical Report: 1 | Total: 6
 
 ---
 
@@ -92,75 +92,51 @@
 
 **Journal:** Research Methods in Applied Linguistics | **Type:** Journal
 
-**Research Question:** How accurately can GPT-based LLMs score essays compared to human raters, and what scoring criteria can they assess?
+**Research Question:** How accurately can a GPT-based LLM score essays compared to human raters, and what scoring criteria can it assess?
 
-**Methodology:** GPT-3.5 and GPT-4 applied to essay scoring using rubric-driven prompts; compared against human rater scores using Pearson correlation and QWK; five scoring dimensions (content, organisation, vocabulary, language use, mechanics); small dataset of TOEFL essays.
+**Methodology:** GPT-3 (text-davinci-003) applied to essay scoring on 12,100 TOEFL essays from the ETS Corpus of Non-Native Written English (TOEFL11); compared against benchmark proficiency levels; linguistic feature analysis of scoring patterns.
 
 **Key Findings:**
-- GPT-4 achieves QWK of 0.70-0.85 with human raters on individual scoring dimensions, competitive with automated essay scoring tools
-- LLMs show stronger performance on content-level dimensions than surface-level mechanical dimensions, suggesting better construct alignment than keyword-based AES systems
-- Zero-shot GPT-4 outperforms few-shot GPT-3.5 on most dimensions; rubric clarity strongly affects scoring consistency
+- GPT-3 achieves moderate agreement with benchmark proficiency levels on essay scoring, demonstrating feasibility of LLM-based automated assessment
+- LLM scoring patterns correlate with linguistic features (vocabulary richness, syntactic complexity) but show biases toward certain writing styles
+- Rubric clarity and prompt engineering significantly affect scoring consistency
 
 **Relevance to This Paper:**
 - Theme: LLM assessment
-- How it supports our work: Demonstrates that LLM-based scoring is competitive with human raters on essay tasks; provides baseline for expecting GPT-4 performance on ASAG short answers; the "rubric clarity affects consistency" finding supports our rubric sanitization mode (GRAD-04) and LLM consistency rate metric
+- How it supports our work: Early demonstration that LLM-based scoring is feasible for educational assessment; the "rubric clarity affects consistency" finding supports our rubric sanitization mode and LLM consistency rate metric; provides context for the rapid improvement from GPT-3 to GPT-4 in scoring applications
 - Citation context: related-work-2.1, methodology
 
-**Limitations:** Essay scoring task (not ASAG); small dataset; no adversarial or perturbation evaluation; single paper from a linguistics methods journal (not primary NLP venue)
+**Limitations:** Essay scoring task (not ASAG); uses GPT-3 (text-davinci-003), now superseded; no adversarial or perturbation evaluation; single paper from a linguistics methods journal
 
 ---
 
-## Bai et al. (2024)
+## Latif and Zhai (2024)
 
-**Citation (Harvard):** Bai, L., Yan, Y., Tang, K. and Li, Y. (2024) 'Automatic short answer grading with LLMs: a systematic review and empirical study', *International Journal of Artificial Intelligence in Education*, early online. doi: 10.1007/s40593-024-00411-9
+**Citation (Harvard):** Latif, E. and Zhai, X. (2024) 'Fine-tuning ChatGPT for automatic scoring', *Computers and Education: Artificial Intelligence*, 6, 100210. doi: 10.1016/j.caeai.2024.100210
 
-**Journal:** International Journal of Artificial Intelligence in Education (IJAIED) | **Impact Factor:** ~4.0 | **Type:** Journal
+**Journal:** Computers and Education: Artificial Intelligence | **Type:** Journal
 
-**Research Question:** How effective are large language models for automatic short answer grading compared to traditional supervised approaches, and what factors affect their performance?
+**Research Question:** Can fine-tuning ChatGPT (GPT-3.5) improve its automatic scoring performance compared to zero-shot and few-shot approaches?
 
-**Methodology:** Systematic review of LLM-based ASAG literature; empirical comparison of GPT-3.5, GPT-4, and open-source LLMs on SemEval 2013 SciEntsBank and Beetle datasets; zero-shot, few-shot, and rubric-conditioned prompt conditions; comparison with BERT and DeBERTa fine-tuned baselines.
+**Methodology:** Fine-tuned GPT-3.5 evaluated on science student response datasets; comparison with zero-shot and few-shot GPT-3.5/GPT-4 and BERT-based baselines; rubric-conditioned prompting; accuracy, QWK, and Cohen's kappa reported.
 
 **Key Findings:**
-- GPT-4 achieves competitive accuracy with fine-tuned DeBERTa in zero-shot conditions but shows high variance across questions, particularly for domain-specific science questions
-- Few-shot prompting with example answers significantly improves GPT-4 performance on ASAG but creates a dependency on example quality
-- Open-source LLMs (LLaMA-2, Mistral) underperform GPT-4 substantially on ASAG, particularly on the 5-way classification scheme
+- Fine-tuned GPT-3.5 outperforms zero-shot GPT-4 on science response scoring, demonstrating that task-specific fine-tuning compensates for model scale differences
+- LLM grading accuracy is highly sensitive to rubric specification; rubric clarity and example quality are key determinants of scoring consistency
+- Fine-tuning reduces the inconsistency problem (same prompt, same answer, different grade) observed in zero-shot LLM scoring
 
 **Relevance to This Paper:**
 - Theme: LLM assessment
-- How it supports our work: Directly establishes LLM performance baselines on the same SemEval 2013 datasets used in our framework; the "high variance across questions" finding motivates our LLM consistency rate metric (INFR-05); the "example quality dependency" finding motivates our rubric sanitization mode (GRAD-04); this is our primary LLM ASAG comparison baseline
-- Citation context: related-work-2.1, related-work-2.3
-
-**Limitations:** Early online (2024); review may not cover post-2024 literature; does not evaluate adversarial robustness or perturbation sensitivity; no evaluation under gaming attacks
-
----
-
-## Latif et al. (2023)
-
-**Citation (Harvard):** Latif, E., Mai, G., Nyaaba, M., Wu, X., Liu, N., Lu, G., Li, S., Liu, T. and Zhai, X. (2023) 'Automatic grading with large language models', *arXiv preprint*, arXiv:2310.05920.
-
-**Journal:** arXiv preprint | **Type:** Preprint — included as relevant: Systematic evaluation of multiple LLMs for grading across multiple subjects; peer-review status unconfirmed; check for journal publication before citing
-
-**Research Question:** Can large language models automatically grade student responses across multiple subjects with accuracy comparable to human graders?
-
-**Methodology:** GPT-3.5, GPT-4, and LLaMA-2 evaluated on a multi-subject student response dataset; rubric-conditioned prompting; accuracy, QWK, and Cohen's kappa reported; comparison with teacher graders.
-
-**Key Findings:**
-- GPT-4 achieves 85-90% agreement with teacher grades on multiple-choice and short-answer science questions
-- LLM grading accuracy is highly sensitive to rubric specification; vague rubrics produce inconsistent grades across repeated runs
-- The paper documents significant inconsistency rates (same prompt, same answer, different grade) at temperature > 0
-
-**Relevance to This Paper:**
-- Theme: LLM assessment
-- How it supports our work: Provides evidence of LLM grading inconsistency under repeated evaluation — directly motivating our LLM consistency rate metric; the "rubric sensitivity" finding supports our rubric sanitization mode; the multi-subject scope provides broader generalizability context for our ASAG-specific findings
+- How it supports our work: Published journal article providing LLM scoring baselines on educational assessment tasks; the rubric sensitivity finding supports our rubric sanitization mode; the fine-tuning vs. zero-shot comparison informs our LLM grader design choices; inconsistency reduction through fine-tuning motivates our LLM consistency rate metric
 - Citation context: related-work-2.1, methodology
 
-**Limitations:** arXiv preprint; no peer review confirmed; proprietary dataset (multi-subject scope); no adversarial evaluation; inconsistency measurement methodology not formalized
+**Limitations:** Science response scoring (not specifically ASAG on SemEval datasets); GPT-3.5 fine-tuning (GPT-4 fine-tuning not yet available at time of study); no adversarial or perturbation evaluation
 
 ---
 
 ## Naismith et al. (2023)
 
-**Citation (Harvard):** Naismith, B., Mulcaire, P. and Burstein, J. (2023) 'Automated evaluation of written discourse coherence using GPT-4', in *Proceedings of the 18th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2023)*. Toronto: Association for Computational Linguistics, pp. 394-403. doi: 10.18653/v1/2023.bea-1.37
+**Citation (Harvard):** Naismith, B., Mulcaire, P. and Burstein, J. (2023) 'Automated evaluation of written discourse coherence using GPT-4', in *Proceedings of the 18th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2023)*. Toronto: Association for Computational Linguistics, pp. 394-403. doi: 10.18653/v1/2023.bea-1.32
 
 **Journal:** BEA 2023 Workshop Proceedings | **Type:** Conference — justified: GPT-4 for rubric-based evaluation of student writing; BEA workshop at ACL; directly relevant to LLM-as-grader design; no journal version
 
@@ -206,4 +182,6 @@
 
 ---
 
-*Note: This theme has 3 journal papers (Mizumoto & Eguchi 2023, Bai et al. 2024 in IJAIED) out of 8 entries. The recency of LLM-in-assessment literature means most work is in preprint or conference form. This is expected and acceptable for this supplementary theme. The IJAIED journal paper (Bai et al. 2024) is particularly valuable as it directly addresses LLM vs. BERT comparison on ASAG with the same SemEval 2013 datasets we use.*
+*Note: This theme has 3 journal papers (Mizumoto & Eguchi 2023, Latif & Zhai 2024) out of 6 entries. The recency of LLM-in-assessment literature means most work is in conference form. Latif & Zhai 2024 is the key journal reference for fine-tuned LLM scoring.*
+
+*AUDIT NOTE (2026-02-20): Removed Bai et al. 2024 (hallucinated — no IJAIED paper found) and Latif et al. 2023 (hallucinated — wrong arXiv ID, paper doesn't exist). Replaced with verified Latif & Zhai 2024 in Computers and Education: AI. Fixed Mizumoto model description (GPT-3, not GPT-3.5/4). Fixed Naismith DOI.*

@@ -142,14 +142,14 @@ The table below reports approximate counts at each stage of the screening proces
 
 | Stream | Database | Results Found (initial) | After Title/Abstract Screen | After Full-Text Review | Final Included |
 |--------|----------|------------------------|---------------------------|------------------------|----------------|
-| 1: ASAG Methods | Google Scholar | ~180 | 34 | 18 | 12 unique + 2 via citation chain |
+| 1: ASAG Methods | Google Scholar | ~180 | 34 | 18 | 7 unique + 2 via citation chain |
 | 1: ASAG Methods | Semantic Scholar | ~95 | 12 | 8 | (mostly overlap with GS) |
-| 2: Adversarial/Perturbation | Google Scholar | ~140 | 28 | 17 | 9 unique |
-| 2: Adversarial/Perturbation | ACL Anthology | ~60 | 18 | 12 | 3 additional (COLING, ACL, EMNLP) |
+| 2: Adversarial/Perturbation | Google Scholar | ~140 | 28 | 17 | 8 unique |
+| 2: Adversarial/Perturbation | ACL Anthology | ~60 | 18 | 12 | 2 additional (COLING, ACL) |
 | 3: Educational Validity | Google Scholar | ~90 | 20 | 11 | 7 unique |
 | 3: Educational Validity | ERIC / Web of Science | ~45 | 14 | 9 | 2 additional (JEM, EMIP) |
-| 4: LLM Assessment | Google Scholar + SS | ~120 | 22 | 12 | 8 unique |
-| **Total (across all streams)** | | | | | **43 (after deduplication)** |
+| 4: LLM Assessment | Google Scholar + SS | ~120 | 22 | 12 | 6 unique |
+| **Total (across all streams)** | | | | | **34 (after deduplication and audit)** |
 
 **Deduplication note:** Filighera et al. (2024) appeared in both Stream 1 and Stream 2 results; counted once in Theme 1 (ASAG methods primary).
 
@@ -161,27 +161,30 @@ The table below reports approximate counts at each stage of the screening proces
 
 | Type | Count | Percentage | Notes |
 |------|-------|-----------|-------|
-| Journal articles (@article) | 17 | 39.5% | IJAIED (3), JEM (3), AI Review (1), Neurocomputing (1), TNNLS (1), LRE (1), EIT (1), Assessing Writing (1), EMIP (1), RMAL (1), Psicologia Educacional (1), book chapters counted with journals (2) |
-| Conference proceedings (@inproceedings) | 25 | 58.1% | ACL, EMNLP, NAACL, COLING, AAAI, ICLR, AIED, EDM, BEA (workshop), SemEval (workshop) |
-| Preprints / arXiv (@misc) | 4 | 9.3% | Includes technical reports; flagged for verification |
-| Technical reports (@techreport) | 3 | 7.0% | Includes OpenAI GPT-4 technical report |
+| Journal articles (@article) | 11 | 32.4% | IJAIED (2), JEM (3), AI Review (1), Assessing Writing (1), EMIP (1), RMAL (1), Psicologia Educacional (1), Computers & Education: AI (1) |
+| Book chapters (@incollection) | 2 | 5.9% | Messick 1989, Kane 2006 — foundational theoretical works |
+| Conference proceedings (@inproceedings) | 19 | 55.9% | ACL, EMNLP, NAACL, COLING, AAAI, ICLR, AIED, EDM, BEA (workshop), SemEval (workshop) |
+| Preprints (@misc) | 1 | 2.9% | Kumar et al. 2020 (arXiv) |
+| Technical reports (@techreport) | 1 | 2.9% | OpenAI GPT-4 technical report |
 
-*Note: @article count of 17 includes 2 book chapters (Messick 1989, Kane 2006) which are classified as @incollection in the BibTeX file but treated as peer-reviewed scholarly works.*
+*Note: Total peer-reviewed journal/scholarly works: 13 (11 articles + 2 book chapters) = 38.2%.*
 
-**Total BibTeX entries: 43**
-**Unique papers: 43** (Filighera et al. 2024 appears in one theme only; cross-referenced in another without BibTeX duplication)
+**Total BibTeX entries: 34**
+**Unique papers: 34** (Filighera et al. 2024 appears in one theme only; cross-referenced in another without BibTeX duplication)
+
+*AUDIT NOTE (2026-02-20): 9 entries removed from original 43. See master-bibliography.bib header for details.*
 
 ### By Theme
 
-| Theme | Papers | Journal | Conference | Preprint/Other |
+| Theme | Papers | Journal/Scholarly | Conference | Preprint/Other |
 |-------|--------|---------|-----------|----------------|
-| Theme 1: ASAG Methods | 12 | 7 (58%) | 5 (42%) | 0 |
-| Theme 2: Adversarial/Perturbation | 11 unique (+1 cross-ref) | 2 (18%) | 8 (73%) | 1 (9%) |
+| Theme 1: ASAG Methods | 7 | 3 (43%) | 4 (57%) | 0 |
+| Theme 2: Adversarial/Perturbation | 8 unique (+1 cross-ref) | 0 (0%) | 7 (88%) | 1 (12%) |
 | Theme 3: Educational Validity | 9 | 8 (89%) | 1 (11%) | 0 |
-| Theme 4: LLM Assessment | 8 | 3 (38%) | 3 (38%) | 2 (25%) |
-| **Total** | **43** | **17 (40%)** | **22 (51%)** | **4 (9%)** |
+| Theme 4: LLM Assessment | 6 | 3 (50%) | 2 (33%) | 1 (17%) |
+| **Total** | **34** | **13 (38%)** | **19 (56%)** | **2 (6%)** |
 
-*Theme 2 journal count (2 unique in this theme; Filighera et al. 2024 is the ASAG adversarial journal paper in Theme 1). The adversarial NLP domain is conference-dominated; this scarcity supports the novelty of proposing a journal-quality adversarial evaluation framework for educational AI.*
+*Theme 2 has no journal papers of its own (Filighera et al. 2024 cross-referenced from Theme 1 is the only journal ASAG adversarial paper). The adversarial NLP domain is conference-dominated; this scarcity supports the novelty claim.*
 
 ### By Year (2015–2026)
 
@@ -193,16 +196,15 @@ The table below reports approximate counts at each stage of the screening proces
 | 2013 | 2 | Dzikovska et al. (SemEval benchmark), Deane 2013 |
 | 2014 | 1 | Zieky 2014 |
 | 2015 | 2 | Burrows et al., Heilman & Madnani |
-| 2016 | 2 | Horbach & Palmer, Bontcheva et al. |
 | 2017 | 2 | Riordan et al., Jia & Liang |
-| 2018 | 4 | Alzantot et al., Ebrahimi et al., Belinkov & Bisk, +1 |
+| 2018 | 3 | Alzantot et al., Ebrahimi et al., Belinkov & Bisk |
 | 2019 | 4 | Sung et al., Devlin et al., Reimers & Gurevych, Loukina et al. |
-| 2020 | 7 | Ding et al., Kumar et al., Morris et al., Jin et al., Zanzotto et al., Ribeiro et al., +1 |
-| 2021 | 2 | Condor et al., Korukonda et al. |
+| 2020 | 5 | Ding et al., Kumar et al., Morris et al., Jin et al., Ribeiro et al. |
+| 2021 | 1 | Condor et al. |
 | 2022 | 5 | Ferrara & Qunbar, Dorsey & Michaels, Shermis, Ramesh & Sanampudi, Wang et al. |
-| 2023 | 6 | Zou et al., He et al., Mizumoto & Eguchi, Latif et al., Naismith et al., OpenAI |
-| 2024 | 2 | Filighera et al., Bai et al. |
-| **Total** | **43** | |
+| 2023 | 3 | He et al., Mizumoto & Eguchi, Naismith et al., OpenAI |
+| 2024 | 2 | Filighera et al., Latif & Zhai |
+| **Total** | **34** | |
 
 ### Target Journals Represented
 
@@ -210,7 +212,7 @@ Of the seven target journals identified in the RESEARCH.md search strategy, the 
 
 | Target Journal | Papers Found | Titles |
 |----------------|-------------|--------|
-| International Journal of Artificial Intelligence in Education (IJAIED) | 3 | Burrows et al. 2015, Filighera et al. 2024, Bai et al. 2024 |
+| International Journal of Artificial Intelligence in Education (IJAIED) | 2 | Burrows et al. 2015, Filighera et al. 2024 |
 | Journal of Educational Measurement (JEM) | 3 | Ferrara & Qunbar 2022, Dorsey & Michaels 2022, Shermis 2022 |
 | Educational Measurement: Issues and Practice (EMIP) | 1 | Williamson et al. 2012 |
 | Assessing Writing | 1 | Deane 2013 |
@@ -266,13 +268,15 @@ ELIGIBILITY (Full-Text Review)
 
 INCLUSION
 =========
-  Studies included in final review:  43
-    Theme 1 (ASAG Methods):          12
-    Theme 2 (Adversarial/Perturbation): 11 unique (+ 1 cross-ref)
+  Studies included in final review:  34
+    Theme 1 (ASAG Methods):          7
+    Theme 2 (Adversarial/Perturbation): 8 unique (+ 1 cross-ref)
     Theme 3 (Educational Validity):    9
-    Theme 4 (LLM Assessment):          8
+    Theme 4 (LLM Assessment):          6
     Note: Filighera et al. 2024 in both Theme 1 and 2
           (primary in Theme 1, cross-reference in Theme 2)
+    Note: Post-inclusion audit removed 9 entries (6 hallucinated,
+          3 low relevance). See master-bibliography.bib header.
 ```
 
 ---
@@ -293,14 +297,13 @@ This pattern is interpreted as supporting the novelty claim: no adversarial or p
 
 Theme 2 (Adversarial/Perturbation) has an unusually low journal ratio (18%). This reflects the publication norms of the adversarial NLP subfield, where foundational advances (CheckList, TextFooler, HotFlip, TextAttack) appear first — and often exclusively — in ACL, EMNLP, COLING, and AAAI proceedings. A systematic search for journal follow-up versions of every conference paper in Theme 2 found no confirmed journal publications for Ribeiro et al. 2020, Morris et al. 2020, Jin et al. 2020, Alzantot et al. 2018, Ebrahimi et al. 2018, or Wang et al. 2022. The conference-journal ratio in this theme accurately reflects the field's publication norms.
 
-### 7.3 Preprint Status Pending Verification
+### 7.3 Preprint Status
 
-Two preprints require peer-review status verification before final paper submission:
+One preprint remains in the bibliography:
 
-- **Kumar et al. (2020)** — arXiv:2007.06796. Adversarial testing of automated scoring with ASR metric. Peer-review status was unconfirmed as of 2026-02-20. Action required: check arXiv version history for "published in" annotation; search Semantic Scholar for author profiles.
-- **Latif et al. (2023)** — arXiv:2310.05920. Multi-subject LLM grading comparison. Peer-review status was unconfirmed as of 2026-02-20. Action required: same procedure.
+- **Kumar et al. (2020)** — arXiv:2007.06796. Adversarial testing of automated scoring with ASR metric. Verified as arXiv-only preprint (never published in a journal) as of 2026-02-20. Retained because it introduces the ASR metric concept relevant to our framework; flagged with explicit preprint note in BibTeX.
 
-If neither paper has been published in a peer-reviewed venue, consider citing only the arXiv version with an explicit preprint note, or replacing with Bai et al. (2024) which covers similar ground in IJAIED.
+*Latif et al. (2023) arXiv:2310.05920 was removed during audit — the arXiv ID resolves to an unrelated computer vision paper. Replaced with the verified Latif & Zhai (2024) journal article.*
 
 ### 7.4 Grey Literature and Non-English Sources
 
