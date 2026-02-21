@@ -252,7 +252,6 @@ class HybridGrader(GraderInterface):
                     LogisticRegression(
                         max_iter=500,
                         C=1.0,
-                        multi_class="multinomial",
                         class_weight="balanced",
                         random_state=42,
                     ),
