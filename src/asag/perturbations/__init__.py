@@ -42,18 +42,12 @@ from asag.perturbations.generators import (  # noqa: E402
     FluentWrongExtensionGenerator,
 )
 
-# Gates module is created in Plan 03-01 Task 2; guard against ImportError during
-# incremental development when gates.py does not yet exist.
-try:
-    from asag.perturbations.gates import (  # noqa: E402
-        gate_1_sbert,
-        gate_2_negation,
-        GateLog,
-        GATE1_THRESHOLD,
-    )
-    _GATES_AVAILABLE = True
-except ImportError:
-    _GATES_AVAILABLE = False
+from asag.perturbations.gates import (  # noqa: E402
+    gate_1_sbert,
+    gate_2_negation,
+    GateLog,
+    GATE1_THRESHOLD,
+)
 
 __all__ = [
     # Constants
