@@ -49,6 +49,9 @@ from asag.perturbations.gates import (  # noqa: E402
     GATE1_THRESHOLD,
 )
 
+from asag.perturbations.engine import PerturbationEngine  # noqa: E402
+from asag.perturbations.cache import PerturbationCache  # noqa: E402
+
 __all__ = [
     # Constants
     "PERTURBATION_TYPES",
@@ -64,9 +67,12 @@ __all__ = [
     # Gaming generators
     "RubricKeywordEchoingGenerator",
     "FluentWrongExtensionGenerator",
-    # Gates (available after Task 2 completes)
+    # Gates
     "gate_1_sbert",
     "gate_2_negation",
     "GateLog",
     "GATE1_THRESHOLD",
+    # Engine and Cache (Plan 03-02)
+    "PerturbationEngine",
+    "PerturbationCache",
 ]
