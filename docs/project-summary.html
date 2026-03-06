@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>ASAG Perturbation Framework — Project Summary</title>
+<style>
+  @page {
+    size: A4;
+    margin: 2.5cm 2cm;
+  }
+  @media print {
+    body { font-size: 10pt; }
+    h1 { font-size: 18pt; }
+    h2 { page-break-before: auto; }
+  }
+  body {
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.65;
+    color: #1a1a1a;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+  h1 {
+    font-size: 22pt;
+    color: #1a3a5c;
+    border-bottom: 2.5px solid #1a3a5c;
+    padding-bottom: 10px;
+    margin-top: 0;
+  }
+  h2 {
+    font-size: 16pt;
+    color: #2c5f8a;
+    margin-top: 32px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+  }
+  h3 {
+    font-size: 12.5pt;
+    color: #3a7ab5;
+    margin-top: 22px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 14px 0;
+    font-size: 10pt;
+  }
+  th {
+    background-color: #2c5f8a;
+    color: white;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+  }
+  td {
+    padding: 7px 12px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  tr:nth-child(even) td {
+    background-color: #f8f9fa;
+  }
+  code {
+    background-color: #f0f2f5;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 9.5pt;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  pre {
+    background-color: #f0f2f5;
+    padding: 14px 18px;
+    border-radius: 6px;
+    font-size: 9pt;
+    line-height: 1.45;
+    overflow-x: auto;
+  }
+  pre code {
+    background: none;
+    padding: 0;
+  }
+  blockquote {
+    border-left: 3.5px solid #2c5f8a;
+    margin: 12px 0;
+    margin-left: 0;
+    padding: 10px 18px;
+    background-color: #f5f7fa;
+    color: #3a3a3a;
+    font-style: italic;
+  }
+  hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 28px 0;
+  }
+  p { margin: 10px 0; }
+  li { margin: 5px 0; }
+  ul, ol { padding-left: 24px; }
+</style>
+</head>
+<body>
+<h1>Framework di Valutazione Perturbation-First per Sistemi ASAG</h1>
+<h2>Riepilogo del progetto — Stato al 2 marzo 2026</h2>
+<p><strong>Autori:</strong> Ferdinando Sasso, Andrea De Mauro (LUISS Guido Carli)
+<strong>Destinazione:</strong> IFKAD 2026 Conference + Tesi di laurea</p>
+<hr />
+<h2>1. Cos'e' questo progetto?</h2>
+<h3>Spiegazione ultra-basic</h3>
+<p>Immagina un professore che corregge i compiti degli studenti. Ora immagina che al posto del professore ci sia un software (un "grader automatico"). La domanda e': <strong>questo software capisce davvero le risposte, oppure si fa fregare da trucchetti?</strong></p>
+<p>Per scoprirlo, prendiamo le risposte degli studenti e le modifichiamo in modi controllati:</p>
+<ul>
+<li><strong>Modifiche innocue</strong> (es. sostituire "circuito" con "circuito elettrico") — il voto NON dovrebbe cambiare</li>
+<li><strong>Modifiche che cambiano il significato</strong> (es. aggiungere "non" a una frase) — il voto DOVREBBE cambiare</li>
+<li><strong>Trucchetti</strong> (es. aggiungere parole tecniche a caso per sembrare piu' bravi) — il software NON dovrebbe farsi ingannare</li>
+</ul>
+<p>Poi misuriamo: il software si comporta correttamente? Questo e' il cuore del progetto.</p>
+<h3>Spiegazione tecnica</h3>
+<p>Il progetto implementa un framework di valutazione <strong>perturbation-first</strong> per sistemi ASAG (Automated Short Answer Grading). Invece di valutare i grader solo con metriche di agreement (accuracy, QWK), generiamo perturbazioni controllate delle risposte studentesche e misuriamo se i modelli di grading si comportano coerentemente rispetto a tre famiglie di perturbazioni:</p>
+<ol>
+<li><strong>Invariance</strong> — perturbazioni che preservano il significato (il voto deve restare uguale)</li>
+<li><strong>Sensitivity</strong> — perturbazioni che alterano il significato (il voto deve cambiare)</li>
+<li><strong>Gaming</strong> — tentativi di inflazione del punteggio (il grader non deve farsi ingannare)</li>
+</ol>
+<p>La tesi e': le metriche tradizionali aggregate (accuracy, QWK) sono insufficienti per valutare i grader ASAG, e servono metriche complementari basate sulla robustezza.</p>
+<hr />
+<h2>2. I dataset utilizzati</h2>
+<h3>Spiegazione ultra-basic</h3>
+<p>Abbiamo preso due raccolte di compiti gia' corretti da esseri umani, usate nella ricerca internazionale:</p>
+<ul>
+<li><strong>Beetle</strong>: 42 domande di fisica/circuiti elettrici, con 5.199 risposte di studenti</li>
+<li><strong>SciEntsBank</strong>: 195 domande di scienze (biologia, chimica, scienze della terra), con 10.804 risposte</li>
+</ul>
+<p>Ogni risposta ha gia' un voto "vero" dato da esseri umani (correct, partially correct, contradictory, irrelevant, non-domain). In totale: <strong>237 domande, 16.003 risposte</strong>.</p>
+<h3>Spiegazione tecnica</h3>
+<p>Utilizziamo il dataset SemEval 2013 Task 7 (SRA), caricato da HuggingFace. I due corpora sono:</p>
+<table>
+<thead>
+<tr>
+<th>Corpus</th>
+<th>Domande</th>
+<th>Risposte</th>
+<th>Distribuzione label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Beetle</td>
+<td>42</td>
+<td>5.199</td>
+<td>correct 42%, contradictory 27%, partial 23%, non_domain 5%, irrelevant 3%</td>
+</tr>
+<tr>
+<td>SciEntsBank</td>
+<td>195</td>
+<td>10.804</td>
+<td>correct 41%, irrelevant 25%, partial 24%, contradictory 10%, non_domain 0.4%</td>
+</tr>
+</tbody>
+</table>
+<p>I gold_score vengono normalizzati a [0.0, 1.0]: correct=1.0, partially_correct=0.5, tutto il resto=0.0. Questo permette confronti cross-dataset.</p>
+<hr />
+<h2>3. Le scelte di design e perche' hanno senso</h2>
+<h3>3.1 Schema canonico a tre oggetti</h3>
+<p><strong>Ultra-basic:</strong> Abbiamo definito tre "schede" standard per organizzare tutti i dati:
+- <strong>QuestionRecord</strong> — la domanda del prof
+- <strong>AnswerRecord</strong> — la risposta dello studente (con il voto corretto)
+- <strong>PerturbationRecord</strong> — la versione modificata della risposta</p>
+<p><strong>Tecnico:</strong> Tre modelli Pydantic v2 frozen (immutabili dopo la creazione). Questo previene mutazioni accidentali e garantisce serializzazione JSON lossless. Ogni componente del sistema riceve istanze tipizzate, mai dict raw.</p>
+<p><strong>Perche':</strong> Senza uno schema esplicito, ogni fase della pipeline interpreterebbe i dati diversamente. Lo schema canonico e' il "contratto" che tiene tutto insieme.</p>
+<h3>3.2 Doppio protocollo di valutazione (A + B)</h3>
+<p><strong>Ultra-basic:</strong> Valutiamo i grader in due modi diversi:
+- <strong>Protocollo A (LOQO):</strong> Il software si allena su 41 domande e viene testato sulla 42esima. Poi ruota: si allena sulle altre 41 e testa su un'altra. Questo misura: "il software sa generalizzare a domande mai viste?"
+- <strong>Protocollo B (Within-Question):</strong> Per ogni singola domanda, usiamo l'80% delle risposte per allenare e il 20% per testare. Questo misura: "il software funziona bene sulle domande che gia' conosce?"</p>
+<p>Confrontare A e B ci dice quanto un grader "peggiora" quando vede domande nuove — il <strong>robustness drop</strong>.</p>
+<p><strong>Tecnico:</strong> Protocol A = Leave-One-Question-Out cross-validation. Protocol B = within-question stratified 80/20 split. Il confronto "robustness drop in shift" (delta Protocol A - Protocol B) quantifica la perdita di performance sotto distribution shift.</p>
+<p><strong>Perche':</strong> Un grader che funziona bene solo sulle domande note e' inutile in pratica. Il doppio protocollo separa la performance "in-distribution" da quella "cross-question", che e' il caso reale.</p>
+<h3>3.3 Tre famiglie di perturbazioni (non una sola)</h3>
+<p><strong>Ultra-basic:</strong> Non basta fare UN tipo di modifica. Facciamo tre tipi diversi perche' testano cose diverse:
+- Se cambio sinonimi e il voto cambia → il software e' fragile
+- Se aggiungo "non" e il voto NON cambia → il software non capisce il significato
+- Se aggiungo parole-fuffa e il voto sale → il software si fa fregare</p>
+<p><strong>Tecnico:</strong> Il design a tre famiglie deriva dalla tassonomia CheckList di Ribeiro et al. (ACL 2020, Best Paper): Invariance test -&gt; IVR, Directional Expectation test -&gt; SSR, Minimum Functionality Test -&gt; ASR. La nostra innovazione e' applicare questo framework all'ASAG con metriche specifiche.</p>
+<p><strong>Perche':</strong> Gli studi esistenti testano una famiglia alla volta (solo adversarial, o solo parafrase). Nessuno ha un protocollo multi-famiglia con metriche complementari per ASAG. Questo e' il gap nella letteratura che il paper riempie.</p>
+<h3>3.4 Quattro metriche dual-form</h3>
+<p><strong>Ultra-basic:</strong> Per ogni famiglia di perturbazione, misuriamo un numero che dice "quanto bene si comporta il grader":</p>
+<table>
+<thead>
+<tr>
+<th>Metrica</th>
+<th>Cosa misura</th>
+<th>Esempio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>IVR_flip</strong></td>
+<td>Quante volte il voto cambia quando NON dovrebbe</td>
+<td>Se su 100 sinonimi il voto cambia 30 volte → IVR = 30%</td>
+</tr>
+<tr>
+<td><strong>IVR_absdelta</strong></td>
+<td>Di quanto cambia in media</td>
+<td>Se il voto medio si sposta di 0.15 punti → IVR_abs = 0.15</td>
+</tr>
+<tr>
+<td><strong>SSR_directional</strong></td>
+<td>Quante volte il voto scende quando DOVREBBE</td>
+<td>Se aggiungo "non" e il voto scende 70 volte su 100 → SSR = 70%</td>
+</tr>
+<tr>
+<td><strong>ASR_thresholded</strong></td>
+<td>Quante volte un trucchetto riesce a far passare uno studente</td>
+<td>Se 20 risposte insufficienti diventano sufficienti → ASR = 20%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tecnico:</strong>
+- <code>IVR_flip</code>: proporzione di coppie invariance dove <code>round(orig,6) != round(pert,6)</code> — criterio binario strettissimo
+- <code>IVR_absdelta</code>: media di <code>|orig - pert|</code> sulle coppie invariance — cattura la magnitudine
+- <code>SSR_directional</code>: proporzione dove <code>pert &lt; orig</code> con strict less-than — no-change = failure
+- <code>ASR_thresholded</code>: proporzione dove <code>orig &lt; 0.5 AND pert &gt;= 0.5</code> — attraversamento soglia</p>
+<p><strong>Perche':</strong> Le forme "dual" (flip+absdelta, directional+thresholded) catturano sia il segnale binario ("e' successo?") che quello continuo ("di quanto?"). Usare solo una forma perderebbe informazione.</p>
+<h3>3.5 Two-Gate invariance validation</h3>
+<p><strong>Ultra-basic:</strong> Quando generiamo sinonimi, dobbiamo essere sicuri che la modifica sia davvero innocua. Usiamo due "filtri":
+- <strong>Gate 1:</strong> Un'intelligenza artificiale (SBERT) confronta la frase originale con quella modificata. Se la similarita' e' sotto l'85%, la scarta.
+- <strong>Gate 2:</strong> Un controllo automatico verifica che non siano state introdotte negazioni o contrari accidentali.</p>
+<p>Le perturbazioni scartate vengono contate — il tasso di scarto e' esso stesso un risultato di ricerca.</p>
+<p><strong>Tecnico:</strong> Gate 1 usa cosine similarity con all-MiniLM-L6-v2 (threshold 0.85, hard-coded per evitare threshold-shopping). Gate 2 usa regex pattern matching per negazioni + token-set comparison per antonym detection (confronta token originali vs candidati per evitare false positive). Gate 1 si applica SOLO a synonym_substitution (le typo hanno similarita' SBERT troppo bassa by design). Gate 2 si applica a tutta la famiglia invariance.</p>
+<p><strong>Perche':</strong> Senza i gate, perturbazioni "invariance" che in realta' cambiano il significato inquinerebbero la metrica IVR. I gate garantiscono la qualita' delle perturbazioni. Il tasso di scarto (~33% per synonym substitution al Gate 1) e' un risultato interessante per il paper.</p>
+<h3>3.6 Riproducibilita' deterministica</h3>
+<p><strong>Ultra-basic:</strong> Se eseguiamo lo stesso esperimento due volte, otteniamo esattamente gli stessi risultati. Zero casualita'.</p>
+<p><strong>Tecnico:</strong> Ogni generatore usa <code>random.Random(seed)</code> locale, mai <code>random.seed()</code> globale. Il seed per-answer e' calcolato come <code>base_seed + hash(answer_id) % 2^31</code>, rendendo il risultato indipendente dall'ordine di iterazione. I sinonimi WordNet sono ordinati alfabeticamente. La cache JSONL e' keyed su MD5(text + type + seed).</p>
+<p><strong>Perche':</strong> La riproducibilita' e' un requisito non negoziabile per la ricerca accademica. Se i risultati cambiano ad ogni run, non sono pubblicabili.</p>
+<h3>3.7 Architettura pluggable</h3>
+<p><strong>Ultra-basic:</strong> Il sistema e' fatto a "mattoncini" intercambiabili. Vuoi aggiungere un nuovo dataset? Scrivi un loader. Vuoi aggiungere un nuovo grader? Implementa l'interfaccia. Nient'altro cambia.</p>
+<p><strong>Tecnico:</strong> <code>DatasetLoader</code> ABC per i dataset, <code>GraderInterface</code> ABC per i grader, <code>PerturbationGenerator</code> ABC per i generatori. L'<code>EvaluationEngine</code> orchestra tutto senza conoscere le implementazioni concrete. L'aggiunta di un nuovo grader (Phase 4: transformer, Phase 5: LLM) richiede zero modifiche al motore di valutazione.</p>
+<p><strong>Perche':</strong> Il paper confrontera' almeno 3-4 modelli diversi (hybrid, DeBERTa, ModernBERT, GPT-4o). Se ogni modello richiedesse modifiche al motore, il codice sarebbe ingestibile.</p>
+<hr />
+<h2>4. Cosa e' stato costruito (fase per fase)</h2>
+<h3>Phase 0.1 — Ricerca bibliografica (completata 20/02/2026)</h3>
+<p><strong>Cosa:</strong> Bibliografia sistematica di 43 paper organizzati in 4 temi, draft della sezione Related Work (~2000 parole), gap statement che nomina le tre metriche IVR/SSR/ASR.</p>
+<p><strong>Risultato chiave:</strong> 5 journal target su 9 hanno zero paper su ASAG adversarial → conferma la novita' del contributo.</p>
+<h3>Phase 1 — Foundation (completata 20/02/2026)</h3>
+<p><strong>Cosa:</strong> Schema a 3 oggetti, loader SemEval 2013, splitter Protocol A (LOQO) e Protocol B (within-question), diagnostica anti-leakage, infrastruttura (storage JSONL, seed management, version capture).</p>
+<p><strong>Risultato chiave:</strong> Beetle carica 42 domande / 5.199 risposte, SciEntsBank 195 domande / 10.804 risposte. La diagnostica leakage conferma zero contaminazione tra fold.</p>
+<h3>Phase 2 — Metriche e Hybrid Grader (completata 21/02/2026)</h3>
+<p><strong>Cosa:</strong> MetricCalculator con 4 metriche dual-form, HybridGrader (features linguistiche + SBERT embeddings + LogisticRegression), EvaluationEngine con loop Protocol A/B e robustness drop.</p>
+<p><strong>Risultato chiave:</strong> 13 unit test sulle metriche con valori hand-computed su dataset sintetico — tutti passano con tolleranza 1e-9. Il loop completo gira end-to-end su Beetle e SciEntsBank.</p>
+<h3>Phase 3 — Perturbation Engine (completata 02/03/2026)</h3>
+<p><strong>Cosa:</strong> 7 generatori di perturbazioni rule-based, Gate 1 (SBERT cosine) + Gate 2 (negation heuristic), PerturbationEngine orchestrator, cache deterministica, 77 test (67 unit + 10 E2E su Beetle).</p>
+<p><strong>Risultato chiave:</strong> Vedi sezione 5 per i primi risultati reali.</p>
+<hr />
+<h2>5. Primi risultati ottenuti</h2>
+<h3>5.1 Generazione perturbazioni su dati reali</h3>
+<p>Su un campione di 20 risposte Beetle (3 domande):</p>
+<table>
+<thead>
+<tr>
+<th>Dato</th>
+<th>Valore</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Perturbazioni generate</td>
+<td>165</td>
+</tr>
+<tr>
+<td>Media per risposta</td>
+<td>8.2 (su 10 teoriche)</td>
+</tr>
+<tr>
+<td>Tipi presenti</td>
+<td>7 su 7</td>
+</tr>
+<tr>
+<td>Famiglie presenti</td>
+<td>3 su 3</td>
+</tr>
+</tbody>
+</table>
+<p>Distribuzione per tipo:</p>
+<table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Famiglia</th>
+<th>Numero</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>synonym_substitution</td>
+<td>invariance</td>
+<td>24 (su 40 possibili)</td>
+<td>33% scartati da Gate 1</td>
+</tr>
+<tr>
+<td>typo_insertion</td>
+<td>invariance</td>
+<td>20</td>
+<td>Nessuno scartato</td>
+</tr>
+<tr>
+<td>negation_insertion</td>
+<td>sensitivity</td>
+<td>20</td>
+<td></td>
+</tr>
+<tr>
+<td>key_concept_deletion</td>
+<td>sensitivity</td>
+<td>20</td>
+<td></td>
+</tr>
+<tr>
+<td>semantic_contradiction</td>
+<td>sensitivity</td>
+<td>21</td>
+<td></td>
+</tr>
+<tr>
+<td>rubric_keyword_echoing</td>
+<td>gaming</td>
+<td>40</td>
+<td>2 varianti per risposta</td>
+</tr>
+<tr>
+<td>fluent_wrong_extension</td>
+<td>gaming</td>
+<td>20</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3>5.2 Tassi di scarto dei gate</h3>
+<table>
+<thead>
+<tr>
+<th>Gate</th>
+<th>Tipo</th>
+<th>Testati</th>
+<th>Scartati</th>
+<th>Tasso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gate 1 (SBERT cosine &gt;= 0.85)</td>
+<td>synonym_substitution</td>
+<td>36</td>
+<td>12</td>
+<td><strong>33.3%</strong></td>
+</tr>
+<tr>
+<td>Gate 2 (negation heuristic)</td>
+<td>synonym_substitution</td>
+<td>24</td>
+<td>0</td>
+<td>0%</td>
+</tr>
+<tr>
+<td>Gate 2 (negation heuristic)</td>
+<td>typo_insertion</td>
+<td>20</td>
+<td>0</td>
+<td>0%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Interpretazione:</strong> Un terzo delle sostituzioni sinonimiche viene scartato perche' cambia troppo il significato della frase a livello semantico (secondo SBERT). Questo e' un risultato interessante: mostra che la sostituzione "ingenua" di sinonimi non e' sempre meaning-preserving, e il gate e' necessario.</p>
+<h3>5.3 Esempio concreto di perturbazioni</h3>
+<p>Risposta originale di uno studente (Beetle, domanda sui circuiti):</p>
+<blockquote>
+<p><em>"because terminal one and the positive terminal are connected"</em></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Testo perturbato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>synonym_substitution</td>
+<td>"because <strong>concluding</strong> one and the positive terminal are connected"</td>
+</tr>
+<tr>
+<td>typo_insertion</td>
+<td>"<strong>becase</strong> terminal one and the positive terminal are connected"</td>
+</tr>
+<tr>
+<td>negation_insertion</td>
+<td>"because terminal one and the positive terminal are <strong>not</strong> connected"</td>
+</tr>
+<tr>
+<td>key_concept_deletion</td>
+<td>"~~because~~ terminal one and the positive terminal are connected"</td>
+</tr>
+<tr>
+<td>semantic_contradiction</td>
+<td>"because terminal one and the <strong>negative</strong> terminal are connected"</td>
+</tr>
+<tr>
+<td>rubric_keyword_echoing</td>
+<td>"...are connected <strong>separated</strong>"</td>
+</tr>
+<tr>
+<td>fluent_wrong_extension</td>
+<td>"...are connected <strong>Furthermore, Mammals...</strong>"</td>
+</tr>
+</tbody>
+</table>
+<h3>5.4 Copertura dei test</h3>
+<table>
+<thead>
+<tr>
+<th>Suite</th>
+<th>Test</th>
+<th>Stato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unit test generatori (test_generators.py)</td>
+<td>35</td>
+<td>Tutti OK</td>
+</tr>
+<tr>
+<td>Unit test gate (test_gates.py)</td>
+<td>32</td>
+<td>Tutti OK</td>
+</tr>
+<tr>
+<td>Unit test metriche (test_calculator.py)</td>
+<td>13</td>
+<td>Tutti OK</td>
+</tr>
+<tr>
+<td>Smoke test HybridGrader (test_hybrid.py)</td>
+<td>6</td>
+<td>Tutti OK</td>
+</tr>
+<tr>
+<td>E2E PerturbationEngine su Beetle (test_perturbation_engine.py)</td>
+<td>10</td>
+<td>Tutti OK</td>
+</tr>
+<tr>
+<td><strong>Totale</strong></td>
+<td><strong>96</strong></td>
+<td><strong>Tutti OK</strong></td>
+</tr>
+</tbody>
+</table>
+<p>(I test E2E sull'EvaluationEngine con dati sintetici sono ulteriori 4 test marcati @slow, per un totale complessivo che arriva a ~100.)</p>
+<hr />
+<h2>6. Cosa manca (roadmap rimanente)</h2>
+<table>
+<thead>
+<tr>
+<th>Fase</th>
+<th>Cosa</th>
+<th>Dipendenza critica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Phase 4</strong></td>
+<td>Fine-tuning DeBERTa-v3 + ModernBERT sotto LOQO, multi-seed</td>
+<td>GPU</td>
+</tr>
+<tr>
+<td><strong>Phase 5</strong></td>
+<td>LLM grader (GPT-4o + altro), caching API, cost estimator, rubric sanitization</td>
+<td>Budget API</td>
+</tr>
+<tr>
+<td><strong>Phase 6</strong></td>
+<td>Tabelle LaTeX, heatmap, dumbbell plot, Wilcoxon + Cliff's delta, Kendall's tau</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3>Cosa possiamo gia' fare ora</h3>
+<p>Con le Phase 1-3 complete, possiamo gia':
+- Generare perturbazioni per tutto il dataset (16.003 risposte x ~10 perturbazioni = ~160.000 perturbazioni)
+- Valutare l'HybridGrader (il grader baseline) sotto entrambi i protocolli
+- Ottenere i primi numeri IVR/SSR/ASR su dati reali con perturbazioni reali
+- Misurare il robustness drop tra Protocol A e Protocol B</p>
+<p>Quello che aggiungeranno le fasi successive:
+- Phase 4 porta i grader transformer (DeBERTa, ModernBERT) — modelli "seri" da confrontare
+- Phase 5 porta i grader LLM (GPT-4o) — il confronto piu' interessante per il paper
+- Phase 6 produce gli output publication-ready (tabelle, grafici, test statistici)</p>
+<hr />
+<h2>7. Struttura del codice</h2>
+<pre><code>src/asag/
+  schema/          → QuestionRecord, AnswerRecord, PerturbationRecord
+  loaders/         → DatasetLoader ABC + SemEval2013Loader
+  splitters/       → Protocol A (LOQO), Protocol B (within-question), leakage check
+  infra/           → Storage JSONL, seed management, run directories, config
+  metrics/         → MetricCalculator (IVR/SSR/ASR dual-form), MetricResult
+  graders/         → GraderInterface ABC, HybridGrader
+  evaluation/      → EvaluationEngine (orchestra grading + metriche)
+  perturbations/   → 7 generatori, Gate 1/2, GateLog, PerturbationEngine, cache
+
+tests/
+  metrics/         → 13 unit test con valori hand-computed
+  graders/         → 6 smoke test HybridGrader
+  evaluation/      → 4 E2E test (Beetle + SciEntsBank)
+  test_generators.py → 35 test generatori
+  test_gates.py      → 32 test gate
+  test_perturbation_engine.py → 10 E2E test
+</code></pre>
+<p><strong>25 moduli Python, ~96 test, tutto passing.</strong></p>
+<hr />
+<p><em>Documento generato il 2 marzo 2026.</em></p>
+</body>
+</html>

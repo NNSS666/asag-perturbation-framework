@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Proposta Metodologica — ASAG Perturbation Framework</title>
+<style>
+  @page {
+    size: A4;
+    margin: 2.5cm 2cm;
+  }
+  @media print {
+    body { font-size: 10.5pt; }
+    h1 { font-size: 18pt; page-break-before: avoid; }
+    h2 { page-break-before: auto; }
+    table { page-break-inside: avoid; }
+  }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 11.5pt;
+    line-height: 1.7;
+    color: #1a1a1a;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 28px;
+  }
+  h1 {
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 22pt;
+    color: #1a1a1a;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 4px;
+  }
+  h1 + p {
+    margin-top: 4px;
+    color: #555;
+    font-style: italic;
+  }
+  h2 {
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 15pt;
+    color: #1a3a5c;
+    margin-top: 34px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
+  }
+  h3 {
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12pt;
+    color: #2c5f8a;
+    margin-top: 22px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 14px 0;
+    font-size: 10pt;
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  th {
+    background-color: #1a3a5c;
+    color: white;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+  }
+  td {
+    padding: 7px 12px;
+    border-bottom: 1px solid #ddd;
+  }
+  tr:nth-child(even) td {
+    background-color: #f5f7fa;
+  }
+  strong {
+    color: #1a1a1a;
+  }
+  em {
+    color: #444;
+  }
+  hr {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 30px 0;
+  }
+  p { margin: 10px 0; text-align: justify; }
+  li { margin: 5px 0; }
+  ul, ol { padding-left: 26px; }
+</style>
+</head>
+<body>
+<h1>Methodological Proposal — ASAG Perturbation Framework</h1>
+<p><strong>Ferdinando Sasso</strong> — Supervisor: Prof. Andrea De Mauro, LUISS Guido Carli
+March 2026</p>
+<hr />
+<h2>1. Methodology</h2>
+<h3>Research question</h3>
+<p>Do Automated Short Answer Grading (ASAG) systems truly understand student response content, or do they rely on superficial cues? Traditional metrics (accuracy, QWK) cannot answer this question — they only measure agreement with human scores under normal conditions.</p>
+<h3>Approach: controlled perturbations</h3>
+<p>The method builds on the CheckList taxonomy (Ribeiro et al., 2020 — ACL Best Paper), applied here for the first time to the ASAG domain. Systematic modifications are generated on student answers, and the grader's reaction is measured. Three perturbation families test three distinct dimensions:</p>
+<p><strong>Invariance</strong> — Changes that do NOT alter meaning (synonyms, typos). If the score changes, the grader is unstable.</p>
+<p><strong>Sensitivity</strong> — Changes that DO alter meaning (negations, key concept deletion, contradictions). If the score does not change, the grader is not understanding the content.</p>
+<p><strong>Gaming</strong> — Attempts to deceive the grader (keyword stuffing, fluent but wrong extensions). If the score increases, the grader is vulnerable to manipulation.</p>
+<h3>Dual protocol</h3>
+<ul>
+<li><strong>Protocol A (LOQO):</strong> The grader is trained on all questions except one, and tested on the held-out question. This simulates real-world usage (unseen questions).</li>
+<li><strong>Protocol B (Within-question):</strong> 80/20 split within each question. This measures performance under optimal conditions.</li>
+</ul>
+<p>The comparison between A and B yields the <strong>robustness drop</strong>: the degree to which grader performance degrades on unseen questions. This delta is the framework's core contribution.</p>
+<h3>Metrics</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Family</th>
+<th>What it measures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IVR_flip</td>
+<td>Invariance</td>
+<td>% of cases where the score changes when it should not</td>
+</tr>
+<tr>
+<td>IVR_absdelta</td>
+<td>Invariance</td>
+<td>Mean magnitude of score change</td>
+</tr>
+<tr>
+<td>SSR_directional</td>
+<td>Sensitivity</td>
+<td>% of cases where the score decreases after semantic alteration</td>
+</tr>
+<tr>
+<td>ASR_thresholded</td>
+<td>Gaming</td>
+<td>% of failing answers that cross the pass threshold</td>
+</tr>
+</tbody>
+</table>
+<h3>Perturbation validation</h3>
+<p>Invariance perturbations pass through two quality gates:
+- <strong>Gate 1:</strong> SBERT semantic similarity &gt;= 0.85 (fixed threshold, not optimized)
+- <strong>Gate 2:</strong> Heuristic check for accidental negations/antonyms</p>
+<p>Rejected perturbations are not regenerated: the rejection rate is itself a research finding.</p>
+<hr />
+<h2>2. Experiment plan and first tests</h2>
+<h3>Planned models</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Type</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HybridGrader (custom baseline)</td>
+<td>Linguistic features + SBERT + logistic regression</td>
+<td><strong>Tested</strong></td>
+</tr>
+<tr>
+<td>DeBERTa-v3-base (Microsoft)</td>
+<td>Fine-tuned transformer</td>
+<td>Planned</td>
+</tr>
+<tr>
+<td>ModernBERT-base (Answer.AI)</td>
+<td>Fine-tuned transformer</td>
+<td>Planned</td>
+</tr>
+<tr>
+<td>GPT-4o (OpenAI)</td>
+<td>Zero-shot LLM with rubric prompt</td>
+<td>Planned</td>
+</tr>
+</tbody>
+</table>
+<h3>Datasets</h3>
+<p>SemEval 2013 Task 7: Beetle (42 questions, 5,199 answers) and SciEntsBank (195 questions, 10,804 answers). The system is designed to integrate additional datasets (including Prof. De Mauro's) via a dedicated loader module.</p>
+<h3>First test completed</h3>
+<p>Full run on Beetle with HybridGrader — 41,378 perturbations generated, 7 types, both protocols.</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th style="text-align: center;">Proto B (seen questions)</th>
+<th style="text-align: center;">Proto A (unseen questions)</th>
+<th style="text-align: center;">Robustness Drop</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IVR_flip</td>
+<td style="text-align: center;">34.1%</td>
+<td style="text-align: center;"><strong>53.9%</strong></td>
+<td style="text-align: center;"><strong>+19.8 pp</strong></td>
+</tr>
+<tr>
+<td>IVR_absdelta</td>
+<td style="text-align: center;">0.233</td>
+<td style="text-align: center;"><strong>0.402</strong></td>
+<td style="text-align: center;"><strong>+16.9 pp</strong></td>
+</tr>
+<tr>
+<td>SSR_directional</td>
+<td style="text-align: center;">16.6%</td>
+<td style="text-align: center;"><strong>32.3%</strong></td>
+<td style="text-align: center;"><strong>+15.7 pp</strong></td>
+</tr>
+<tr>
+<td>ASR_thresholded</td>
+<td style="text-align: center;">19.2%</td>
+<td style="text-align: center;"><strong>18.0%</strong></td>
+<td style="text-align: center;">-1.2 pp</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Reading the results:</strong> The baseline grader changes its score in 54% of cases after a simple synonym substitution (Proto A), and detects negations only 32% of the time. The consistent robustness drop (+16-20 pp) confirms that fragility worsens on unseen questions. These results establish the baseline; transformer models and GPT-4o will determine whether more sophisticated architectures are also more robust.</p>
+<p><strong>Gate 1 rejection: 40.3%</strong> — Nearly half of WordNet synonym substitutions alter meaning according to SBERT. This is an interesting finding in itself on the reliability of automatic synonym substitution.</p>
+<h3>Next steps</h3>
+<ol>
+<li>Fine-tune DeBERTa-v3 and ModernBERT under LOQO (3 seeds per model)</li>
+<li>Evaluate GPT-4o via API (zero-shot, rubric-driven prompt)</li>
+<li>Statistical analysis (Wilcoxon signed-rank, Cliff's delta) and visualizations</li>
+<li>Integrate Prof. De Mauro's dataset (after meeting with Gabriele)</li>
+</ol>
+<hr />
+<h2>3. References</h2>
+<ul>
+<li>Ribeiro, M.T., Wu, T., Guestrin, C., Singh, S. (2020). Beyond Accuracy: Behavioral Testing of NLP Models with CheckList. <em>ACL 2020</em> (Best Paper).</li>
+<li>Filighera, A., et al. (2024). Cheating Automatic Short Answer Grading with the Adversarial Usage of Adjectives and Adverbs. <em>Int. J. of AI in Education</em>, 34(2).</li>
+<li>Burrows, S., Gurevych, I., Stein, B. (2015). The Eras and Trends of Automatic Short Answer Grading. <em>Int. J. of AI in Education</em>, 25(1).</li>
+<li>Sung, C., Dhamecha, T.I., Mukhi, N. (2019). Improving Short Answer Grading Using Transformer-Based Pre-Training. <em>AIED 2019</em>.</li>
+<li>Heilman, M., Madnani, N. (2015). The Impact of Training Data on Automated Short Answer Scoring Performance. <em>ETS Research Report Series</em>.</li>
+<li>Messick, S. (1989). Validity. In R.L. Linn (Ed.), <em>Educational Measurement</em> (3rd ed.).</li>
+<li>Kane, M.T. (2006). Validation. In R.L. Brennan (Ed.), <em>Educational Measurement</em> (4th ed.).</li>
+</ul>
+<hr />
+<p><em>All results are fully reproducible: <code>scripts/first_real_run.py</code></em></p>
+</body>
+</html>

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Proposta Metodologica — ASAG Perturbation Framework</title>
+<style>
+  @page {
+    size: A4;
+    margin: 2.5cm 2cm;
+  }
+  @media print {
+    body { font-size: 10.5pt; }
+    h1 { font-size: 18pt; page-break-before: avoid; }
+    h2 { page-break-before: auto; }
+    table { page-break-inside: avoid; }
+  }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 11.5pt;
+    line-height: 1.7;
+    color: #1a1a1a;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 28px;
+  }
+  h1 {
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 22pt;
+    color: #1a1a1a;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 4px;
+  }
+  h1 + h2 {
+    margin-top: 8px;
+    border: none;
+    color: #555;
+    font-size: 13pt;
+    font-weight: normal;
+    font-style: italic;
+  }
+  h2 {
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 15pt;
+    color: #1a3a5c;
+    margin-top: 34px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
+  }
+  h3 {
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12pt;
+    color: #2c5f8a;
+    margin-top: 22px;
+  }
+  h4 {
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 11pt;
+    color: #3a3a3a;
+    margin-top: 18px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 14px 0;
+    font-size: 10pt;
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  th {
+    background-color: #1a3a5c;
+    color: white;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+  }
+  td {
+    padding: 7px 12px;
+    border-bottom: 1px solid #ddd;
+  }
+  tr:nth-child(even) td {
+    background-color: #f5f7fa;
+  }
+  strong {
+    color: #1a1a1a;
+  }
+  em {
+    color: #444;
+  }
+  code {
+    background-color: #f0f2f5;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 9.5pt;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  hr {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 30px 0;
+  }
+  p { margin: 10px 0; text-align: justify; }
+  li { margin: 5px 0; }
+  ul, ol { padding-left: 26px; }
+</style>
+</head>
+<body>
+<h1>Proposta Metodologica e Primi Risultati Sperimentali</h1>
+<h2>Framework di Valutazione Perturbation-First per Sistemi ASAG</h2>
+<p><strong>Ferdinando Sasso</strong>
+Relatore: Prof. Andrea De Mauro — LUISS Guido Carli</p>
+<p>Marzo 2026</p>
+<hr />
+<h2>1. Obiettivo della ricerca</h2>
+<p>L'obiettivo di questo lavoro e' valutare quanto i sistemi di correzione automatica delle risposte brevi (Automated Short Answer Grading, ASAG) siano realmente affidabili. La domanda di fondo e': questi sistemi capiscono davvero il contenuto delle risposte degli studenti, oppure si basano su indizi superficiali come la presenza di certe parole chiave?</p>
+<p>Le metriche tradizionali utilizzate in letteratura — accuracy, Quadratic Weighted Kappa — misurano solo l'agreement tra il voto automatico e quello umano in condizioni "normali". Questo non e' sufficiente. Un sistema potrebbe avere alta accuracy ma essere estremamente fragile: basta cambiare un sinonimo per fargli cambiare voto, oppure non accorgersi che uno studente ha inserito una negazione che rende la risposta sbagliata.</p>
+<p>Il framework che ho costruito testa sistematicamente questa fragilita' generando modifiche controllate delle risposte e misurando come il grader reagisce.</p>
+<hr />
+<h2>2. Posizionamento nella letteratura</h2>
+<p>La ricerca bibliografica ha coperto 43 pubblicazioni organizzate in quattro aree tematiche: metodi ASAG, perturbazioni adversariali nell'NLP, validita' educativa, e valutazione automatizzata tramite LLM. Il rapporto tra articoli su journal e conference proceedings e' del 40% (17 su 43), coerente con un campo in cui la ricerca adversariale nell'NLP e' prevalentemente presentata a conferenze (ACL, EMNLP, NAACL).</p>
+<p>Il framework metodologico che propongo si basa sulla tassonomia CheckList di Ribeiro et al. (2020, ACL Best Paper), che definisce tre categorie di test comportamentali per modelli NLP: Invariance, Directional Expectation e Minimum Functionality Test. Questa tassonomia non e' mai stata applicata sistematicamente all'ASAG con metriche dedicate.</p>
+<p>Il gap che questa ricerca colma e' precisamente questo: nella letteratura esistono studi su singoli tipi di attacco adversariale applicati all'ASAG (Filighera et al. 2024 per il keyword stuffing; Ding et al. 2020 per le perturbazioni di input), ma nessuno studio propone un protocollo multi-famiglia con metriche complementari. Una ricerca sistematica su 5 journal target (Computers &amp; Education, Assessment in Education, Language Testing, Applied Measurement in Education, British Journal of Educational Technology) ha restituito zero risultati su valutazione adversariale di sistemi ASAG — dato che supporta la novita' del contributo.</p>
+<hr />
+<h2>3. Dataset utilizzati</h2>
+<p>Ho scelto di partire da dataset pubblici consolidati nella comunita' ASAG, per costruire e validare il framework su benchmark noti prima di estenderlo a dati proprietari.</p>
+<p><strong>SemEval 2013 Task 7 (Student Response Analysis):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Corpus</th>
+<th>Dominio</th>
+<th>Domande</th>
+<th>Risposte</th>
+<th>Scala di valutazione</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Beetle</td>
+<td>Elettricita' e circuiti</td>
+<td>42</td>
+<td>5.199</td>
+<td>5 classi (correct, partially correct, contradictory, irrelevant, non-domain)</td>
+</tr>
+<tr>
+<td>SciEntsBank</td>
+<td>Scienze generali (biologia, chimica, scienze della terra)</td>
+<td>195</td>
+<td>10.804</td>
+<td>5 classi (come sopra)</td>
+</tr>
+</tbody>
+</table>
+<p>Ho normalizzato tutti i voti su una scala [0.0, 1.0] per consentire confronti cross-dataset: correct = 1.0, partially correct = 0.5, tutti gli altri = 0.0. Questa normalizzazione e' coerente con la prassi dei benchmark ASAG recenti.</p>
+<p><strong>Perche' questi dataset:</strong> Beetle e SciEntsBank sono i dataset ASAG piu' utilizzati nella letteratura di riferimento. Partire da qui consente di confrontare i risultati con studi precedenti. L'architettura del sistema e' stata progettata per accettare dataset aggiuntivi (incluso il dataset del Prof. De Mauro) senza modifiche al codice esistente.</p>
+<hr />
+<h2>4. Scelte metodologiche</h2>
+<h3>4.1 Doppio protocollo di valutazione</h3>
+<p>Ho implementato due protocolli di valutazione complementari, perche' un singolo protocollo non cattura il quadro completo della robustezza di un grader.</p>
+<p><strong>Protocollo A — Leave-One-Question-Out (LOQO):</strong>
+Il grader viene addestrato su tutte le domande tranne una, e testato su quella esclusa. Si ripete per ogni domanda. Questo misura la capacita' di generalizzazione: il grader funziona bene su domande che non ha mai visto durante l'addestramento?</p>
+<p>Questa e' la situazione reale di utilizzo. In un contesto educativo, un professore non potra' fornire esempi di correzione per ogni possibile domanda futura. Il grader deve saper valutare risposte a domande nuove.</p>
+<p><strong>Protocollo B — Within-Question (80/20 split):</strong>
+Per ogni singola domanda, l'80% delle risposte serve per l'addestramento e il 20% per il test. Questo misura la performance in condizioni ottimali: il grader funziona quando conosce gia' la domanda?</p>
+<p><strong>Perche' servono entrambi:</strong> Il confronto tra i due protocolli produce il "robustness drop" — quanto il grader peggiora quando passa da domande note a domande nuove. Questo delta e' un indicatore diretto della fragilita' del sistema e non e' catturabile da nessuna metrica tradizionale.</p>
+<h3>4.2 Tre famiglie di perturbazioni</h3>
+<p>Ho definito tre famiglie di perturbazioni, ciascuna progettata per testare un aspetto diverso del comportamento del grader. Ogni famiglia corrisponde a un tipo di test dalla tassonomia CheckList:</p>
+<p><strong>Famiglia 1 — Invariance (il voto NON deve cambiare):</strong></p>
+<p>Queste perturbazioni modificano la forma della risposta senza alterarne il significato.</p>
+<table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Cosa fa</th>
+<th>Esempio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sostituzione sinonimica</td>
+<td>Sostituisce una parola con un sinonimo WordNet</td>
+<td>"provides" → "supplies"</td>
+</tr>
+<tr>
+<td>Inserimento refuso</td>
+<td>Introduce un errore di battitura</td>
+<td>"because" → "becase"</td>
+</tr>
+</tbody>
+</table>
+<p>Se il grader cambia voto dopo una di queste modifiche, sta reagendo alla forma superficiale e non al contenuto.</p>
+<p><strong>Famiglia 2 — Sensitivity (il voto DEVE cambiare):</strong></p>
+<p>Queste perturbazioni modificano il significato della risposta, rendendola incorretta.</p>
+<table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Cosa fa</th>
+<th>Esempio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Inserimento negazione</td>
+<td>Aggiunge "not"</td>
+<td>"the current flows" → "the current does not flow"</td>
+</tr>
+<tr>
+<td>Cancellazione concetto chiave</td>
+<td>Rimuove un termine essenziale</td>
+<td>"The battery provides energy" → "The provides energy"</td>
+</tr>
+<tr>
+<td>Contraddizione semantica</td>
+<td>Sostituisce un termine con il suo opposto</td>
+<td>"positive terminal" → "negative terminal"</td>
+</tr>
+</tbody>
+</table>
+<p>Se il grader NON cambia voto dopo queste modifiche, non sta comprendendo il contenuto.</p>
+<p><strong>Famiglia 3 — Gaming (il grader NON deve farsi ingannare):</strong></p>
+<p>Queste perturbazioni tentano di "imbrogliare" il grader.</p>
+<table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Cosa fa</th>
+<th>Esempio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Keyword echoing</td>
+<td>Aggiunge parole dalla risposta corretta senza senso</td>
+<td>"...connected. separated circuit energy"</td>
+</tr>
+<tr>
+<td>Estensione fluente ma sbagliata</td>
+<td>Aggiunge una frase plausibile ma errata</td>
+<td>"...Furthermore, batteries produce electrons from the plastic casing."</td>
+</tr>
+</tbody>
+</table>
+<p>Se il grader alza il voto dopo queste modifiche, si sta facendo ingannare da indizi superficiali.</p>
+<p><strong>Perche' servono tutte e tre:</strong> Ogni famiglia testa una dimensione diversa della comprensione del grader. Un grader potrebbe essere stabile sui sinonimi ma vulnerabile al keyword stuffing, o viceversa. Solo un protocollo multi-famiglia rivela il profilo completo di robustezza.</p>
+<h3>4.3 Quattro metriche dedicate</h3>
+<p>Per ogni famiglia ho definito metriche specifiche:</p>
+<table>
+<thead>
+<tr>
+<th>Metrica</th>
+<th>Famiglia</th>
+<th>Cosa misura</th>
+<th>Formula</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>IVR_flip</strong></td>
+<td>Invariance</td>
+<td>Percentuale di casi in cui il voto cambia quando non dovrebbe</td>
+<td>N. coppie con voto diverso / totale coppie</td>
+</tr>
+<tr>
+<td><strong>IVR_absdelta</strong></td>
+<td>Invariance</td>
+<td>Entita' media del cambiamento</td>
+<td>Media di</td>
+</tr>
+<tr>
+<td><strong>SSR_directional</strong></td>
+<td>Sensitivity</td>
+<td>Percentuale di casi in cui il voto scende quando dovrebbe</td>
+<td>N. coppie dove voto perturbato &lt; originale / totale</td>
+</tr>
+<tr>
+<td><strong>ASR_thresholded</strong></td>
+<td>Gaming</td>
+<td>Percentuale di risposte insufficienti che diventano sufficienti</td>
+<td>N. coppie dove orig &lt; 0.5 e pert &gt;= 0.5 / totale</td>
+</tr>
+</tbody>
+</table>
+<p>Ho scelto di implementare sia la forma binaria (IVR_flip: "e' cambiato si/no?") che quella continua (IVR_absdelta: "di quanto e' cambiato?") per le perturbazioni invariance, perche' catturano informazioni complementari. Un grader potrebbe cambiare voto raramente ma con grandi scarti, o spesso ma di poco.</p>
+<h3>4.4 Sistema di validazione a due gate per le perturbazioni invariance</h3>
+<p>Le perturbazioni della famiglia invariance devono preservare il significato della risposta. Per garantire la qualita' delle perturbazioni generate, ho implementato un sistema di validazione a due livelli:</p>
+<p><strong>Gate 1 — Similarita' semantica (SBERT, soglia 0.85):</strong>
+Confronta la risposta originale con quella perturbata usando un modello di sentence embedding (all-MiniLM-L6-v2). Se la similarita' scende sotto 0.85, la perturbazione viene scartata. Questo gate si applica solo alle sostituzioni sinonimiche — i refusi sono innocui per costruzione (un errore di battitura non cambia il significato).</p>
+<p>La soglia di 0.85 e' stata fissata (non configurabile) per evitare il rischio di threshold-shopping — cioe' di scegliere la soglia che produce i risultati migliori, invalidando la metodologia.</p>
+<p><strong>Gate 2 — Euristica di negazione e contrari:</strong>
+Verifica che la perturbazione non abbia accidentalmente introdotto negazioni ("not", "never") o contrari ("positive" → "negative") non presenti nell'originale. Questo cattura casi che SBERT potrebbe non rilevare.</p>
+<p><strong>Perche' il tasso di scarto e' un risultato, non un problema:</strong> Le perturbazioni scartate non vengono rigenerate. Il tasso di scarto viene registrato e riportato come dato di ricerca. Se il 40% dei sinonimi WordNet non preserva il significato secondo SBERT, questo e' di per se' un risultato interessante sulla qualita' della sostituzione sinonimica automatica.</p>
+<h3>4.5 Riproducibilita' completa</h3>
+<p>Ogni esperimento e' completamente riproducibile. Lanciare lo stesso run due volte produce risultati identici, bit per bit. Questo e' ottenuto tramite:</p>
+<ul>
+<li>Seed deterministici per ogni generatore di perturbazioni</li>
+<li>Ordinamento alfabetico dei sinonimi WordNet (l'ordine di default varia tra piattaforme)</li>
+<li>Cache su disco delle perturbazioni generate (formato JSONL con chiave hash)</li>
+<li>Registrazione completa della configurazione di ogni run</li>
+</ul>
+<hr />
+<h2>5. Modelli di grading previsti</h2>
+<p>Il framework confrontera' quattro approcci di grading, dal piu' semplice al piu' sofisticato:</p>
+<table>
+<thead>
+<tr>
+<th>Modello</th>
+<th>Tipo</th>
+<th>Addestramento</th>
+<th>Stato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>HybridGrader</strong></td>
+<td>Feature linguistiche + embedding SBERT + regressione logistica</td>
+<td>Supervisionato sui dati del dataset</td>
+<td>Implementato e testato</td>
+</tr>
+<tr>
+<td><strong>DeBERTa-v3-base</strong></td>
+<td>Transformer pre-addestrato (Microsoft, open source)</td>
+<td>Fine-tuning sui dati del dataset</td>
+<td>Pianificato</td>
+</tr>
+<tr>
+<td><strong>ModernBERT-base</strong></td>
+<td>Transformer pre-addestrato (Answer.AI, open source)</td>
+<td>Fine-tuning sui dati del dataset</td>
+<td>Pianificato</td>
+</tr>
+<tr>
+<td><strong>GPT-4o</strong></td>
+<td>Large Language Model (OpenAI)</td>
+<td>Zero-shot con prompt e rubrica</td>
+<td>Pianificato</td>
+</tr>
+</tbody>
+</table>
+<p>L'HybridGrader e' stato progettato da me come baseline. Combina quattro feature linguistiche calcolate esplicitamente (sovrapposizione lessicale tra risposta studente e risposta di riferimento, rapporto di lunghezza, presenza di negazioni, copertura dei termini chiave) con un embedding SBERT a 384 dimensioni, per un totale di 388 feature alimentate in un classificatore a regressione logistica.</p>
+<p>I transformer (DeBERTa, ModernBERT) verranno scaricati come modelli pre-addestrati open source e fine-tunati sul nostro dataset. GPT-4o verra' utilizzato via API senza fine-tuning, con un prompt che include la rubrica di valutazione.</p>
+<p>Il confronto multi-modello e' essenziale: se anche modelli sofisticati mostrano fragilita', il risultato e' molto piu' forte di un'analisi su un singolo modello.</p>
+<hr />
+<h2>6. Primi risultati sperimentali</h2>
+<p>Ho eseguito il primo run sperimentale completo sull'HybridGrader con il corpus Beetle (42 domande, 5.199 risposte).</p>
+<h3>6.1 Generazione perturbazioni</h3>
+<table>
+<thead>
+<tr>
+<th>Dato</th>
+<th>Valore</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Risposte analizzate</td>
+<td>5.199</td>
+</tr>
+<tr>
+<td>Perturbazioni generate</td>
+<td>41.378</td>
+</tr>
+<tr>
+<td>Media per risposta</td>
+<td>8.0 (su 10 teoriche, alcune scartate dai gate)</td>
+</tr>
+<tr>
+<td>Tutti i 7 tipi presenti</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Tutte le 3 famiglie presenti</td>
+<td>Si</td>
+</tr>
+<tr>
+<td>Tasso scarto Gate 1 (sinonimi)</td>
+<td><strong>40.3%</strong></td>
+</tr>
+<tr>
+<td>Tasso scarto Gate 2 (negazioni accidentali)</td>
+<td>0%</td>
+</tr>
+<tr>
+<td>Tempo di esecuzione (generazione)</td>
+<td>~5 minuti</td>
+</tr>
+</tbody>
+</table>
+<p>Il tasso di scarto del 40.3% al Gate 1 indica che quasi la meta' delle sostituzioni sinonimiche prodotte da WordNet altera il significato della frase abbastanza da scendere sotto la soglia di similarita' SBERT. Questo dato, di per se', e' un contributo: la sostituzione sinonimica automatica non e' un metodo affidabile per generare parafrasi meaning-preserving senza validazione.</p>
+<h3>6.2 Risultati della valutazione</h3>
+<p>Il run completo ha richiesto circa 83 minuti su un MacBook con chip Apple M1, includendo generazione delle perturbazioni, addestramento del grader su 42 fold LOQO, grading di tutte le perturbazioni, e calcolo delle metriche.</p>
+<h4>Tabella risultati principali</h4>
+<table>
+<thead>
+<tr>
+<th>Metrica</th>
+<th>Cosa misura</th>
+<th style="text-align: center;">Protocol B (domande note)</th>
+<th style="text-align: center;">Protocol A (domande nuove)</th>
+<th style="text-align: center;">Robustness Drop</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>IVR_flip</strong></td>
+<td>Instabilita' sui sinonimi</td>
+<td style="text-align: center;">34.1%</td>
+<td style="text-align: center;"><strong>53.9%</strong></td>
+<td style="text-align: center;"><strong>+19.8 pp</strong></td>
+</tr>
+<tr>
+<td><strong>IVR_absdelta</strong></td>
+<td>Entita' dell'instabilita'</td>
+<td style="text-align: center;">0.233</td>
+<td style="text-align: center;"><strong>0.402</strong></td>
+<td style="text-align: center;"><strong>+16.9 pp</strong></td>
+</tr>
+<tr>
+<td><strong>SSR_directional</strong></td>
+<td>Sensibilita' alle negazioni</td>
+<td style="text-align: center;">16.6%</td>
+<td style="text-align: center;"><strong>32.3%</strong></td>
+<td style="text-align: center;"><strong>+15.7 pp</strong></td>
+</tr>
+<tr>
+<td><strong>ASR_thresholded</strong></td>
+<td>Vulnerabilita' al gaming</td>
+<td style="text-align: center;">19.2%</td>
+<td style="text-align: center;"><strong>18.0%</strong></td>
+<td style="text-align: center;">-1.2 pp</td>
+</tr>
+</tbody>
+</table>
+<p><em>(pp = punti percentuali)</em></p>
+<h3>6.3 Interpretazione dei risultati</h3>
+<p><strong>IVR_flip = 53.9% (Protocol A):</strong> Quando il grader vede domande nuove, cambia voto in piu' della meta' dei casi dopo una semplice sostituzione sinonimica. In condizioni reali di utilizzo, questo significherebbe che lo stesso concetto espresso con parole diverse riceverebbe un voto diverso il 54% delle volte. Questo livello di instabilita' non sarebbe accettabile per un utilizzo educativo.</p>
+<p><strong>SSR_directional = 32.3% (Protocol A):</strong> Su domande nuove, il grader rileva la negazione e abbassa il voto solo nel 32% dei casi. Il restante 68% delle volte, una risposta resa semanticamente errata tramite l'inserimento di "not" o la sostituzione con un contrario non viene penalizzata. Il grader non sta realmente comprendendo il contenuto — sta reagendo a pattern superficiali.</p>
+<p><strong>ASR_thresholded = 18.0% (Protocol A):</strong> Il 18% dei tentativi di gaming riesce a trasformare una risposta insufficiente in sufficiente. Questo e' relativamente contenuto rispetto alle altre vulnerabilita', ma comunque significativo.</p>
+<p><strong>Il robustness drop e' il risultato piu' significativo.</strong> La differenza sistematica tra Protocol A e Protocol B conferma l'ipotesi centrale del lavoro: le performance di robustezza peggiorano in modo misurabile quando il grader deve gestire domande mai viste durante l'addestramento. I delta di +19.8 pp (invariance), +16.9 pp (invariance continua) e +15.7 pp (sensitivity) sono consistenti e nella stessa direzione, il che rafforza la validita' del risultato.</p>
+<p>L'unica eccezione e' il gaming (-1.2 pp), che resta sostanzialmente stabile tra i due protocolli. Questo suggerisce che la vulnerabilita' al keyword stuffing non dipende dalla familiarita' con la domanda — un'ipotesi plausibile, dato che il gaming sfrutta pattern generali (parole chiave dal reference answer) piuttosto che conoscenza specifica della domanda.</p>
+<h3>6.4 Cosa dicono questi risultati sulla tesi</h3>
+<p>Questi risultati preliminari supportano la tesi principale: un grader con accuracy ragionevole puo' essere profondamente fragile sotto perturbazioni controllate, e questa fragilita' non e' visibile dalle metriche tradizionali. Il fatto che il grader baseline mostri vulnerabilita' significative stabilisce una linea di base chiara. Le fasi successive (transformer fine-tunati, LLM) permetteranno di rispondere alla domanda: i modelli piu' sofisticati sono anche piu' robusti?</p>
+<hr />
+<h2>7. Piano sperimentale rimanente</h2>
+<table>
+<thead>
+<tr>
+<th>Fase</th>
+<th>Contenuto</th>
+<th>Stima temporale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Fase 4</strong></td>
+<td>Fine-tuning di DeBERTa-v3-base e ModernBERT-base sotto LOQO con 3 seed per modello. Produrra' le stesse metriche del primo run per consentire il confronto diretto.</td>
+<td>1-2 giorni (esecuzione su M1)</td>
+</tr>
+<tr>
+<td><strong>Fase 5</strong></td>
+<td>Valutazione di GPT-4o (e almeno un altro LLM) via API con prompt rubric-driven. Include cost estimator, caching delle chiamate, e misurazione del tasso di consistenza del modello.</td>
+<td>1 settimana</td>
+</tr>
+<tr>
+<td><strong>Fase 6</strong></td>
+<td>Analisi statistica completa (Wilcoxon signed-rank con correzione Bonferroni, Cliff's delta per effect size), tabelle LaTeX, visualizzazioni (heatmap perturbazioni x modelli, dumbbell plot clean vs perturbed, radar chart).</td>
+<td>1 settimana</td>
+</tr>
+</tbody>
+</table>
+<h3>Output atteso per il paper</h3>
+<p>La tabella finale che il paper presentera':</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: center;">IVR_flip</th>
+<th style="text-align: center;">IVR_absdelta</th>
+<th style="text-align: center;">SSR_dir</th>
+<th style="text-align: center;">ASR_thresh</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HybridGrader (Protocol A)</td>
+<td style="text-align: center;">53.9%</td>
+<td style="text-align: center;">0.402</td>
+<td style="text-align: center;">32.3%</td>
+<td style="text-align: center;">18.0%</td>
+</tr>
+<tr>
+<td>HybridGrader (Protocol B)</td>
+<td style="text-align: center;">34.1%</td>
+<td style="text-align: center;">0.233</td>
+<td style="text-align: center;">16.6%</td>
+<td style="text-align: center;">19.2%</td>
+</tr>
+<tr>
+<td>DeBERTa-v3 (Protocol A)</td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+</tr>
+<tr>
+<td>DeBERTa-v3 (Protocol B)</td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+</tr>
+<tr>
+<td>ModernBERT (Protocol A)</td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+</tr>
+<tr>
+<td>ModernBERT (Protocol B)</td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+</tr>
+<tr>
+<td>GPT-4o (Protocol A)</td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+</tr>
+<tr>
+<td>GPT-4o (Protocol B)</td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+<td style="text-align: center;"><em>da misurare</em></td>
+</tr>
+</tbody>
+</table>
+<p>A questa si aggiungera' il breakdown per tipo di perturbazione (heatmap) e il robustness drop per ogni modello.</p>
+<hr />
+<h2>8. Predisposizione per il dataset del Prof. De Mauro</h2>
+<p>L'architettura del sistema e' stata progettata fin dall'inizio per supportare dataset aggiuntivi. L'integrazione del dataset del Prof. De Mauro richiede esclusivamente la scrittura di un modulo loader (~50 righe di codice) che converte i dati nel formato standard del framework. Nessuna modifica alle perturbazioni, alle metriche, o al motore di valutazione.</p>
+<p>Elementi necessari per l'integrazione:
+- Formato del file (CSV, JSON, Excel)
+- Campi disponibili (domanda, risposta studente, risposta di riferimento, voto)
+- Scala di valutazione utilizzata
+- Eventuale rubrica di correzione</p>
+<p>Una volta definito il formato con il Prof. De Mauro e Gabriele, il loader puo' essere implementato in poche ore e tutti gli esperimenti gia' condotti su Beetle/SciEntsBank possono essere replicati automaticamente sul nuovo dataset.</p>
+<hr />
+<h2>Riferimenti bibliografici principali</h2>
+<ul>
+<li>Ribeiro, M.T., Wu, T., Guestrin, C., Singh, S. (2020). Beyond Accuracy: Behavioral Testing of NLP Models with CheckList. <em>ACL 2020</em> (Best Paper Award).</li>
+<li>Filighera, A., Steuer, T., Roth, C. (2024). Cheating Automatic Short Answer Grading: On the Adversarial Usage of Adjectives and Adverbs. <em>International Journal of Artificial Intelligence in Education</em>, 34.</li>
+<li>Ding, Y., et al. (2020). Don't take "no" for an answer: An empirical assessment of adversarial input on neural NLP models. <em>arXiv:2007.06796</em>.</li>
+<li>Burrows, S., Gurevych, I., Stein, B. (2015). The eras and trends of automatic short answer grading. <em>International Journal of Artificial Intelligence in Education</em>, 25(1).</li>
+<li>Heilman, M., Madnani, N. (2015). The impact of training data on automated short answer scoring performance. <em>ETS Research Report Series</em>.</li>
+<li>Messick, S. (1989). Validity. In R.L. Linn (Ed.), <em>Educational Measurement</em> (3rd ed.).</li>
+<li>Kane, M.T. (2006). Validation. In R.L. Brennan (Ed.), <em>Educational Measurement</em> (4th ed.).</li>
+</ul>
+<hr />
+<p><em>Documento preparato il 2 marzo 2026.</em>
+<em>Tutti i risultati sono riproducibili eseguendo lo script <code>scripts/first_real_run.py</code> nella repository del progetto.</em></p>
+</body>
+</html>

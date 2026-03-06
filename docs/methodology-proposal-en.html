@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Methodological Proposal — ASAG Perturbation Framework</title>
+<style>
+  @page {
+    size: A4;
+    margin: 2.5cm 2cm;
+  }
+  @media print {
+    body { font-size: 10.5pt; }
+    h1 { font-size: 18pt; page-break-before: avoid; }
+    h2 { page-break-before: auto; }
+    table { page-break-inside: avoid; }
+  }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 11.5pt;
+    line-height: 1.7;
+    color: #1a1a1a;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 28px;
+  }
+  h1 {
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 22pt;
+    color: #1a1a1a;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13pt;
+    color: #555;
+    font-style: italic;
+    margin-top: 4px;
+    margin-bottom: 0;
+  }
+  .author-block {
+    margin-top: 14px;
+    margin-bottom: 0;
+    line-height: 1.5;
+  }
+  h2 {
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 15pt;
+    color: #1a3a5c;
+    margin-top: 34px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
+  }
+  h3 {
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12pt;
+    color: #2c5f8a;
+    margin-top: 22px;
+  }
+  h4 {
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 11pt;
+    color: #3a3a3a;
+    margin-top: 18px;
+    margin-bottom: 6px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 14px 0;
+    font-size: 10pt;
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  th {
+    background-color: #1a3a5c;
+    color: white;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+  }
+  td {
+    padding: 7px 12px;
+    border-bottom: 1px solid #ddd;
+  }
+  tr:nth-child(even) td {
+    background-color: #f5f7fa;
+  }
+  code {
+    background-color: #f0f2f5;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 9.5pt;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+  }
+  hr { border: none; border-top: 1px solid #ccc; margin: 30px 0; }
+  p { margin: 10px 0; text-align: justify; }
+  li { margin: 5px 0; }
+  ul, ol { padding-left: 26px; }
+  .note-box {
+    background-color: #f5f7fa;
+    border-left: 3.5px solid #2c5f8a;
+    padding: 12px 18px;
+    margin: 16px 0;
+    font-size: 10.5pt;
+  }
+  .metric-good { color: #2a7a2a; font-weight: bold; }
+  .metric-bad { color: #c0392b; font-weight: bold; }
+  .metric-neutral { color: #555; }
+  .tag {
+    display: inline-block;
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 8.5pt;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .tag-done { background-color: #d4edda; color: #155724; }
+  .tag-next { background-color: #fff3cd; color: #856404; }
+  .tag-planned { background-color: #e2e3e5; color: #383d41; }
+</style>
+</head>
+<body>
+
+<h1>Methodological Proposal and Preliminary Results</h1>
+<p class="subtitle">Perturbation-First Evaluation Framework for Automated Short Answer Grading Systems</p>
+<p class="author-block">
+<strong>Ferdinando Sasso</strong><br>
+Supervisor: Prof. Andrea De Mauro &mdash; LUISS Guido Carli<br>
+March 2026
+</p>
+
+<hr>
+
+<h2>1. Research Question</h2>
+
+<p>Do Automated Short Answer Grading (ASAG) systems truly understand student response content, or do they rely on superficial cues? Traditional evaluation metrics &mdash; accuracy, Quadratic Weighted Kappa &mdash; cannot answer this question: they only measure agreement with human scores under normal conditions.</p>
+
+<p>A grader may achieve high accuracy yet be fundamentally brittle: changing a synonym causes a score flip, inserting a negation goes undetected, or stuffing keywords into a wrong answer raises the grade. None of these failures are visible in standard evaluation.</p>
+
+<p>This work proposes a <strong>perturbation-first evaluation framework</strong> that systematically tests grader behaviour under controlled modifications, producing robustness metrics that complement traditional agreement measures.</p>
+
+<hr>
+
+<h2>2. Positioning in the Literature</h2>
+
+<p>The methodological framework builds on the CheckList taxonomy (Ribeiro et al., 2020 &mdash; ACL Best Paper), which defines three behavioural test types for NLP models: Invariance, Directional Expectation, and Minimum Functionality Tests. This taxonomy has never been systematically applied to ASAG with dedicated metrics.</p>
+
+<p>Existing studies address individual adversarial attack types against ASAG systems: Filighera et al. (2024) demonstrate adjective/adverb gaming attacks reducing grader accuracy by 10&ndash;22 percentage points; Ding et al. (2020) show that random-string inputs receive high scores in 30&ndash;60% of cases. However, no study proposes a <strong>multi-family protocol with complementary metrics</strong> for ASAG evaluation. A systematic search across five target journals (Computers &amp; Education, Assessment in Education, Language Testing, Applied Measurement in Education, British Journal of Educational Technology) returned zero results on adversarial evaluation of ASAG systems.</p>
+
+<p>The construct validity literature provides the theoretical grounding: Ferrara and Qunbar (2022) argue that AI-based scores require evidence of construct-relevant feature use, not just correlation with human ratings. Williamson et al. (2012) explicitly list robustness to gaming as an evaluation criterion. Our perturbation families operationalise these requirements empirically.</p>
+
+<p>The bibliography supporting this work comprises <strong>33 verified entries</strong> across four themes: ASAG methods (11), adversarial NLP (10), educational validity (5), and LLM-based assessment (7). Of these, 32 are peer-reviewed; the sole exception is the GPT-4 Technical Report (OpenAI, 2023), which is standard practice. Every entry has been verified against its publisher page or DOI.</p>
+
+<hr>
+
+<h2>3. Datasets</h2>
+
+<p>The framework is built and validated on the SemEval 2013 Task 7 Student Response Analysis benchmark (Dzikovska et al., 2013), the most widely used ASAG dataset in the literature.</p>
+
+<table>
+<thead>
+<tr><th>Corpus</th><th>Domain</th><th>Questions</th><th>Answers</th><th>Grading scale</th></tr>
+</thead>
+<tbody>
+<tr><td>Beetle</td><td>Electricity &amp; circuits</td><td>42</td><td>5,199</td><td>5-way (correct, partially correct, contradictory, irrelevant, non-domain)</td></tr>
+<tr><td>SciEntsBank</td><td>General science</td><td>195</td><td>10,804</td><td>5-way (same)</td></tr>
+</tbody>
+</table>
+
+<p>All labels are normalised to [0.0, 1.0]: correct = 1.0, partially correct = 0.5, all others = 0.0. This enables cross-dataset comparison and continuous metric computation.</p>
+
+<div class="note-box">
+<strong>Extensibility:</strong> The system architecture supports additional datasets through a pluggable loader interface. Integrating a new dataset (e.g., Prof. De Mauro's corpus) requires only a loader module (~50 lines); no changes to perturbation generators, metrics, or the evaluation engine. See Section 8 for details.
+</div>
+
+<hr>
+
+<h2>4. Methodology</h2>
+
+<h3>4.1 Dual evaluation protocol</h3>
+
+<p><strong>Protocol A &mdash; Leave-One-Question-Out (LOQO):</strong> The grader is trained on all questions except one and tested on the held-out question. This is repeated for every question. Protocol A measures cross-question generalisation &mdash; the real-world scenario where a grader must assess answers to questions it has never seen during training.</p>
+
+<p><strong>Protocol B &mdash; Within-Question (80/20 split):</strong> For each question, 80% of answers are used for training and 20% for testing. Protocol B measures performance under optimal conditions &mdash; when the grader already knows the question.</p>
+
+<p>The comparison between A and B yields the <strong>robustness drop</strong>: the degree to which grader performance degrades on unseen questions. This delta is a direct indicator of deployment fragility that no traditional metric captures.</p>
+
+<h3>4.2 Three perturbation families</h3>
+
+<p>Each family tests a distinct dimension of grader behaviour, following the CheckList taxonomy:</p>
+
+<h4>Family 1 &mdash; Invariance (score must NOT change)</h4>
+<p>These perturbations modify surface form without altering meaning. If the score changes, the grader is reacting to superficial features.</p>
+<table>
+<thead><tr><th>Type</th><th>Description</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td>Synonym substitution</td><td>Replace a word with a WordNet synonym</td><td>"provides" &rarr; "supplies"</td></tr>
+<tr><td>Typo insertion</td><td>Introduce a realistic character-level error</td><td>"because" &rarr; "becase"</td></tr>
+</tbody>
+</table>
+
+<h4>Family 2 &mdash; Sensitivity (score MUST change)</h4>
+<p>These perturbations alter the semantic content of the answer, making it incorrect. If the score does not change, the grader is not understanding the content.</p>
+<table>
+<thead><tr><th>Type</th><th>Description</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td>Negation insertion</td><td>Insert "not" / "does not"</td><td>"the current flows" &rarr; "the current does not flow"</td></tr>
+<tr><td>Key concept deletion</td><td>Remove an essential term</td><td>"The battery provides energy" &rarr; "The provides energy"</td></tr>
+<tr><td>Semantic contradiction</td><td>Replace a term with its antonym</td><td>"positive terminal" &rarr; "negative terminal"</td></tr>
+</tbody>
+</table>
+
+<h4>Family 3 &mdash; Gaming (score must NOT increase)</h4>
+<p>These perturbations attempt to deceive the grader by exploiting surface-level cues. If the score increases, the grader is vulnerable to manipulation.</p>
+<table>
+<thead><tr><th>Type</th><th>Description</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td>Rubric keyword echoing</td><td>Append keywords from the reference answer</td><td>"...connected. separated circuit energy"</td></tr>
+<tr><td>Fluent wrong extension</td><td>Append a plausible but incorrect sentence</td><td>"...Furthermore, batteries produce electrons from the plastic casing."</td></tr>
+</tbody>
+</table>
+
+<h3>4.3 Metrics</h3>
+
+<table>
+<thead>
+<tr><th>Metric</th><th>Family</th><th>What it measures</th><th>Formal definition</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>IVR<sub>flip</sub></strong></td><td>Invariance</td><td>% of cases where score changes when it should not</td><td>Pairs where round(s<sub>orig</sub>) &ne; round(s<sub>pert</sub>) / total pairs</td></tr>
+<tr><td><strong>IVR<sub>absdelta</sub></strong></td><td>Invariance</td><td>Mean magnitude of score change</td><td>Mean of |s<sub>orig</sub> &minus; s<sub>pert</sub>| over invariance pairs</td></tr>
+<tr><td><strong>SSR<sub>directional</sub></strong></td><td>Sensitivity</td><td>% of cases where score decreases after semantic alteration</td><td>Pairs where s<sub>pert</sub> &lt; s<sub>orig</sub> / total pairs</td></tr>
+<tr><td><strong>ASR<sub>thresholded</sub></strong></td><td>Gaming</td><td>% of failing answers that cross the pass threshold</td><td>Pairs where s<sub>orig</sub> &lt; 0.5 and s<sub>pert</sub> &ge; 0.5 / total pairs</td></tr>
+</tbody>
+</table>
+
+<p>Both a binary form (IVR<sub>flip</sub>: "did it change?") and a continuous form (IVR<sub>absdelta</sub>: "by how much?") are computed for invariance, as they capture complementary information.</p>
+
+<h3>4.4 Two-gate invariance validation</h3>
+
+<p>Invariance perturbations must provably preserve meaning. A two-stage quality gate ensures this:</p>
+
+<p><strong>Gate 1 &mdash; SBERT semantic similarity (&ge; 0.85):</strong> Compares the original and perturbed answer using sentence embeddings (all-MiniLM-L6-v2). Perturbations falling below 0.85 cosine similarity are discarded. The threshold is fixed (not tuneable) to prevent threshold-shopping. Gate 1 applies only to synonym substitutions &mdash; typos are meaning-preserving by construction.</p>
+
+<p><strong>Gate 2 &mdash; Negation/antonym heuristic:</strong> Verifies that no accidental negations or antonyms were introduced. This catches cases that SBERT may miss.</p>
+
+<p>Discarded perturbations are not regenerated. The rejection rate is recorded and reported as a research finding in itself.</p>
+
+<h3>4.5 Reproducibility</h3>
+
+<p>Every experiment is fully deterministic. Running the same configuration twice produces identical results. This is achieved through per-generator local random seeds, alphabetically sorted WordNet synonyms, JSONL perturbation caching with hash keys, and complete run configuration logging.</p>
+
+<hr>
+
+<h2>5. Grading Models</h2>
+
+<p>The framework compares four grading approaches, from simple to state-of-the-art:</p>
+
+<table>
+<thead>
+<tr><th>Model</th><th>Type</th><th>Training</th><th>Status</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>HybridGrader</strong></td><td>Linguistic features + SBERT embeddings + logistic regression</td><td>Supervised on dataset</td><td><span class="tag tag-done">Done</span></td></tr>
+<tr><td><strong>DeBERTa-v3-base</strong></td><td>Pre-trained transformer (He et al., 2023)</td><td>Fine-tuned on dataset</td><td><span class="tag tag-next">Next</span></td></tr>
+<tr><td><strong>ModernBERT-base</strong></td><td>Pre-trained transformer (Answer.AI)</td><td>Fine-tuned on dataset</td><td><span class="tag tag-planned">Planned</span></td></tr>
+<tr><td><strong>GPT-4o</strong></td><td>Large Language Model (OpenAI, 2023)</td><td>Zero-shot with rubric prompt</td><td><span class="tag tag-planned">Planned</span></td></tr>
+</tbody>
+</table>
+
+<p>The multi-model comparison is essential: if even sophisticated models exhibit fragility under perturbation, the finding is substantially stronger than a single-model analysis.</p>
+
+<hr>
+
+<h2>6. Preliminary Results</h2>
+
+<p>A complete experimental run has been executed on the HybridGrader with the Beetle corpus (42 questions, 5,199 answers, ~41,000 perturbations).</p>
+
+<h3>6.1 Perturbation generation</h3>
+
+<table>
+<thead><tr><th>Statistic</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Answers processed</td><td>5,199</td></tr>
+<tr><td>Perturbations generated</td><td>41,378</td></tr>
+<tr><td>Mean perturbations per answer</td><td>8.0 (out of 10 theoretical; some rejected by gates)</td></tr>
+<tr><td>All 7 perturbation types present</td><td>Yes</td></tr>
+<tr><td>Gate 1 rejection rate (synonyms)</td><td><strong>40.3%</strong></td></tr>
+<tr><td>Gate 2 rejection rate</td><td>0%</td></tr>
+</tbody>
+</table>
+
+<p>The 40.3% Gate 1 rejection rate is itself a finding: nearly half of WordNet synonym substitutions alter sentence-level semantics sufficiently to fall below the SBERT similarity threshold. This demonstrates that naive synonym substitution is not a reliable meaning-preserving transformation without validation.</p>
+
+<h3>6.2 Main results (HybridGrader &times; Beetle)</h3>
+
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>What it measures</th>
+<th style="text-align:center">Protocol B<br><span style="font-weight:normal;font-size:9pt">(known questions)</span></th>
+<th style="text-align:center">Protocol A<br><span style="font-weight:normal;font-size:9pt">(unseen questions)</span></th>
+<th style="text-align:center">Robustness<br>Drop</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>IVR<sub>flip</sub></strong></td>
+<td>Synonym instability</td>
+<td style="text-align:center">34.1%</td>
+<td style="text-align:center" class="metric-bad">53.9%</td>
+<td style="text-align:center" class="metric-bad">+19.8 pp</td>
+</tr>
+<tr>
+<td><strong>IVR<sub>absdelta</sub></strong></td>
+<td>Instability magnitude</td>
+<td style="text-align:center">0.233</td>
+<td style="text-align:center" class="metric-bad">0.402</td>
+<td style="text-align:center" class="metric-bad">+16.9 pp</td>
+</tr>
+<tr>
+<td><strong>SSR<sub>directional</sub></strong></td>
+<td>Negation sensitivity</td>
+<td style="text-align:center">16.6%</td>
+<td style="text-align:center" class="metric-bad">32.3%</td>
+<td style="text-align:center" class="metric-bad">+15.7 pp</td>
+</tr>
+<tr>
+<td><strong>ASR<sub>thresholded</sub></strong></td>
+<td>Gaming vulnerability</td>
+<td style="text-align:center">19.2%</td>
+<td style="text-align:center">18.0%</td>
+<td style="text-align:center" class="metric-neutral">&minus;1.2 pp</td>
+</tr>
+</tbody>
+</table>
+<p style="font-size:9.5pt;color:#666;margin-top:4px"><em>pp = percentage points. Runtime: ~83 min on Apple M1.</em></p>
+
+<h3>6.3 Interpretation</h3>
+
+<p><strong>IVR<sub>flip</sub> = 53.9% (Protocol A):</strong> On unseen questions, the grader changes its score in over half of the cases after a simple synonym substitution. In a real deployment, the same concept expressed with different words would receive a different grade 54% of the time. This level of instability would be unacceptable for educational use.</p>
+
+<p><strong>SSR<sub>directional</sub> = 32.3% (Protocol A):</strong> The grader detects negation and lowers the score in only 32% of cases. In the remaining 68%, an answer made semantically incorrect by inserting "not" or replacing a term with its antonym is not penalised. The grader is reacting to surface patterns, not semantic content.</p>
+
+<p><strong>ASR<sub>thresholded</sub> = 18.0% (Protocol A):</strong> 18% of gaming attempts succeed in converting a failing answer to a passing one. This is relatively contained but still non-trivial.</p>
+
+<p><strong>The robustness drop is the most significant finding.</strong> The systematic delta between Protocol A and Protocol B &mdash; +19.8 pp (invariance), +16.9 pp (magnitude), +15.7 pp (sensitivity) &mdash; confirms the central hypothesis: robustness performance degrades measurably when the grader faces unseen questions. The consistency across three independent metrics strengthens the validity of the result.</p>
+
+<p>Gaming vulnerability is the exception (&minus;1.2 pp), remaining stable across protocols. This suggests that keyword-stuffing vulnerability is question-independent &mdash; a plausible finding, since gaming exploits general lexical patterns rather than question-specific knowledge.</p>
+
+<hr>
+
+<h2>7. Experimental Plan</h2>
+
+<table>
+<thead>
+<tr><th>Phase</th><th>Content</th><th>Dependencies</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Phase 4</strong><br><span class="tag tag-next">Next</span></td>
+<td>Fine-tune DeBERTa-v3-base and ModernBERT-base under both LOQO and within-question protocols, with 3 random seeds per model. Produces the same metric table as the HybridGrader baseline for direct comparison.</td>
+<td>GPU access</td>
+</tr>
+<tr>
+<td><strong>Phase 5</strong><br><span class="tag tag-planned">Planned</span></td>
+<td>Evaluate GPT-4o (and at least one other LLM) via API with rubric-conditioned prompts. Includes API call caching, cost estimation, and LLM consistency rate measurement across repeated runs.</td>
+<td>API budget</td>
+</tr>
+<tr>
+<td><strong>Phase 6</strong><br><span class="tag tag-planned">Planned</span></td>
+<td>Full statistical analysis: Wilcoxon signed-rank with Bonferroni correction, Cliff's delta for effect size, Kendall's tau for metric agreement. Publication-ready outputs: LaTeX tables, perturbation &times; model heatmap, dumbbell plots (clean vs. perturbed), radar chart per model.</td>
+<td>&mdash;</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Expected output table for the paper</h3>
+
+<table style="font-size:9.5pt">
+<thead>
+<tr>
+<th></th>
+<th style="text-align:center">IVR<sub>flip</sub></th>
+<th style="text-align:center">IVR<sub>absdelta</sub></th>
+<th style="text-align:center">SSR<sub>dir</sub></th>
+<th style="text-align:center">ASR<sub>thresh</sub></th>
+</tr>
+</thead>
+<tbody>
+<tr><td>HybridGrader (A)</td><td style="text-align:center">53.9%</td><td style="text-align:center">0.402</td><td style="text-align:center">32.3%</td><td style="text-align:center">18.0%</td></tr>
+<tr><td>HybridGrader (B)</td><td style="text-align:center">34.1%</td><td style="text-align:center">0.233</td><td style="text-align:center">16.6%</td><td style="text-align:center">19.2%</td></tr>
+<tr><td>DeBERTa-v3 (A)</td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td></tr>
+<tr><td>DeBERTa-v3 (B)</td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td></tr>
+<tr><td>ModernBERT (A)</td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td></tr>
+<tr><td>ModernBERT (B)</td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td></tr>
+<tr><td>GPT-4o (A)</td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td></tr>
+<tr><td>GPT-4o (B)</td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td><td style="text-align:center;color:#888"><em>pending</em></td></tr>
+</tbody>
+</table>
+
+<hr>
+
+<h2>8. Integration of Additional Datasets</h2>
+
+<p>The framework architecture was designed from the outset to support additional datasets without modification to the perturbation generators, metrics, or evaluation engine. Integrating a new dataset requires only a loader module that maps the raw data to the framework's canonical schema (QuestionRecord, AnswerRecord).</p>
+
+<p>To integrate a new corpus, the following information is needed:</p>
+<ul>
+<li>File format (CSV, JSON, Excel)</li>
+<li>Available fields (question text, student answer, reference answer, score)</li>
+<li>Grading scale used</li>
+<li>Rubric or marking guide (if available &mdash; used for LLM grader prompts)</li>
+</ul>
+
+<p>Once the format is defined, the loader can be implemented in a few hours and all experiments already conducted on Beetle/SciEntsBank can be replicated automatically on the new dataset, producing directly comparable results.</p>
+
+<hr>
+
+<h2>References</h2>
+
+<p style="font-size:10pt; line-height:1.6">
+Burrows, S., Gurevych, I. and Stein, B. (2015) 'The eras and trends of automatic short answer grading', <em>International Journal of Artificial Intelligence in Education</em>, 25(1), pp. 60&ndash;117.<br>
+Condor, A., Litster, M. and Pardos, Z. (2021) 'Automatic short answer grading with SBERT on out-of-sample questions', in <em>Proceedings of the 14th International Conference on Educational Data Mining</em>, pp. 345&ndash;352.<br>
+Devlin, J. et al. (2019) 'BERT: Pre-training of deep bidirectional transformers for language understanding', in <em>Proceedings of NAACL-HLT 2019</em>, pp. 4171&ndash;4186.<br>
+Ding, Y. et al. (2020) 'Don&rsquo;t take &ldquo;nswvtnvakgxpm&rdquo; for an answer &mdash; The surprising vulnerability of automatic content scoring systems to adversarial input', in <em>Proceedings of COLING 2020</em>, pp. 882&ndash;892.<br>
+Dzikovska, M. et al. (2013) 'SemEval-2013 Task 7: The joint student response analysis and 8th recognizing textual entailment challenge', in <em>Proceedings of SemEval 2013</em>, pp. 263&ndash;274.<br>
+Ferrara, S. and Qunbar, S. (2022) 'Validity arguments for AI-based automated scores: essay scoring as an illustration', <em>Journal of Educational Measurement</em>, 59(3), pp. 288&ndash;313.<br>
+Filighera, A. et al. (2024) 'Cheating automatic short answer grading with the adversarial usage of adjectives and adverbs', <em>International Journal of Artificial Intelligence in Education</em>, 34(2), pp. 616&ndash;646.<br>
+He, P., Gao, J. and Chen, W. (2023) 'DeBERTaV3: Improving DeBERTa using ELECTRA-style pre-training with gradient-disentangled embedding sharing', in <em>Proceedings of ICLR 2023</em>.<br>
+Heilman, M. and Madnani, N. (2015) 'The impact of training data on automated short answer scoring performance', in <em>Proceedings of BEA 2015</em>, pp. 81&ndash;85.<br>
+Kabra, A. et al. (2022) 'Evaluation toolkit for robustness testing of automatic essay scoring systems', in <em>Proceedings of CODS-COMAD 2022</em>. ACM, pp. 90&ndash;99.<br>
+Kane, M.T. (2006) 'Validation', in Brennan, R.L. (ed.) <em>Educational Measurement</em>, 4th edn. Westport, CT: ACE/Praeger, pp. 17&ndash;64.<br>
+Messick, S. (1989) 'Validity', in Linn, R.L. (ed.) <em>Educational Measurement</em>, 3rd edn. New York: ACE/Macmillan, pp. 13&ndash;103.<br>
+OpenAI (2023) <em>GPT-4 Technical Report</em>. arXiv:2303.08774.<br>
+Reimers, N. and Gurevych, I. (2019) 'Sentence-BERT: Sentence embeddings using Siamese BERT-networks', in <em>Proceedings of EMNLP-IJCNLP 2019</em>, pp. 3982&ndash;3992.<br>
+Ribeiro, M.T. et al. (2020) 'Beyond accuracy: Behavioral testing of NLP models with CheckList', in <em>Proceedings of ACL 2020</em>, pp. 4902&ndash;4912. (Best Paper Award)<br>
+Williamson, D.M., Xi, X. and Breyer, F.J. (2012) 'A framework for evaluation and use of automated scoring', <em>Educational Measurement: Issues and Practice</em>, 31(1), pp. 2&ndash;13.
+</p>
+
+<p style="font-size:9pt;color:#666;margin-top:6px"><em>Full bibliography (33 entries) available in the project repository.</em></p>
+
+<hr>
+
+<p><em>Prepared: 6 March 2026. All results are reproducible via <code>scripts/first_real_run.py</code>.</em></p>
+
+</body>
+</html>
