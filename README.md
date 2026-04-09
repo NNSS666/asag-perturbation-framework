@@ -154,6 +154,23 @@ grader_l1 = LLMGrader(provider="openai", model="gpt-5.4-mini", level=1)
 
 Supported providers: `"openai"`, `"anthropic"`, `"google"`. API keys must be set as environment variables (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`).
 
+## CLI
+
+The package provides a command-line interface for running evaluations without writing Python code:
+
+```bash
+# Evaluate HybridGrader on Beetle under both protocols
+asag evaluate --grader hybrid --corpus beetle --protocols A B
+
+# Generate perturbations only
+asag perturb --corpus beetle --seed 42
+
+# Evaluate an LLM grader (provider:model:level format)
+asag evaluate --grader openai:gpt-5.4-mini:0 --corpus beetle --protocols A
+```
+
+Run `asag --help` for all options.
+
 ## Running experiments
 
 ```bash
@@ -187,6 +204,11 @@ Invariance perturbations pass through a two-stage validation to ensure meaning i
 2. **Gate 2 (Negation/antonym heuristic)**: blocks perturbations that accidentally introduced negation markers or antonyms
 
 Gate 1 rejects about 40% of synonym substitutions, itself a finding about the unreliability of naive synonym replacement.
+
+## Papers
+
+- **IFKAD 2026 conference paper** (3,000-5,000 words): [`paper/IFKAD2026_Sasso_DeMauro.docx`](paper/IFKAD2026_Sasso_DeMauro.docx)
+- **Extended version** (11,000+ words, with appendices and package documentation): [`paper/arxiv_extended.md`](paper/arxiv_extended.md)
 
 ## References
 
