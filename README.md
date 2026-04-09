@@ -86,14 +86,24 @@ docs/                  # Methodology proposal and project documentation
 
 ## Installation
 
+Install directly from GitHub:
+
 ```bash
-pip install -e .
+pip install git+https://github.com/NNSS666/asag-perturbation-framework.git
 ```
 
 For LLM grader support (OpenAI, Anthropic, Google):
 
 ```bash
-pip install -e ".[llm]"
+pip install "asag-perturbation[llm] @ git+https://github.com/NNSS666/asag-perturbation-framework.git"
+```
+
+If you want to modify the code (development mode):
+
+```bash
+git clone https://github.com/NNSS666/asag-perturbation-framework.git
+cd asag-perturbation-framework
+pip install -e ".[llm,dev]"
 ```
 
 Requires Python 3.9+. The SBERT model (`all-MiniLM-L6-v2`) and NLTK data are downloaded automatically on first use.
