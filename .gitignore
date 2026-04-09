@@ -24,9 +24,15 @@ Thumbs.db
 
 # Project
 runs/
-*.docx
 .env
 .env.*
+
+# Word docs (exclude all except the IFKAD paper)
+*.docx
+!paper/*.docx
+
+# Paper working files (keep only final .docx)
+paper/*.md
 
 # Claude Code / AI tooling (not part of the study)
 .agents/
