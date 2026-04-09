@@ -51,6 +51,9 @@ dev = [
     "pytest>=7.0",
 ]
 
+[project.scripts]
+asag = "asag.cli:main"
+
 [project.urls]
 Homepage = "https://github.com/nando-sasso/asag-perturbation"
 Repository = "https://github.com/nando-sasso/asag-perturbation"
