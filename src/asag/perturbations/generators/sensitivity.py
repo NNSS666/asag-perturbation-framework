@@ -249,11 +249,19 @@ class SemanticContradictionGenerator(PerturbationGenerator):
         """
         text = answer.student_answer
 
-        # Collect all (match_start, match_end, replacement) triples
+        # Collect all (match_start, match_end, replacement) triples.
+        # Use a set of positions to avoid duplicate matches at the same span
+        # (e.g. "open" matching both as key and as value of "closed").
+        # Each match produces ONE variant — we want at most 2 variants from
+        # 2 distinct positions, not 2 matches from different keys at overlapping spans.
         matches: List[tuple] = []
+        seen_positions: set = set()
         for key, value in CONTRADICTION_MAP.items():
             pattern = re.compile(r"\b" + re.escape(key) + r"\b", re.IGNORECASE)
             for m in pattern.finditer(text):
+                if m.start() in seen_positions:
+                    continue
+                seen_positions.add(m.start())
                 # Preserve original case style
                 original_word = m.group(0)
                 if original_word.isupper():
@@ -263,9 +271,8 @@ class SemanticContradictionGenerator(PerturbationGenerator):
                 else:
                     replacement = value
                 matches.append((m.start(), m.end(), replacement))
-            # Only need first 2 distinct matches
-            if len(matches) >= 2:
-                break
+        # Keep only the first 2 by position (deterministic order)
+        matches = sorted(matches, key=lambda x: x[0])[:2]
 
         if not matches:
             return [f"It is not true that {_lowercase_first_char(text)}"]

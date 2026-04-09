@@ -10,9 +10,11 @@ Also re-exports concrete grader implementations:
 
 from asag.graders.base import GradeResult, GraderInterface
 from asag.graders.hybrid import HybridGrader
+from asag.graders.llm import LLMGrader
 
 __all__ = [
     "GraderInterface",
     "GradeResult",
     "HybridGrader",
+    "LLMGrader",
 ]

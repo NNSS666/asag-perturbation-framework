@@ -29,6 +29,7 @@ Gate rejections may reduce the count below 10 for some answers. The gap is
 the reported research result — do not compensate by retrying.
 """
 
+import hashlib
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -97,7 +98,8 @@ class PerturbationEngine:
     def _answer_seed(self, answer_id: str) -> int:
         """Compute a per-answer seed deterministically from the base seed.
 
-        Uses hash(answer_id) modulo 2^31 to stay within safe integer range.
+        Uses MD5 hash of answer_id (stable across Python processes, unlike
+        built-in hash()) modulo 2^31 to stay within safe integer range.
         The base seed ensures cross-run reproducibility while the answer_id
         hash ensures cross-answer independence.
 
@@ -107,7 +109,7 @@ class PerturbationEngine:
         Returns:
             A non-negative integer in [seed, seed + 2^31).
         """
-        return self._seed + hash(answer_id) % (2 ** 31)
+        return self._seed + int(hashlib.md5(answer_id.encode()).hexdigest(), 16) % (2 ** 31)
 
     def generate_all(
         self,

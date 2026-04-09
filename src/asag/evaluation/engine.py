@@ -14,8 +14,8 @@ This is the capstone of Phase 2. It runs the full evaluation loop:
 Design decisions:
   - Perturbation filtering to test-set answer_ids prevents training-set leakage
     (RESEARCH.md Pitfall 3).
-  - NaN aggregation: values that are NaN (from empty pairs) are excluded from
-    averaging. If all values are NaN, aggregate is NaN.
+  - None aggregation: values that are None (from empty pairs) are excluded from
+    averaging. If all values are None, aggregate is None.
   - reference_answer is passed as kwarg to grader.grade(); graders that don't
     accept it (LLM graders) are handled via TypeError catch-and-retry.
   - Score rounding to 6 decimals before float comparison prevents IEEE 754 issues
@@ -24,7 +24,6 @@ Design decisions:
 Python 3.9 compatible: uses typing.Dict, List, Optional, Tuple.
 """
 
-import math
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
@@ -233,8 +232,12 @@ class EvaluationEngine:
             # CRITICAL: Filter perturbations to test-set answer_ids only
             test_answer_ids = {a.answer_id for a in test_answers}
 
+            # Per-fold cache: graders with fit() produce fold-dependent scores,
+            # so orig scores must be recomputed after each fit().
+            fold_orig_cache: Dict[str, float] = {}
             grade_tuples = self._grade_perturbations(
-                test_answers, perturbations_by_answer, question_lookup, answer_lookup
+                test_answers, perturbations_by_answer, question_lookup, answer_lookup,
+                orig_score_cache=fold_orig_cache,
             )
 
             # Group grade tuples by family, then compute metrics per family
@@ -251,7 +254,7 @@ class EvaluationEngine:
                 agg_n_pairs[family].append(metric_result.n_pairs)
                 for metric_name in _metric_names_for_family(family):
                     val = getattr(metric_result, metric_name, None)
-                    if val is not None and not math.isnan(val):
+                    if val is not None:
                         agg_buckets[family][metric_name].append(val)
 
         # Build aggregate MetricResults (average across folds)
@@ -312,8 +315,12 @@ class EvaluationEngine:
 
             test_answer_ids = {a.answer_id for a in test_answers}
 
+            # Per-question cache: graders with fit() are re-fit per question
+            # in Protocol B, so orig scores are question-dependent.
+            q_orig_cache: Dict[str, float] = {}
             grade_tuples = self._grade_perturbations(
-                test_answers, perturbations_by_answer, question_lookup, answer_lookup
+                test_answers, perturbations_by_answer, question_lookup, answer_lookup,
+                orig_score_cache=q_orig_cache,
             )
 
             family_grade_tuples = _group_by_family(grade_tuples, perturbations_by_answer, test_answer_ids)
@@ -327,7 +334,7 @@ class EvaluationEngine:
                 agg_n_pairs[family].append(metric_result.n_pairs)
                 for metric_name in _metric_names_for_family(family):
                     val = getattr(metric_result, metric_name, None)
-                    if val is not None and not math.isnan(val):
+                    if val is not None:
                         agg_buckets[family][metric_name].append(val)
 
         aggregate_results = self._build_aggregate_results(
@@ -346,30 +353,35 @@ class EvaluationEngine:
         perturbations_by_answer: Dict[str, List[PerturbationRecord]],
         question_lookup: Dict[str, QuestionRecord],
         answer_lookup: Dict[str, AnswerRecord],
+        orig_score_cache: Optional[Dict[str, float]] = None,
     ) -> List[Tuple[str, str, float, float]]:
         """Grade all perturbations for the given test answers.
 
-        For each test answer, retrieves its perturbations and grades each one.
-        Returns (answer_id, perturb_type, gold_score, perturbed_score) tuples.
+        For each test answer, grades the ORIGINAL answer with the current grader
+        (cached per answer_id to avoid redundant calls), then grades each
+        perturbation. Returns (answer_id, perturb_type, orig_score, pert_score)
+        tuples where orig_score is the grader's own score on the unperturbed text.
 
-        The gold_score is the original answer's normalized gold score.
-        The perturbed_score is the grader's score for the perturbed text.
-
-        reference_answer is passed to grade() as a kwarg. Graders that don't
-        accept it (LLM graders) will raise TypeError, which we catch and retry
-        without the kwarg.
+        This ensures robustness metrics measure grader-vs-grader consistency,
+        not grader-vs-gold accuracy.
 
         Args:
             test_answers:            AnswerRecords to grade perturbations for.
             perturbations_by_answer: Dict mapping answer_id -> List[PerturbationRecord].
             question_lookup:         Dict mapping question_id -> QuestionRecord.
-            answer_lookup:           Dict mapping answer_id -> AnswerRecord (not used
-                                     directly, but kept for interface consistency).
+            answer_lookup:           Dict mapping answer_id -> AnswerRecord.
+            orig_score_cache:        Optional shared cache for original scores.
+                                     Mutated in-place to accumulate scores across
+                                     folds (for graders with fit(), scores are
+                                     fold-dependent so pass a new dict per fold).
 
         Returns:
-            List of (answer_id, perturb_type, gold_score, pert_score) tuples.
+            List of (answer_id, perturb_type, orig_score, pert_score) tuples.
             Score values are rounded to 6 decimals (RESEARCH.md Pitfall 1).
         """
+        if orig_score_cache is None:
+            orig_score_cache = {}
+
         results: List[Tuple[str, str, float, float]] = []
 
         for answer in test_answers:
@@ -378,6 +390,21 @@ class EvaluationEngine:
                 continue
 
             ref_answer = q.reference_answers[0] if q.reference_answers else ""
+
+            # Grade the original (unperturbed) answer — cached per answer_id.
+            # For graders with fit(), a new cache should be passed per fold
+            # so scores reflect the current model state.
+            if answer.answer_id not in orig_score_cache:
+                orig_result = self._grade_single(
+                    question=q.prompt,
+                    rubric=q.rubric_text,
+                    student_answer=answer.student_answer,
+                    reference_answer=ref_answer,
+                )
+                orig_score_cache[answer.answer_id] = round(orig_result.score, 6)
+
+            orig_score = orig_score_cache[answer.answer_id]
+
             perturbations = perturbations_by_answer.get(answer.answer_id, [])
 
             for pert in perturbations:
@@ -387,9 +414,8 @@ class EvaluationEngine:
                     student_answer=pert.text,
                     reference_answer=ref_answer,
                 )
-                gold_score = round(answer.gold_score, 6)
                 pert_score = round(grade_result.score, 6)
-                results.append((answer.answer_id, pert.type, gold_score, pert_score))
+                results.append((answer.answer_id, pert.type, orig_score, pert_score))
 
         return results
 
@@ -421,12 +447,14 @@ class EvaluationEngine:
                 student_answer=student_answer,
                 reference_answer=reference_answer,
             )
-        except TypeError:
-            return self._grader.grade(
-                question=question,
-                rubric=rubric,
-                student_answer=student_answer,
-            )
+        except TypeError as e:
+            if "reference_answer" in str(e):
+                return self._grader.grade(
+                    question=question,
+                    rubric=rubric,
+                    student_answer=student_answer,
+                )
+            raise
 
     # ------------------------------------------------------------------
     # Robustness drop comparison
@@ -441,8 +469,9 @@ class EvaluationEngine:
 
         Matches Protocol A and Protocol B aggregate results by family and
         computes delta = proto_a_value - proto_b_value for each metric.
-        Positive delta means Protocol A (cross-question shift) shows worse
-        robustness than Protocol B (in-distribution).
+        For IVR/ASR (higher_is_worse=True): positive delta means Protocol A
+        shows worse robustness than Protocol B. For SSR (higher_is_worse=False):
+        positive delta means Protocol A is BETTER (detects more perturbations).
 
         Args:
             proto_a_agg: Aggregate MetricResults from Protocol A.
@@ -473,11 +502,11 @@ class EvaluationEngine:
 
                 if a_val is None or b_val is None:
                     continue
-                if (isinstance(a_val, float) and math.isnan(a_val)) or \
-                   (isinstance(b_val, float) and math.isnan(b_val)):
-                    continue
 
                 delta = a_val - b_val
+                # For IVR and ASR, higher = worse (more violations/gaming).
+                # For SSR, higher = better (grader detects more perturbations).
+                higher_is_worse = metric_name not in ("ssr_directional",)
                 rows.append({
                     "grader_name": self._grader.grader_name,
                     "perturbation_family": family,
@@ -485,6 +514,7 @@ class EvaluationEngine:
                     "proto_b_value": b_val,
                     "proto_a_value": a_val,
                     "delta_a_minus_b": delta,
+                    "higher_is_worse": higher_is_worse,
                 })
 
         return rows
@@ -503,7 +533,7 @@ class EvaluationEngine:
         """Compute a MetricResult for one (fold/question, family) combination.
 
         Args:
-            grade_tuples: (answer_id, perturb_type, gold_score, pert_score) tuples.
+            grade_tuples: (answer_id, perturb_type, orig_score, pert_score) tuples.
             family:       Perturbation family: "invariance", "sensitivity", "gaming".
             protocol:     "A" or "B".
             fold_or_qid:  Fold identifier (used for grader_name tag).
@@ -546,10 +576,12 @@ class EvaluationEngine:
         agg_n_pairs: Dict[str, List[int]],
         protocol: str,
     ) -> List[MetricResult]:
-        """Average metric values across folds/questions per family.
+        """Average metric values across folds/questions per family (macro-average).
 
-        NaN values (from empty pair lists) are excluded from averaging.
-        If all values for a metric are NaN, the aggregate value is NaN.
+        Each fold/question is weighted equally regardless of test-set size.
+        This is intentional: it prevents large questions from dominating the
+        aggregate. None values (from empty pair lists) are excluded from
+        averaging. If all values for a metric are None, the aggregate is None.
 
         Args:
             agg_buckets:  {family: {metric_name: [non-NaN values across folds]}}.
@@ -608,16 +640,16 @@ def _metric_names_for_family(family: str) -> List[str]:
 
 
 def _safe_mean(values: List[float]) -> Optional[float]:
-    """Compute mean of a list, returning NaN if empty.
+    """Compute mean of a list, returning None if empty.
 
     Args:
-        values: List of float values (already filtered to exclude NaN).
+        values: List of float values (already filtered to exclude None/NaN).
 
     Returns:
-        Mean of values, or float('nan') if values is empty.
+        Mean of values, or None if values is empty.
     """
     if not values:
-        return float("nan")
+        return None
     return sum(values) / len(values)
 
 
