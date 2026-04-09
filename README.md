@@ -8,7 +8,7 @@ Companion repository for the paper presented at **IFKAD 2026** (Budapest, 1-3 Ju
 
 ## Research question
 
-Do ASAG systems truly understand student response content, or do they rely on superficial cues? Standard metrics (accuracy, QWK) only measure agreement with human scores under normal conditions — they cannot detect brittleness. This framework tests grader behaviour under controlled perturbations and produces robustness metrics that complement traditional evaluation.
+Do ASAG systems truly understand student response content, or do they rely on superficial cues? Standard metrics (accuracy, QWK) only measure agreement with human scores under normal conditions but cannot detect brittleness. This framework tests grader behaviour under controlled perturbations and produces robustness metrics that complement traditional evaluation.
 
 ## How it works
 
@@ -22,14 +22,14 @@ The framework applies **7 perturbation types** across **3 families** to student 
 
 Each answer is perturbed, re-graded, and the original vs. perturbed scores are compared to compute four metrics:
 
-- **IVR_flip** — % of invariance pairs where the score changed
-- **IVR_absdelta** — mean magnitude of score change on invariance pairs
-- **SSR_directional** — % of sensitivity pairs where the score decreased
-- **ASR_thresholded** — % of gaming pairs where a failing answer crossed the pass threshold
+- **IVR_flip**: percentage of invariance pairs where the score changed
+- **IVR_absdelta**: mean magnitude of score change on invariance pairs
+- **SSR_directional**: percentage of sensitivity pairs where the score decreased
+- **ASR_thresholded**: percentage of gaming pairs where a failing answer crossed the pass threshold
 
 Evaluation runs under two protocols:
-- **Protocol A (LOQO)** — leave-one-question-out cross-validation (unseen questions)
-- **Protocol B** — within-question 80/20 split (known questions)
+- **Protocol A (LOQO)**: leave-one-question-out cross-validation (unseen questions)
+- **Protocol B**: within-question 80/20 split (known questions)
 
 The delta between A and B is the **robustness drop**, measuring how much grader fragility increases on unseen questions.
 
@@ -42,7 +42,7 @@ Built on the [SemEval 2013 Task 7](https://aclanthology.org/S13-2045/) benchmark
 | Beetle | Electricity & circuits | 42 | 5,199 |
 | SciEntsBank | General science | 195 | 10,804 |
 
-The loader interface is pluggable — integrating a new dataset requires only a loader module that maps to the canonical schema.
+The loader interface is pluggable: integrating a new dataset requires only a loader module that maps to the canonical schema.
 
 ## Results (Beetle corpus)
 
@@ -63,7 +63,7 @@ The loader interface is pluggable — integrating a new dataset requires only a 
 | SSR_directional | 42.0% | 46.1% | +10% (better) |
 | ASR_thresholded | 6.7% | 11.8% | +76% (worse) |
 
-Key findings: the LLM is 3× more sensitive to meaning changes (SSR) and 3× less vulnerable to gaming (ASR) than the trained baseline. Providing a reference answer reduces invariance violations but increases gaming susceptibility — a trade-off invisible to single-metric evaluation.
+Key findings: the LLM is 3x more sensitive to meaning changes (SSR) and 3x less vulnerable to gaming (ASR) than the trained baseline. Providing a reference answer reduces invariance violations but increases gaming susceptibility, a trade-off invisible to single-metric evaluation.
 
 ## Project structure
 
@@ -183,10 +183,10 @@ pytest -m "not slow"  # skip E2E tests
 
 Invariance perturbations pass through a two-stage validation to ensure meaning is preserved:
 
-1. **Gate 1 (SBERT)** — cosine similarity ≥ 0.85 between original and perturbed answer (synonym substitution only; typos bypass by construction)
-2. **Gate 2 (Negation/antonym heuristic)** — blocks perturbations that accidentally introduced negation markers or antonyms
+1. **Gate 1 (SBERT)**: cosine similarity >= 0.85 between original and perturbed answer (synonym substitution only; typos bypass by construction)
+2. **Gate 2 (Negation/antonym heuristic)**: blocks perturbations that accidentally introduced negation markers or antonyms
 
-Gate 1 rejects ~40% of synonym substitutions — itself a finding about the unreliability of naive synonym replacement.
+Gate 1 rejects about 40% of synonym substitutions, itself a finding about the unreliability of naive synonym replacement.
 
 ## References
 
