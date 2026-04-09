@@ -25,14 +25,13 @@ Design decisions (from RESEARCH.md):
     that increase further are NOT counted (that's just a score increase, not
     gaming). PASSING_THRESHOLD = 0.5 (normalized scale).
 
-All metric methods return float('nan') on empty input, not 0.0, to distinguish
+All metric methods return None on empty input, not 0.0, to distinguish
 "no pairs evaluated" from "all pairs passed the criterion".
 
 Python 3.9 compatible: uses typing.Dict, List, Tuple.
 """
 
-import math
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 # Type alias: (original_score, perturbed_score)
 ScorePair = Tuple[float, float]
@@ -42,7 +41,7 @@ class MetricCalculator:
     """Computes all four dual-form robustness metrics.
 
     All metric methods accept a list of ScorePair = (orig_score, pert_score)
-    and return a float in [0.0, 1.0] (proportion) or float('nan') on empty.
+    and return a float in [0.0, 1.0] (proportion) or None on empty.
 
     Usage:
         calc = MetricCalculator()
@@ -70,7 +69,7 @@ class MetricCalculator:
         """
         return round(score, self.SCORE_PRECISION)
 
-    def ivr_flip(self, pairs: List[ScorePair]) -> float:
+    def ivr_flip(self, pairs: List[ScorePair]) -> Optional[float]:
         """Invariance Violation Rate — binary (flip) variant.
 
         Computes the proportion of invariance perturbation pairs where ANY
@@ -85,19 +84,19 @@ class MetricCalculator:
 
         Returns:
             Proportion in [0.0, 1.0] of pairs where a flip occurred.
-            Returns float('nan') if pairs is empty.
+            Returns None if pairs is empty.
 
         Example:
             calc.ivr_flip([(1.0, 1.0), (1.0, 0.5)]) == 0.5
         """
         if not pairs:
-            return float("nan")
+            return None
         flips = sum(
             1 for orig, pert in pairs if self._round(orig) != self._round(pert)
         )
         return flips / len(pairs)
 
-    def ivr_absdelta(self, pairs: List[ScorePair]) -> float:
+    def ivr_absdelta(self, pairs: List[ScorePair]) -> Optional[float]:
         """Invariance Violation Rate — continuous (mean absolute delta) variant.
 
         Computes the mean absolute difference between original and perturbed
@@ -109,17 +108,19 @@ class MetricCalculator:
 
         Returns:
             Mean absolute delta in [0.0, 1.0].
-            Returns float('nan') if pairs is empty.
+            Returns None if pairs is empty.
 
         Example:
             calc.ivr_absdelta([(1.0, 0.5), (1.0, 1.0)]) == 0.25
         """
         if not pairs:
-            return float("nan")
-        total_delta = sum(abs(orig - pert) for orig, pert in pairs)
+            return None
+        total_delta = sum(
+            abs(self._round(orig) - self._round(pert)) for orig, pert in pairs
+        )
         return total_delta / len(pairs)
 
-    def ssr_directional(self, pairs: List[ScorePair]) -> float:
+    def ssr_directional(self, pairs: List[ScorePair]) -> Optional[float]:
         """Sensitivity Success Rate — directional variant.
 
         Computes the proportion of sensitivity perturbation pairs where the
@@ -136,17 +137,19 @@ class MetricCalculator:
 
         Returns:
             Proportion in [0.0, 1.0] of pairs where pert < orig.
-            Returns float('nan') if pairs is empty.
+            Returns None if pairs is empty.
 
         Example:
             calc.ssr_directional([(1.0, 0.0), (1.0, 1.0)]) == 0.5
         """
         if not pairs:
-            return float("nan")
-        successes = sum(1 for orig, pert in pairs if pert < orig)
+            return None
+        successes = sum(
+            1 for orig, pert in pairs if self._round(pert) < self._round(orig)
+        )
         return successes / len(pairs)
 
-    def asr_thresholded(self, pairs: List[ScorePair]) -> float:
+    def asr_thresholded(self, pairs: List[ScorePair]) -> Optional[float]:
         """Adversarial Success Rate — threshold-crossing variant.
 
         Computes the proportion of gaming perturbation pairs where the score
@@ -168,7 +171,7 @@ class MetricCalculator:
 
         Returns:
             Proportion in [0.0, 1.0] of pairs that crossed the threshold.
-            Returns float('nan') if pairs is empty.
+            Returns None if pairs is empty.
 
         Example:
             # Crosses threshold: 0.0 -> 0.5 = success
@@ -177,11 +180,12 @@ class MetricCalculator:
             calc.asr_thresholded([(0.0, 0.5), (0.5, 1.0), (0.0, 0.0)]) == 1/3
         """
         if not pairs:
-            return float("nan")
+            return None
         crossings = sum(
             1
             for orig, pert in pairs
-            if orig < self.PASSING_THRESHOLD and pert >= self.PASSING_THRESHOLD
+            if self._round(orig) < self.PASSING_THRESHOLD
+            and self._round(pert) >= self.PASSING_THRESHOLD
         )
         return crossings / len(pairs)
 

@@ -1,8 +1,10 @@
 # ASAG Perturbation Framework
 
-Perturbation-first evaluation framework for Automated Short Answer Grading (ASAG) systems.
+Perturbation-based robustness evaluation framework for Automated Short Answer Grading (ASAG) systems.
 
-This is the companion repository for my Master's thesis at LUISS Guido Carli, supervised by Prof. Andrea De Mauro.
+Companion repository for the paper presented at **IFKAD 2026** (Budapest, 1-3 July):
+
+> **Sasso, F. & De Mauro, A.** (2026). *[Title TBD]*. Proceedings of IFKAD 2026.
 
 ## Research question
 
@@ -42,16 +44,26 @@ Built on the [SemEval 2013 Task 7](https://aclanthology.org/S13-2045/) benchmark
 
 The loader interface is pluggable — integrating a new dataset requires only a loader module that maps to the canonical schema.
 
-## Preliminary results (HybridGrader × Beetle)
+## Results (Beetle corpus)
 
-| Metric | Protocol B | Protocol A | Drop |
+### HybridGrader (trained ML baseline)
+
+| Metric | Protocol A | Protocol B | Drop |
 |---|:---:|:---:|:---:|
-| IVR_flip | 34.1% | 53.9% | +19.8 pp |
-| IVR_absdelta | 0.233 | 0.402 | +16.9 pp |
-| SSR_directional | 16.6% | 32.3% | +15.7 pp |
-| ASR_thresholded | 19.2% | 18.0% | −1.2 pp |
+| IVR_flip | 33.7% | 17.9% | +15.8 pp |
+| IVR_absdelta | 0.242 | 0.125 | +11.8 pp |
+| SSR_directional | 14.0% | 12.0% | +2.0 pp |
+| ASR_thresholded | 18.8% | 11.5% | +7.4 pp |
 
-On unseen questions, the grader flips its score after a synonym swap in 54% of cases and detects negation only 32% of the time.
+### GPT-5.4 mini (zero-shot LLM)
+
+| Metric | Level 0 | Level 1 | Effect of reference answer |
+|---|:---:|:---:|:---:|
+| IVR_flip | 24.3% | 13.4% | −45% (better) |
+| SSR_directional | 42.0% | 46.1% | +10% (better) |
+| ASR_thresholded | 6.7% | 11.8% | +76% (worse) |
+
+Key findings: the LLM is 3× more sensitive to meaning changes (SSR) and 3× less vulnerable to gaming (ASR) than the trained baseline. Providing a reference answer reduces invariance violations but increases gaming susceptibility — a trade-off invisible to single-metric evaluation.
 
 ## Project structure
 
@@ -72,39 +84,100 @@ bibliography/          # 33-entry annotated bibliography with BibTeX
 docs/                  # Methodology proposal and project documentation
 ```
 
-## Setup
+## Installation
 
 ```bash
-pip install -r requirements.txt
+pip install -e .
+```
+
+For LLM grader support (OpenAI, Anthropic, Google):
+
+```bash
+pip install -e ".[llm]"
 ```
 
 Requires Python 3.9+. The SBERT model (`all-MiniLM-L6-v2`) and NLTK data are downloaded automatically on first use.
 
-## Running an experiment
+## Quick start
 
-```bash
-cd src
-python -m scripts.first_real_run
+```python
+from asag.loaders import SemEval2013Loader
+from asag.graders import HybridGrader
+from asag.perturbations import PerturbationEngine
+from asag.evaluation import EvaluationEngine
+
+# 1. Load a dataset
+questions, answers = SemEval2013Loader("beetle").load()
+
+# 2. Generate perturbations (cached after first run)
+engine = PerturbationEngine(seed=42)
+perturbations, gate_log = engine.generate_all(answers, questions)
+
+# 3. Evaluate a grader under both protocols
+grader = HybridGrader()
+eval_engine = EvaluationEngine(grader, corpus="beetle")
+result = eval_engine.run(questions, answers, perturbations, protocols=["A", "B"])
+
+# 4. Inspect results
+for agg in result.protocol_a_aggregate:
+    print(f"{agg.family}: IVR={agg.ivr_flip}, SSR={agg.ssr_directional}, ASR={agg.asr_thresholded}")
 ```
 
-This runs the full pipeline on Beetle with the HybridGrader: loads data, generates ~41k perturbations (with SBERT quality gates), evaluates under both protocols, and prints the results table. Takes ~80 min on Apple M1.
+### Using your own grader
+
+Any grader that implements `GraderInterface` works with the framework:
+
+```python
+from asag.graders.base import GraderInterface, GradeResult
+
+class MyGrader(GraderInterface):
+    @property
+    def grader_name(self) -> str:
+        return "my_custom_grader"
+
+    def grade(self, question, rubric, student_answer, **kwargs):
+        # Your grading logic here
+        return GradeResult(label="correct", score=1.0, confidence=0.9)
+```
+
+### Using an LLM grader
+
+```python
+from asag.graders import LLMGrader
+
+# Level 0: no reference answer (question + student answer only)
+grader_l0 = LLMGrader(provider="openai", model="gpt-5.4-mini", level=0)
+
+# Level 1: with reference answer
+grader_l1 = LLMGrader(provider="openai", model="gpt-5.4-mini", level=1)
+```
+
+Supported providers: `"openai"`, `"anthropic"`, `"google"`. API keys must be set as environment variables (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`).
+
+## Running experiments
+
+```bash
+# HybridGrader on Beetle (full pipeline)
+python -m scripts.first_real_run
+
+# LLM graders (3 models x 2 levels)
+python -m scripts.run_llm_experiments --models gpt-5.4-mini --levels 0 1
+python -m scripts.run_llm_experiments --resume  # crash recovery
+```
 
 ## Running tests
 
 ```bash
-pytest
+pytest              # all tests
+pytest -m "not slow"  # skip E2E tests
 ```
-
-77 tests covering all modules. E2E tests are marked with `@pytest.mark.slow`.
 
 ## Grading models
 
 | Model | Type | Status |
 |---|---|---|
 | HybridGrader | Linguistic features + SBERT + logistic regression | Done |
-| DeBERTa-v3-base | Fine-tuned transformer | Next |
-| ModernBERT-base | Fine-tuned transformer | Planned |
-| GPT-4o | Zero-shot LLM with rubric prompt | Planned |
+| LLMGrader | Zero-shot LLM (OpenAI, Anthropic, Google) | Done |
 
 ## Quality gates
 
@@ -124,6 +197,20 @@ Gate 1 rejects ~40% of synonym substitutions — itself a finding about the unre
 
 Full bibliography (33 entries) in [`bibliography/`](bibliography/).
 
+## Citation
+
+If you use this framework in your research, please cite:
+
+```bibtex
+@inproceedings{sasso2026asag,
+  title     = {[Title TBD]},
+  author    = {Sasso, Ferdinando and De Mauro, Andrea},
+  booktitle = {Proceedings of IFKAD 2026},
+  year      = {2026},
+  address   = {Budapest, Hungary},
+}
+```
+
 ## License
 
-This project is part of ongoing academic research. Please contact the author before reuse.
+MIT License. See [LICENSE](LICENSE) for details.

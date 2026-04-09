@@ -275,8 +275,15 @@ def gate_2_negation(
     negation_flag = bool(new_negations)
 
     # --- Check 2: New antonym words ---
-    original_tokens = frozenset(w.lower() for w in original.split())
-    candidate_tokens = frozenset(w.lower() for w in candidate.split())
+    # Strip punctuation so "closed." matches "closed" in ANTONYM_MAP
+    original_tokens = frozenset(
+        re.sub(r'[^\w]', '', w).lower() for w in original.split()
+        if re.sub(r'[^\w]', '', w)
+    )
+    candidate_tokens = frozenset(
+        re.sub(r'[^\w]', '', w).lower() for w in candidate.split()
+        if re.sub(r'[^\w]', '', w)
+    )
 
     flagged_antonyms = {
         antonym_value

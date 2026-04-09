@@ -40,6 +40,7 @@ REQUIRED_DROP_KEYS = {
     "proto_b_value",
     "proto_a_value",
     "delta_a_minus_b",
+    "higher_is_worse",
 }
 
 # ---------------------------------------------------------------------------

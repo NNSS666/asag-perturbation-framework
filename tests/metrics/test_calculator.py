@@ -9,7 +9,6 @@ See tests/metrics/synthetic_mini_dataset.py for the full step-by-step derivation
 of every expected value used in these tests.
 """
 
-import math
 from typing import List, Tuple
 
 import pytest
@@ -145,18 +144,18 @@ def test_asr_thresholded_gold(calc, gaming_pairs):
 # Edge case tests — empty input returns NaN
 # ---------------------------------------------------------------------------
 
-def test_empty_returns_nan(calc):
-    """All four metric methods return float('nan') on empty input.
+def test_empty_returns_none(calc):
+    """All four metric methods return None on empty input.
 
-    NaN (not 0.0) is the correct return value for empty input to distinguish
+    None (not 0.0) is the correct return value for empty input to distinguish
     'no pairs evaluated' from 'all pairs passed the criterion'. Returning 0.0
     would be misleading — it would look like all invariance perturbations caused
     violations, or no sensitivity perturbations succeeded.
     """
-    assert math.isnan(calc.ivr_flip([]))
-    assert math.isnan(calc.ivr_absdelta([]))
-    assert math.isnan(calc.ssr_directional([]))
-    assert math.isnan(calc.asr_thresholded([]))
+    assert calc.ivr_flip([]) is None
+    assert calc.ivr_absdelta([]) is None
+    assert calc.ssr_directional([]) is None
+    assert calc.asr_thresholded([]) is None
 
 
 # ---------------------------------------------------------------------------

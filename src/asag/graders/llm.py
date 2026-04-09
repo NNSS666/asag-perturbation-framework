@@ -126,7 +126,8 @@ def _call_openai(
                     {"role": "user", "content": user_prompt},
                 ],
                 temperature=temperature,
-                max_tokens=100,
+                max_completion_tokens=100,
+                seed=42,
             )
             return response.choices[0].message.content.strip()
         except RateLimitError:
@@ -229,7 +230,10 @@ def _call_google(
                     max_output_tokens=100,
                 ),
             )
-            return response.text.strip()
+            text = response.text
+            if text is None:
+                raise RuntimeError("Gemini returned empty response (possible safety filter)")
+            return text.strip()
         except Exception as e:
             if attempt == max_retries - 1:
                 raise RuntimeError(f"Google API error after {max_retries} retries: {e}") from e
@@ -438,7 +442,12 @@ class LLMGrader(GraderInterface):
                 temperature=self._temperature,
                 max_retries=self._max_retries,
             )
-            return _parse_llm_response(raw_retry)
+            try:
+                return _parse_llm_response(raw_retry)
+            except ValueError:
+                self._parse_error_count += 1
+                logger.error("Double parse failure. Raw: %s", raw_retry[:200])
+                return GradeResult(label="irrelevant", score=0.0, confidence=0.0)
 
     @property
     def diagnostics(self) -> Dict[str, Any]:

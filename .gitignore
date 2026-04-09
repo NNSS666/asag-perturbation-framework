@@ -25,3 +25,21 @@ Thumbs.db
 # Project
 runs/
 *.docx
+.env
+.env.*
+
+# Claude Code / AI tooling (not part of the study)
+.agents/
+.claude/
+.planning/
+skills-lock.json
+CLAUDE.md
+PROJECT_BRIEF_Tesi.md
+SESSION_HANDOFF.md
+CHANGELOG.md
+
+# Personal / non-study files
+email-prof-*.md
+struttura-progetto.html
+_spiegazione_framework.html
+_template_unpacked/
