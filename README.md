@@ -166,20 +166,52 @@ Supported providers: `"openai"`, `"anthropic"`, `"google"`. API keys must be set
 
 ## CLI
 
-The package provides a command-line interface for running evaluations without writing Python code:
+The package provides a command-line interface for running evaluations without writing Python code.
+
+### `asag evaluate`
+
+Runs the full pipeline: load dataset, generate perturbations, grade, compute metrics.
 
 ```bash
-# Evaluate HybridGrader on Beetle under both protocols
+# HybridGrader on Beetle, both protocols
 asag evaluate --grader hybrid --corpus beetle --protocols A B
 
-# Generate perturbations only
-asag perturb --corpus beetle --seed 42
-
-# Evaluate an LLM grader (provider:model:level format)
+# LLM grader (format: provider:model:level)
+# Level 0 = no reference answer, Level 1 = with reference answer
 asag evaluate --grader openai:gpt-5.4-mini:0 --corpus beetle --protocols A
+
+# Gemini grader with reference answer, custom seed
+asag evaluate --grader google:gemini-2.5-flash:1 --corpus beetle --seed 123
+
+# Save results to a specific directory
+asag evaluate --grader hybrid --output-dir runs/my_experiment
 ```
 
-Run `asag --help` for all options.
+| Option | Default | Description |
+|---|---|---|
+| `--grader` | `hybrid` | `hybrid` for HybridGrader, or `provider:model:level` for LLM |
+| `--corpus` | `beetle` | Dataset to use (`beetle` or `scientsbank`) |
+| `--protocols` | `A B` | Evaluation protocols (`A`, `B`, or both) |
+| `--seed` | `42` | Random seed for reproducibility |
+| `--output-dir` | auto | Directory for results (auto-generated under `runs/`) |
+
+LLM graders require the corresponding API key as environment variable: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `GOOGLE_API_KEY`.
+
+### `asag perturb`
+
+Generates perturbations without grading. Useful for inspecting perturbation quality before running expensive LLM evaluations.
+
+```bash
+asag perturb --corpus beetle --seed 42
+```
+
+### `asag metrics`
+
+Displays metrics from a previous evaluation run.
+
+```bash
+asag metrics --results-dir runs/beetle_hybrid_logreg_minilm_20260404T220536
+```
 
 ## Running experiments
 
