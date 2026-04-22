@@ -1,0 +1,324 @@
+# Random sample, seed=42, N=15 per grader
+# Annotated by the author.
+# Coding scheme:
+#   CATEGORY: article / domain_concept / verb / connective / other
+#     - article: articles, determiners (the, a, an)
+#     - domain_concept: technical Beetle vocabulary (terminal, battery, voltage,
+#       circuit, current, switch, bulb, path, gap, closed, open, positive, negative,
+#       connected, connection, polar markers)
+#     - verb: main or auxiliary verb
+#     - connective: prepositions, conjunctions (because, and, between, where, etc.)
+#     - other: pronouns, modifying adverbs, deictics, quantifiers (both, each, always)
+#       and generic nouns
+#   SEVERITY: meaning_preserved / meaning_degraded / meaning_inverted
+#     - preserved: a human grader would not penalise; meaning intact
+#     - degraded: meaning less precise / partial loss, but inferable from context
+#     - inverted: meaning seriously broken, lost, or contradicted
+
+==========================================================================================
+GRADER: L0   (random sample 15 of 2639 missed deletion cases, seed=42)
+==========================================================================================
+
+[1] question_id=beetle_3c7ebb41
+    gold=correct  orig_score=1.0  pert_score=1.0
+    Q:    How does a damaged bulb compare to an open switch?
+    ORIG: they both creat gaps in the path
+    PERT: they creat gaps in the path
+    DELETED WORD (inferred): 'both'
+    CATEGORY: other
+    SEVERITY: meaning_preserved
+    RATIONALE: "they" already encodes plurality; "both" is redundant emphasis. A human grader would not penalise.
+
+[2] question_id=beetle_32a5dc7f
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Explain why you got a voltage reading of 1.5 for terminal 2 and the positive terminal.
+    ORIG: the terminal is connected to the positive battery terminal
+    PERT: the terminal is connected to the positive battery
+    DELETED WORD (inferred): 'terminal'
+    CATEGORY: domain_concept
+    SEVERITY: meaning_degraded
+    RATIONALE: "positive battery terminal" is a precise technical referent; "positive battery" is ambiguous (the positive battery vs the positive terminal). Inferable but lossy.
+
+[3] question_id=beetle_4ffd319c
+    gold=partially_correct_incomplete  orig_score=0.5  pert_score=0.5
+    Q:    Why do you think those terminals and the negative battery terminal are in the same state?
+    ORIG: because they are connected
+    PERT: because are connected
+    DELETED WORD (inferred): 'they'
+    CATEGORY: other
+    SEVERITY: meaning_degraded
+    RATIONALE: subject pronoun deleted, breaking grammar. Referent recoverable from question, but the answer is now syntactically broken.
+
+[4] question_id=beetle_975721b8
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Why was bulb A on when switch Y was open and switch Z was closed?
+    ORIG: A is on a battery that has a closed path
+    PERT: A is on a that has a closed path
+    DELETED WORD (inferred): 'battery'
+    CATEGORY: domain_concept
+    SEVERITY: meaning_degraded
+    RATIONALE: "battery" is the physical object hosting the closed path. "A is on a that has..." is broken; meaning recoverable only via domain context.
+
+[5] question_id=beetle_b56637c1
+    gold=correct  orig_score=0.5  pert_score=0.5
+    Q:    Why not?
+    ORIG: bulb a is in a closed path with the battery without passing through switch y.
+    PERT: a is in a closed path with the battery without passing through switch y.
+    DELETED WORD (inferred): 'bulb'
+    CATEGORY: domain_concept
+    SEVERITY: meaning_degraded
+    RATIONALE: "bulb a" identifies a specific component; "a" alone is generic. Recoverable from context but loses identification precision.
+
+[6] question_id=beetle_db5f3b18
+    gold=partially_correct_incomplete  orig_score=0.5  pert_score=0.5
+    Q:    Why do both bulbs A and B stay on when bulb C is burned out?
+    ORIG: the battery is contained in a closed path
+    PERT: the battery is in a closed path
+    DELETED WORD (inferred): 'contained'
+    CATEGORY: verb
+    SEVERITY: meaning_preserved
+    RATIONALE: "is contained in" and "is in" are semantically equivalent in this context. No information lost.
+
+[7] question_id=beetle_2673ce82
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Why?
+    ORIG: the terminal"s electrical state is not effected by the incomplete circuit.
+    PERT: the terminal"s electrical state is not by the incomplete circuit.
+    DELETED WORD (inferred): 'effected'
+    CATEGORY: verb
+    SEVERITY: meaning_inverted
+    RATIONALE: main predicate eliminated. "is not by the incomplete circuit" is sentence-level non-grammatical; meaning lost.
+
+[8] question_id=beetle_154ed367
+    gold=contradictory  orig_score=1.0  pert_score=1.0
+    Q:    Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.
+    ORIG: Because the positive circuit has a voltage of 1.5 volts.
+    PERT: the positive circuit has a voltage of 1.5 volts.
+    DELETED WORD (inferred): 'Because'
+    CATEGORY: connective
+    SEVERITY: meaning_preserved
+    RATIONALE: causal marker dropped but the explanation content is intact. A human grader would accept this in answer to "explain why".
+
+[9] question_id=beetle_4de891f2
+    gold=correct  orig_score=0.5  pert_score=0.5
+    Q:    What is the relationship between the voltage reading between two terminals and their electrical states?
+    ORIG: the difference in voltage between the two terminals
+    PERT: the difference in voltage the two terminals
+    DELETED WORD (inferred): 'between'
+    CATEGORY: connective
+    SEVERITY: meaning_preserved
+    RATIONALE: spatial preposition deleted; grammar imperfect but the relational meaning ("difference between two terminals") is unambiguous.
+
+[10] question_id=beetle_154ed367
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.
+    ORIG: because there was no gap from the positive terminal of the battery
+    PERT: because there was no gap from the positive of the battery
+    DELETED WORD (inferred): 'terminal'
+    CATEGORY: domain_concept
+    SEVERITY: meaning_degraded
+    RATIONALE: "positive terminal" → "positive". Same pattern as [2]: technical referent loses precision; recoverable.
+
+[11] question_id=beetle_601bd8e3
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Finally, consider finding a burned out light bulb in a long string of lights...
+    ORIG: When the voltage changes to 0.
+    PERT: When the changes to 0.
+    DELETED WORD (inferred): 'voltage'
+    CATEGORY: domain_concept
+    SEVERITY: meaning_inverted
+    RATIONALE: subject of the change eliminated. "When the changes to 0" — what changes? The diagnostic content (voltage going to 0) is lost.
+
+[12] question_id=beetle_31c4fc94
+    gold=correct  orig_score=1.0  pert_score=1.0
+    Q:    Why does an open switch impact a circuit?
+    ORIG: There is no closed path
+    PERT: is no closed path
+    DELETED WORD (inferred): 'There'
+    CATEGORY: other
+    SEVERITY: meaning_preserved
+    RATIONALE: existential expletive dropped; "is no closed path" reads as broken English but the assertion is unambiguous.
+
+[13] question_id=beetle_4ffd319c
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Why do you think those terminals and the negative battery terminal are in the same state?
+    ORIG: they do not create a closed circuit
+    PERT: they do not create a closed
+    DELETED WORD (inferred): 'circuit'
+    CATEGORY: domain_concept
+    SEVERITY: meaning_degraded
+    RATIONALE: head noun deleted from "a closed circuit"; remaining "a closed" is dangling. Inferable from context but technically degraded.
+
+[14] question_id=beetle_4ffd319c
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Why do you think those terminals and the negative battery terminal are in the same state?
+    ORIG: They are located the closest to each other
+    PERT: They are located the closest to other
+    DELETED WORD (inferred): 'each'
+    CATEGORY: other
+    SEVERITY: meaning_preserved
+    RATIONALE: reciprocal quantifier dropped; "the closest to other" is awkward but reciprocal meaning ("closest to one another") still inferable.
+
+[15] question_id=beetle_154ed367
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.
+    ORIG: Terminal 1 was not connected to the negative terminal.
+    PERT: Terminal 1 was not connected to the terminal.
+    DELETED WORD (inferred): 'negative'
+    CATEGORY: domain_concept
+    SEVERITY: meaning_degraded
+    RATIONALE: polarity marker eliminated. "the terminal" is ambiguous (which terminal?). The diagnostic specificity is materially lost.
+
+==========================================================================================
+GRADER: L1   (random sample 15 of 2361 missed deletion cases, seed=42)
+==========================================================================================
+
+[1] question_id=beetle_ed312c92
+    gold=correct  orig_score=1.0  pert_score=1.0
+    Q:    Explain why you got a voltage reading of 0 for terminal 6 and the positive terminal.
+    ORIG: Terminal 6 and the positive battery terminal are connected
+    PERT: Terminal 6 and the positive battery are connected
+    DELETED WORD (inferred): 'terminal'
+    CATEGORY: domain_concept
+    SEVERITY: meaning_degraded
+    RATIONALE: same pattern as L0[2]. "positive battery" is ambiguous (battery vs terminal). Inferable but lossy.
+
+[2] question_id=beetle_af1b409b
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    What is voltage?
+    ORIG: the difference in connections between terminals
+    PERT: the difference in between terminals
+    DELETED WORD (inferred): 'connections'
+    CATEGORY: domain_concept
+    SEVERITY: meaning_degraded
+    RATIONALE: object of "difference in" deleted. "in between" is broken English; the answer's claim ("voltage = difference in connections") is lost.
+
+[3] question_id=beetle_df0f80ac
+    gold=partially_correct_incomplete  orig_score=0.5  pert_score=0.5
+    Q:    When switch X was closed and switch Y was open, why was bulb A on?
+    ORIG: switch Y does not affect bulb a
+    PERT: switch Y does not affect a
+    DELETED WORD (inferred): 'bulb'
+    CATEGORY: domain_concept
+    SEVERITY: meaning_degraded
+    RATIONALE: "bulb a" → "a"; same as L0[5]. Referent recoverable from context but loses identification.
+
+[4] question_id=beetle_5d4bf979
+    gold=correct  orig_score=1.0  pert_score=1.0
+    Q:    Why was bulb C off when switch Z was open?
+    ORIG: Bulb C was off when switch Z was oped because switch Z created a break in the path...
+    PERT: Bulb C was off when switch Z was oped switch Z created a break in the path...
+    DELETED WORD (inferred): 'because'
+    CATEGORY: connective
+    SEVERITY: meaning_preserved
+    RATIONALE: causal marker dropped between two clauses. The two facts are still asserted; logical relation inferable.
+
+[5] question_id=beetle_975721b8
+    gold=correct  orig_score=1.0  pert_score=1.0
+    Q:    Why was bulb A on when switch Y was open and switch Z was closed?
+    ORIG: The battery is conatained in a closed path with bulb a
+    PERT: The battery is conatained in a path with bulb a
+    DELETED WORD (inferred): 'closed'
+    CATEGORY: domain_concept
+    SEVERITY: meaning_inverted
+    RATIONALE: "closed" is the critical taxonomic marker (closed path = current flows; open path = no current). Without "closed", the explanation loses its causal force entirely. THIS IS A KEY EXAMPLE.
+
+[6] question_id=beetle_6f930d19
+    gold=partially_correct_incomplete  orig_score=0.5  pert_score=0.5
+    Q:    Why does measuring voltage help you locate a burned out bulb?
+    ORIG: you can see where the gap is
+    PERT: you can see the gap is
+    DELETED WORD (inferred): 'where'
+    CATEGORY: other
+    SEVERITY: meaning_preserved
+    RATIONALE: interrogative/locative deleted; "see the gap" still asserts gap visibility. Slightly different but message intact.
+
+[7] question_id=beetle_2673ce82
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Why?
+    ORIG: battery will always have a voltage
+    PERT: battery will have a voltage
+    DELETED WORD (inferred): 'always'
+    CATEGORY: other
+    SEVERITY: meaning_preserved
+    RATIONALE: universal adverb dropped; "battery will have a voltage" carries the same generic claim in English future tense.
+
+[8] question_id=beetle_7c6b6bec
+    gold=correct  orig_score=0.5  pert_score=0.5
+    Q:    Why did it happen?
+    ORIG: because bulb a was in a open path
+    PERT: because bulb a was in a path
+    DELETED WORD (inferred): 'open'
+    CATEGORY: domain_concept
+    SEVERITY: meaning_inverted
+    RATIONALE: same pattern as L1[5]. "open path" is the causal explanation; "a path" alone has no explanatory force. Critical loss.
+
+[9] question_id=beetle_ed312c92
+    gold=correct  orig_score=1.0  pert_score=1.0
+    Q:    Explain why you got a voltage reading of 0 for terminal 6 and the positive terminal.
+    ORIG: terminal 6 and the  positive terminal are connected.
+    PERT: terminal 6 and the terminal are connected.
+    DELETED WORD (inferred): 'positive'
+    CATEGORY: domain_concept
+    SEVERITY: meaning_degraded
+    RATIONALE: polarity marker dropped; "the terminal" is ambiguous. Same as L0[15].
+
+[10] question_id=beetle_37bd0fe7
+    gold=contradictory  orig_score=1.0  pert_score=1.0
+    Q:    Explain why circuit 2 is not a short circuit.
+    ORIG: Circuit 2 is not a short circuit because it is not a closed circuit.
+    PERT: 2 is not a short circuit because it is not a closed circuit.
+    DELETED WORD (inferred): 'Circuit'
+    CATEGORY: domain_concept
+    SEVERITY: meaning_preserved
+    RATIONALE: "Circuit 2" → "2". Referent fully transparent from question (which mentions Circuit 2). One of the rare cases where domain-concept deletion is benign.
+
+[11] question_id=beetle_af1b409b
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    What is voltage?
+    ORIG: a measure of the strength of electricity
+    PERT: a measure of the of electricity
+    DELETED WORD (inferred): 'strength'
+    CATEGORY: other
+    SEVERITY: meaning_inverted
+    RATIONALE: head noun deleted; "measure of the of electricity" is broken. The proposed definition ("voltage = strength of electricity") has no content left.
+
+[12] question_id=beetle_af1b409b
+    gold=partially_correct_incomplete  orig_score=0.5  pert_score=0.5
+    Q:    What is voltage?
+    ORIG: a difference between two terminals with a measurement
+    PERT: a difference between two with a measurement
+    DELETED WORD (inferred): 'terminals'
+    CATEGORY: domain_concept
+    SEVERITY: meaning_degraded
+    RATIONALE: "between two terminals" → "between two"; the referent (terminals) is lost but inferable from question context about voltage.
+
+[13] question_id=beetle_2673ce82
+    gold=partially_correct_incomplete  orig_score=0.5  pert_score=0.5
+    Q:    Why?
+    ORIG: Because it is the difference of the electrical state between the two battery terminals
+    PERT: Because it is the of the electrical state between the two battery terminals
+    DELETED WORD (inferred): 'difference'
+    CATEGORY: other
+    SEVERITY: meaning_inverted
+    RATIONALE: head noun of the definition deleted ("voltage IS THE difference of..."). "is the of the electrical state" is empty; the definitional content is lost.
+
+[14] question_id=beetle_40919a78
+    gold=partially_correct_incomplete  orig_score=0.5  pert_score=0.5
+    Q:    Describe the paths in this diagram and explain how those paths account for the results.
+    ORIG: ...However, the path
+    PERT: ...However, the
+    DELETED WORD (inferred): 'path'
+    CATEGORY: domain_concept
+    SEVERITY: meaning_inverted
+    RATIONALE: sentence truncated mid-clause ("However, the"). The continuation/conclusion of the explanation is destroyed.
+
+[15] question_id=beetle_975721b8
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Why was bulb A on when switch Y was open and switch Z was closed?
+    ORIG: Because switch y does not affect the circuit that bulb a is on
+    PERT: Because switch y does not affect the circuit that a is on
+    DELETED WORD (inferred): 'bulb'
+    CATEGORY: domain_concept
+    SEVERITY: meaning_degraded
+    RATIONALE: same pattern as L0[5], L1[3]. "bulb a" → "a"; identifier looser but recoverable.

@@ -1,0 +1,1560 @@
+{
+  "GPT-5.4 mini L0": {
+    "negation_insertion": {
+      "total": 5199,
+      "not_found": 0,
+      "counts": {
+        "dec": 2018,
+        "same": 2712,
+        "inc": 469
+      },
+      "non_floor_total": 4023,
+      "non_floor_counts": {
+        "dec": 2018,
+        "same": 1844,
+        "inc": 161
+      },
+      "by_gold": {
+        "contradictory": {
+          "dec": 539,
+          "same": 748,
+          "inc": 117
+        },
+        "correct": {
+          "dec": 872,
+          "same": 1043,
+          "inc": 270
+        },
+        "partially_correct_incomplete": {
+          "dec": 522,
+          "same": 604,
+          "inc": 77
+        },
+        "non_domain": {
+          "dec": 12,
+          "same": 246,
+          "inc": 0
+        },
+        "irrelevant": {
+          "dec": 73,
+          "same": 71,
+          "inc": 5
+        }
+      },
+      "by_orig_score": {
+        "1.0": {
+          "dec": 878,
+          "same": 259,
+          "inc": 0
+        },
+        "0.5": {
+          "dec": 1140,
+          "same": 1585,
+          "inc": 161
+        },
+        "0.0": {
+          "dec": 0,
+          "same": 868,
+          "inc": 308
+        }
+      },
+      "examples": {
+        "unchanged_nonfloor": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because terminal one and the positive terminal are connected",
+            "pert": "because terminal one and the positive terminal are not connected",
+            "gold": "contradictory",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there is a gap between terminal one and the positive battery terminal",
+            "pert": "because there is not a gap between terminal one and the positive battery terminal",
+            "gold": "correct",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there was no separation in the positive battery terminal and terminal 1.",
+            "pert": "because there was not no separation in the positive battery terminal and terminal 1.",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there was no gap in the positive battery terminal and terminal 1.",
+            "pert": "because there was not no gap in the positive battery terminal and terminal 1.",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there is a gap between the positive battery terminal and terminal 1.",
+            "pert": "because there is not a gap between the positive battery terminal and terminal 1.",
+            "gold": "correct",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Because there was a gap between the positive battery terminal and terminal 1.",
+            "pert": "Because there was not a gap between the positive battery terminal and terminal 1.",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there was not direct connection between the positive terminal and bulb terminal 1",
+            "pert": "because there was not not direct connection between the positive terminal and bulb terminal 1",
+            "gold": "correct",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "becaquse there was a gap in the connection",
+            "pert": "becaquse there was not a gap in the connection",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          }
+        ],
+        "increased": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because terminal one and the positive battery terminal are on a closed path",
+            "pert": "because terminal one and the positive battery terminal are not on a closed path",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the terminal is connected to the negative terminal of the battery",
+            "pert": "the terminal is not connected to the negative terminal of the battery",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Terminal 1 is connected to the negative terminal.",
+            "pert": "Terminal 1 is not connected to the negative terminal.",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the positive battery terminal and terminal 1 are not connected",
+            "pert": "the positive battery terminal and terminal 1 are not not connected",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "positive battery terminal is separated by a gap from terminal 1",
+            "pert": "positive battery terminal is not separated by a gap from terminal 1",
+            "gold": "correct",
+            "orig_s": 0.5,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "terminal one is connected to the negative terminal and terminal 1 is seperated from the positive terminal by a gap",
+            "pert": "terminal one is not connected to the negative terminal and terminal 1 is seperated from the positive terminal by a gap",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the terminal is not connected to the positive battery terminal",
+            "pert": "the terminal is not not connected to the positive battery terminal",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the battery is not connected to the terminal",
+            "pert": "the battery is not not connected to the terminal",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          }
+        ],
+        "decreased": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because terminal one is connected to the positive battery terminal",
+            "pert": "because terminal one is not connected to the positive battery terminal",
+            "gold": "contradictory",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because it was connected to the positive terminal",
+            "pert": "because it was not connected to the positive terminal",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "its connected",
+            "pert": "It is not true that its connected",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Terminal 1 is connected to the positive terminal.",
+            "pert": "Terminal 1 is not connected to the positive terminal.",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "I get a 1.5 V reading because the negative terminal of battery is connected to terminal of bulb and then bulb is then connected to postive terminal of battery",
+            "pert": "I get a 1.5 V reading because the negative terminal of battery is not connected to terminal of bulb and then bulb is then connected to postive terminal of battery",
+            "gold": "contradictory",
+            "orig_s": 1.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "positive battery terminal",
+            "pert": "It is not true that positive battery terminal",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 0.5,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "there is no gap between the posittive terminal and terminal 1",
+            "pert": "there is not no gap between the posittive terminal and terminal 1",
+            "gold": "contradictory",
+            "orig_s": 1.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Terminal 1 is connected tot he positive terminal.",
+            "pert": "Terminal 1 is not connected tot he positive terminal.",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.0
+          }
+        ]
+      }
+    },
+    "key_concept_deletion": {
+      "total": 5068,
+      "not_found": 1,
+      "counts": {
+        "dec": 1323,
+        "same": 3484,
+        "inc": 261
+      },
+      "non_floor_total": 3996,
+      "non_floor_counts": {
+        "dec": 1323,
+        "same": 2639,
+        "inc": 34
+      },
+      "by_gold": {
+        "contradictory": {
+          "dec": 322,
+          "same": 958,
+          "inc": 93
+        },
+        "correct": {
+          "dec": 625,
+          "same": 1435,
+          "inc": 119
+        },
+        "partially_correct_incomplete": {
+          "dec": 326,
+          "same": 824,
+          "inc": 41
+        },
+        "non_domain": {
+          "dec": 9,
+          "same": 165,
+          "inc": 5
+        },
+        "irrelevant": {
+          "dec": 41,
+          "same": 102,
+          "inc": 3
+        }
+      },
+      "by_orig_score": {
+        "1.0": {
+          "dec": 695,
+          "same": 435,
+          "inc": 0
+        },
+        "0.5": {
+          "dec": 628,
+          "same": 2204,
+          "inc": 34
+        },
+        "0.0": {
+          "dec": 0,
+          "same": 845,
+          "inc": 227
+        }
+      },
+      "examples": {
+        "unchanged_nonfloor": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because terminal one and the positive terminal are connected",
+            "pert": "because one and the positive terminal are connected",
+            "gold": "contradictory",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because terminal one and the positive battery terminal are on a closed path",
+            "pert": "because terminal one and the positive battery terminal are on a path",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there is a gap between terminal one and the positive battery terminal",
+            "pert": "because is a gap between terminal one and the positive battery terminal",
+            "gold": "correct",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there was no separation in the positive battery terminal and terminal 1.",
+            "pert": "because there was no separation in the positive terminal and terminal 1.",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there was no gap in the positive battery terminal and terminal 1.",
+            "pert": "because there was no gap in the positive battery terminal and 1.",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there is a gap between the positive battery terminal and terminal 1.",
+            "pert": "because there is a gap between the positive terminal and terminal 1.",
+            "gold": "correct",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there was not direct connection between the positive terminal and bulb terminal 1",
+            "pert": "because there was not direct connection between the positive terminal and terminal 1",
+            "gold": "correct",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "becaquse there was a gap in the connection",
+            "pert": "becaquse there was a gap in the",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          }
+        ],
+        "increased": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "termianl 1 is not connected to the positive battery terminal.",
+            "pert": "termianl 1 is not connected to the battery terminal.",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Terminal 1 is not connected to the positive terminal.",
+            "pert": "Terminal 1 is not connected to the terminal.",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "no damaged bulb",
+            "pert": "no bulb",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the positive battery terminal and terminal 1 are not connected",
+            "pert": "the positive battery terminal and terminal 1 are not",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "terminal 1 is not connected to the positive battery terminal",
+            "pert": "terminal 1 is not connected to the positive battery",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the battery is not connected to the terminal",
+            "pert": "the battery is not to the terminal",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "positive connected to negative terminal",
+            "pert": "positive connected to terminal",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "terminal 1 is not connected to the positive terminal",
+            "pert": "terminal 1 is not connected to the terminal",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          }
+        ],
+        "decreased": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because terminal one is connected to the positive battery terminal",
+            "pert": "because terminal one is connected to the battery terminal",
+            "gold": "contradictory",
+            "orig_s": 1.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Because there was a gap between the positive battery terminal and terminal 1.",
+            "pert": "Because there was a gap between the positive terminal and terminal 1.",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "its connected",
+            "pert": "its",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "I get a 1.5 V reading because the negative terminal of battery is connected to terminal of bulb and then bulb is then connected to postive terminal of battery",
+            "pert": "I get a 1.5 V reading because the negative terminal of is connected to terminal of bulb and then bulb is then connected to postive terminal of battery",
+            "gold": "contradictory",
+            "orig_s": 1.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the terminals are seperated",
+            "pert": "the terminals are",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 0.5,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "there is a gap",
+            "pert": "is a gap",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 0.5,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "there is no connection",
+            "pert": "there is no",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 0.5,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "there is a separation",
+            "pert": "there is a",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 0.5,
+            "pert_s": 0.0
+          }
+        ]
+      }
+    },
+    "semantic_contradiction": {
+      "total": 5464,
+      "not_found": 0,
+      "counts": {
+        "dec": 2871,
+        "same": 2350,
+        "inc": 243
+      },
+      "non_floor_total": 4248,
+      "non_floor_counts": {
+        "dec": 2871,
+        "same": 1342,
+        "inc": 35
+      },
+      "by_gold": {
+        "contradictory": {
+          "dec": 800,
+          "same": 644,
+          "inc": 65
+        },
+        "correct": {
+          "dec": 1232,
+          "same": 889,
+          "inc": 144
+        },
+        "partially_correct_incomplete": {
+          "dec": 711,
+          "same": 528,
+          "inc": 31
+        },
+        "non_domain": {
+          "dec": 12,
+          "same": 246,
+          "inc": 0
+        },
+        "irrelevant": {
+          "dec": 116,
+          "same": 43,
+          "inc": 3
+        }
+      },
+      "by_orig_score": {
+        "1.0": {
+          "dec": 1061,
+          "same": 145,
+          "inc": 0
+        },
+        "0.5": {
+          "dec": 1810,
+          "same": 1197,
+          "inc": 35
+        },
+        "0.0": {
+          "dec": 0,
+          "same": 1008,
+          "inc": 208
+        }
+      },
+      "examples": {
+        "unchanged_nonfloor": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because terminal one and the positive battery terminal are on a closed path",
+            "pert": "because terminal one and the positive battery terminal are on a open path",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there was no separation in the positive battery terminal and terminal 1.",
+            "pert": "because there was no separation in the negative battery terminal and terminal 1.",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there was no gap in the positive battery terminal and terminal 1.",
+            "pert": "because there was no gap in the negative battery terminal and terminal 1.",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there is a gap between the positive battery terminal and terminal 1.",
+            "pert": "because there is a gap between the negative battery terminal and terminal 1.",
+            "gold": "correct",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there was not direct connection between the positive terminal and bulb terminal 1",
+            "pert": "because there was not direct connection between the negative terminal and bulb terminal 1",
+            "gold": "correct",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "becaquse there was a gap in the connection",
+            "pert": "It is not true that becaquse there was a gap in the connection",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "1 has no gap",
+            "pert": "It is not true that 1 has no gap",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "there is a gap",
+            "pert": "It is not true that there is a gap",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          }
+        ],
+        "increased": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "termianl 1 is not connected to the positive battery terminal.",
+            "pert": "termianl 1 is not connected to the negative battery terminal.",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Terminal 1 is not connected to the positive terminal.",
+            "pert": "Terminal 1 is not connected to the negative terminal.",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the terminal is connected to the negative terminal of the battery",
+            "pert": "the terminal is connected to the positive terminal of the battery",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Terminal 1 is connected to the negative terminal.",
+            "pert": "Terminal 1 is connected to the positive terminal.",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the positive battery terminal and terminal 1 are not connected",
+            "pert": "the negative battery terminal and terminal 1 are not connected",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "terminal one is connected to the negative terminal and terminal 1 is seperated from the positive terminal by a gap",
+            "pert": "terminal one is connected to the positive terminal and terminal 1 is seperated from the positive terminal by a gap",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the terminal is not connected to the positive battery terminal",
+            "pert": "the terminal is not connected to the negative battery terminal",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "terminal 1 is not connected to the positive battery terminal",
+            "pert": "terminal 1 is not connected to the negative battery terminal",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          }
+        ],
+        "decreased": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because terminal one and the positive terminal are connected",
+            "pert": "because terminal one and the negative terminal are connected",
+            "gold": "contradictory",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because terminal one is connected to the positive battery terminal",
+            "pert": "because terminal one is connected to the negative battery terminal",
+            "gold": "contradictory",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because terminal one and the positive battery terminal are on a closed path",
+            "pert": "because terminal one and the negative battery terminal are on a closed path",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there is a gap between terminal one and the positive battery terminal",
+            "pert": "because there is a gap between terminal one and the negative battery terminal",
+            "gold": "correct",
+            "orig_s": 0.5,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Because there was a gap between the positive battery terminal and terminal 1.",
+            "pert": "Because there was a gap between the negative battery terminal and terminal 1.",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "there was a gap",
+            "pert": "It is not true that there was a gap",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 0.5,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because it was connected to the positive terminal",
+            "pert": "because it was connected to the negative terminal",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "its connected",
+            "pert": "It is not true that its connected",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.0
+          }
+        ]
+      }
+    }
+  },
+  "GPT-5.4 mini L1": {
+    "negation_insertion": {
+      "total": 5199,
+      "not_found": 0,
+      "counts": {
+        "dec": 2537,
+        "same": 2175,
+        "inc": 487
+      },
+      "non_floor_total": 3437,
+      "non_floor_counts": {
+        "dec": 2537,
+        "same": 886,
+        "inc": 14
+      },
+      "by_gold": {
+        "contradictory": {
+          "dec": 473,
+          "same": 663,
+          "inc": 268
+        },
+        "correct": {
+          "dec": 1288,
+          "same": 760,
+          "inc": 137
+        },
+        "partially_correct_incomplete": {
+          "dec": 699,
+          "same": 428,
+          "inc": 76
+        },
+        "non_domain": {
+          "dec": 2,
+          "same": 256,
+          "inc": 0
+        },
+        "irrelevant": {
+          "dec": 75,
+          "same": 68,
+          "inc": 6
+        }
+      },
+      "by_orig_score": {
+        "0.0": {
+          "dec": 0,
+          "same": 1289,
+          "inc": 473
+        },
+        "1.0": {
+          "dec": 1472,
+          "same": 347,
+          "inc": 0
+        },
+        "0.5": {
+          "dec": 1065,
+          "same": 539,
+          "inc": 14
+        }
+      },
+      "examples": {
+        "unchanged_nonfloor": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there was not direct connection between the positive terminal and bulb terminal 1",
+            "pert": "because there was not not direct connection between the positive terminal and bulb terminal 1",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Terminal 1 is not connected to the positive terminal.",
+            "pert": "Terminal 1 is not not connected to the positive terminal.",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the positive battery terminal and terminal 1 are not connected",
+            "pert": "the positive battery terminal and terminal 1 are not not connected",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "terminal one is connected to the negative terminal and terminal 1 is seperated from the positive terminal by a gap",
+            "pert": "terminal one is not connected to the negative terminal and terminal 1 is seperated from the positive terminal by a gap",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the positive terminal is not connected to terminal 1",
+            "pert": "the positive terminal is not not connected to terminal 1",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "terminal 1 is not connected to the positive terminal",
+            "pert": "terminal 1 is not not connected to the positive terminal",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the positive battery terminal is not connected to terminal 1.",
+            "pert": "the positive battery terminal is not not connected to terminal 1.",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there was a positive and negative connection",
+            "pert": "because there was not a positive and negative connection",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          }
+        ],
+        "increased": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because terminal one and the positive terminal are connected",
+            "pert": "because terminal one and the positive terminal are not connected",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because terminal one is connected to the positive battery terminal",
+            "pert": "because terminal one is not connected to the positive battery terminal",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because terminal one and the positive battery terminal are on a closed path",
+            "pert": "because terminal one and the positive battery terminal are not on a closed path",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because it was connected to the positive terminal",
+            "pert": "because it was not connected to the positive terminal",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because the terminals are in the same state",
+            "pert": "because the terminals are not in the same state",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Terminal 1 is connected to the positive terminal.",
+            "pert": "Terminal 1 is not connected to the positive terminal.",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Terminal 1 is connected to the negative terminal.",
+            "pert": "Terminal 1 is not connected to the negative terminal.",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "I get a 1.5 V reading because the negative terminal of battery is connected to terminal of bulb and then bulb is then connected to postive terminal of battery",
+            "pert": "I get a 1.5 V reading because the negative terminal of battery is not connected to terminal of bulb and then bulb is then connected to postive terminal of battery",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          }
+        ],
+        "decreased": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there is a gap between terminal one and the positive battery terminal",
+            "pert": "because there is not a gap between terminal one and the positive battery terminal",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there is a gap between the positive battery terminal and terminal 1.",
+            "pert": "because there is not a gap between the positive battery terminal and terminal 1.",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Because there was a gap between the positive battery terminal and terminal 1.",
+            "pert": "Because there was not a gap between the positive battery terminal and terminal 1.",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "becaquse there was a gap in the connection",
+            "pert": "becaquse there was not a gap in the connection",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "there was a gap",
+            "pert": "there was not a gap",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the terminals are seperated",
+            "pert": "the terminals are not seperated",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "there is a gap",
+            "pert": "there is not a gap",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "there is no connection",
+            "pert": "there is not no connection",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 1.0,
+            "pert_s": 0.5
+          }
+        ]
+      }
+    },
+    "key_concept_deletion": {
+      "total": 5069,
+      "not_found": 0,
+      "counts": {
+        "dec": 1020,
+        "same": 3790,
+        "inc": 259
+      },
+      "non_floor_total": 3417,
+      "non_floor_counts": {
+        "dec": 1020,
+        "same": 2361,
+        "inc": 36
+      },
+      "by_gold": {
+        "contradictory": {
+          "dec": 236,
+          "same": 1026,
+          "inc": 111
+        },
+        "correct": {
+          "dec": 466,
+          "same": 1641,
+          "inc": 73
+        },
+        "partially_correct_incomplete": {
+          "dec": 289,
+          "same": 842,
+          "inc": 60
+        },
+        "non_domain": {
+          "dec": 0,
+          "same": 173,
+          "inc": 6
+        },
+        "irrelevant": {
+          "dec": 29,
+          "same": 108,
+          "inc": 9
+        }
+      },
+      "by_orig_score": {
+        "0.0": {
+          "dec": 0,
+          "same": 1429,
+          "inc": 223
+        },
+        "1.0": {
+          "dec": 686,
+          "same": 1126,
+          "inc": 0
+        },
+        "0.5": {
+          "dec": 334,
+          "same": 1235,
+          "inc": 36
+        }
+      },
+      "examples": {
+        "unchanged_nonfloor": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there is a gap between terminal one and the positive battery terminal",
+            "pert": "because is a gap between terminal one and the positive battery terminal",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there is a gap between the positive battery terminal and terminal 1.",
+            "pert": "because there is a gap between the positive terminal and terminal 1.",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Because there was a gap between the positive battery terminal and terminal 1.",
+            "pert": "Because there was a gap between the positive terminal and terminal 1.",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there was not direct connection between the positive terminal and bulb terminal 1",
+            "pert": "because there was not direct connection between the positive terminal and terminal 1",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "positive battery terminal is separated by a gap from terminal 1",
+            "pert": "positive battery terminal is by a gap from terminal 1",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Because there was a gap",
+            "pert": "Because was a gap",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Voltage is the difference between a positive and negative end on a battery.",
+            "pert": "Voltage is the between a positive and negative end on a battery.",
+            "gold": "irrelevant",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the positive terminal is not connected to terminal 1",
+            "pert": "the positive terminal is not connected to 1",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          }
+        ],
+        "increased": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "termianl 1 is not connected to the positive battery terminal.",
+            "pert": "termianl 1 is not connected to the battery terminal.",
+            "gold": "correct",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "it was connected to a positive battery terminal",
+            "pert": "it was to a positive battery terminal",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the terminal is connected to the battery terminal",
+            "pert": "the terminal is to the battery terminal",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "The voltage is 1.5 because thebulb terminal is connected to the battery terminal.",
+            "pert": "The voltage is 1.5 thebulb terminal is connected to the battery terminal.",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the voltage is 1.5 because he bulb terminal is connected to the battery terminal.",
+            "pert": "the voltage is 1.5 he bulb terminal is connected to the battery terminal.",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "it is connected to the batteries positive terminal",
+            "pert": "it is connected to the batteries positive",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Why do you think the other terminals are being held in a different electrical state than that of the negative terminal?",
+            "orig": "because they are in a closed path",
+            "pert": "because they are in a path",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Why do you think the other terminals are being held in a different electrical state than that of the negative terminal?",
+            "orig": "they have electricty passing through them",
+            "pert": "they have electricty passing through",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          }
+        ],
+        "decreased": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "becaquse there was a gap in the connection",
+            "pert": "becaquse there was a gap in the",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 1.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "there was a gap",
+            "pert": "was a gap",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 1.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Terminal 1 is not connected to the positive terminal.",
+            "pert": "Terminal 1 is not connected to the terminal.",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the terminals are seperated",
+            "pert": "the terminals are",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 1.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "there is a gap",
+            "pert": "is a gap",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 1.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "there is no connection",
+            "pert": "there is no",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "there is a separation",
+            "pert": "there is a",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 1.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the positive battery terminal and terminal 1 are not connected",
+            "pert": "the positive battery terminal and terminal 1 are not",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          }
+        ]
+      }
+    },
+    "semantic_contradiction": {
+      "total": 5464,
+      "not_found": 0,
+      "counts": {
+        "dec": 3027,
+        "same": 2165,
+        "inc": 272
+      },
+      "non_floor_total": 3632,
+      "non_floor_counts": {
+        "dec": 3027,
+        "same": 595,
+        "inc": 10
+      },
+      "by_gold": {
+        "contradictory": {
+          "dec": 588,
+          "same": 768,
+          "inc": 153
+        },
+        "correct": {
+          "dec": 1556,
+          "same": 645,
+          "inc": 64
+        },
+        "partially_correct_incomplete": {
+          "dec": 799,
+          "same": 420,
+          "inc": 51
+        },
+        "non_domain": {
+          "dec": 2,
+          "same": 256,
+          "inc": 0
+        },
+        "irrelevant": {
+          "dec": 82,
+          "same": 76,
+          "inc": 4
+        }
+      },
+      "by_orig_score": {
+        "0.0": {
+          "dec": 0,
+          "same": 1570,
+          "inc": 262
+        },
+        "1.0": {
+          "dec": 1703,
+          "same": 208,
+          "inc": 0
+        },
+        "0.5": {
+          "dec": 1324,
+          "same": 387,
+          "inc": 10
+        }
+      },
+      "examples": {
+        "unchanged_nonfloor": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because it is not connected to the positive battery",
+            "pert": "because it is not connected to the negative battery",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "The positive battery was not connected to terminal one.",
+            "pert": "The negative battery was not connected to terminal one.",
+            "gold": "correct",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Why do you think the other terminals are being held in a different electrical state than that of the negative terminal?",
+            "orig": "terminal is connected to postive end of battery",
+            "pert": "It is not true that terminal is connected to postive end of battery",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Why do you think the other terminals are being held in a different electrical state than that of the negative terminal?",
+            "orig": "They are not connected to the negative battery terminal.",
+            "pert": "They are not connected to the positive battery terminal.",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Why do you think those terminals and the negative battery terminal are in the same state?",
+            "orig": "they are on the same side of the incomplete circut",
+            "pert": "they are on the same side of the complete circut",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "As you move the multimeter leads from one bulb terminal to the next, what does it mean when the voltage reading jumps from 0 to 1.5?",
+            "orig": "Bulb was damanged when reading was zero, if the reading moves to 1.5, it means you are now at a point in the circuit or path in which there is no gap and the voltage reading is giving the difference in electrical state of the battery",
+            "pert": "It is not true that bulb was damanged when reading was zero, if the reading moves to 1.5, it means you are now at a point in the circuit or path in which there is no gap and the voltage reading is giving the difference in electrical state of the battery",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "As you move the multimeter leads from one bulb terminal to the next, what does it mean when the voltage reading jumps from 0 to 1.5?",
+            "orig": "that there is a gap and you found the nonfunctional light bulb",
+            "pert": "It is not true that that there is a gap and you found the nonfunctional light bulb",
+            "gold": "correct",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          },
+          {
+            "q": "What is voltage?",
+            "orig": "the difference between electrical charges in a battery",
+            "pert": "It is not true that the difference between electrical charges in a battery",
+            "gold": "contradictory",
+            "orig_s": 0.5,
+            "pert_s": 0.5
+          }
+        ],
+        "increased": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because terminal one and the positive battery terminal are on a closed path",
+            "pert": "because terminal one and the positive battery terminal are on a open path",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "1 has no gap",
+            "pert": "It is not true that 1 has no gap",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "there is no gap between the posittive terminal and terminal 1",
+            "pert": "It is not true that there is no gap between the posittive terminal and terminal 1",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "there is no gap between terminal 1 and the psoitive terminal",
+            "pert": "It is not true that there is no gap between terminal 1 and the psoitive terminal",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 1.0
+          },
+          {
+            "q": "Why do you think the other terminals are being held in a different electrical state than that of the negative terminal?",
+            "orig": "because they are in a closed path",
+            "pert": "because they are in a open path",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Why do you think the other terminals are being held in a different electrical state than that of the negative terminal?",
+            "orig": "because there is a closed circuit after bulb b",
+            "pert": "because there is a open circuit after bulb b",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Why do you think those terminals and the negative battery terminal are in the same state?",
+            "orig": "because voltage is the difference between two terminals and those terminals were not connected in a closed path",
+            "pert": "because voltage is the difference between two terminals and those terminals were not connected in a open path",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "What does a voltage reading of 0 tell you about the connection between a bulb terminal and a battery terminal?",
+            "orig": "there is a gap.",
+            "pert": "It is not true that there is a gap.",
+            "gold": "contradictory",
+            "orig_s": 0.0,
+            "pert_s": 1.0
+          }
+        ],
+        "decreased": [
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there is a gap between terminal one and the positive battery terminal",
+            "pert": "because there is a gap between terminal one and the negative battery terminal",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there is a gap between the positive battery terminal and terminal 1.",
+            "pert": "because there is a gap between the negative battery terminal and terminal 1.",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Because there was a gap between the positive battery terminal and terminal 1.",
+            "pert": "Because there was a gap between the negative battery terminal and terminal 1.",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "because there was not direct connection between the positive terminal and bulb terminal 1",
+            "pert": "because there was not direct connection between the negative terminal and bulb terminal 1",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "becaquse there was a gap in the connection",
+            "pert": "It is not true that becaquse there was a gap in the connection",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "there was a gap",
+            "pert": "It is not true that there was a gap",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "Terminal 1 is not connected to the positive terminal.",
+            "pert": "Terminal 1 is not connected to the negative terminal.",
+            "gold": "correct",
+            "orig_s": 1.0,
+            "pert_s": 0.5
+          },
+          {
+            "q": "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.",
+            "orig": "the terminals are seperated",
+            "pert": "It is not true that the terminals are seperated",
+            "gold": "partially_correct_incomplete",
+            "orig_s": 1.0,
+            "pert_s": 0.0
+          }
+        ]
+      }
+    }
+  }
+}

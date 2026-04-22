@@ -1,0 +1,279 @@
+# Random sample, seed=42, N=15 per grader
+
+==========================================================================================
+GRADER: L0   (random sample 15 of 2639 missed deletion cases, seed=42)
+==========================================================================================
+
+[1] question_id=beetle_3c7ebb41
+    gold=correct  orig_score=1.0  pert_score=1.0
+    Q:    How does a damaged bulb compare to an open switch?
+    ORIG: they both creat gaps in the path
+    PERT: they creat gaps in the path
+    DELETED WORD (inferred): 'both'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[2] question_id=beetle_32a5dc7f
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Explain why you got a voltage reading of 1.5 for terminal 2 and the positive terminal.
+    ORIG: the terminal is connected to the positive battery terminal
+    PERT: the terminal is connected to the positive battery
+    DELETED WORD (inferred): 'terminal'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[3] question_id=beetle_4ffd319c
+    gold=partially_correct_incomplete  orig_score=0.5  pert_score=0.5
+    Q:    Why do you think those terminals and the negative battery terminal are in the same state?
+    ORIG: because they are connected
+    PERT: because are connected
+    DELETED WORD (inferred): 'they'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[4] question_id=beetle_975721b8
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Why was bulb A on when switch Y was open and switch Z was closed?
+    ORIG: A is on a battery that has a closed path
+    PERT: A is on a that has a closed path
+    DELETED WORD (inferred): 'battery'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[5] question_id=beetle_b56637c1
+    gold=correct  orig_score=0.5  pert_score=0.5
+    Q:    Why not?
+    ORIG: bulb a is in a closed path with the battery without passing through switch y.
+    PERT: a is in a closed path with the battery without passing through switch y.
+    DELETED WORD (inferred): 'bulb'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[6] question_id=beetle_db5f3b18
+    gold=partially_correct_incomplete  orig_score=0.5  pert_score=0.5
+    Q:    Why do both bulbs A and B stay on when bulb C is burned out?
+    ORIG: the battery is contained in a closed path
+    PERT: the battery is in a closed path
+    DELETED WORD (inferred): 'contained'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[7] question_id=beetle_2673ce82
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Why?
+    ORIG: the terminal"s electrical state is not effected by the incomplete circuit.
+    PERT: the terminal"s electrical state is not by the incomplete circuit.
+    DELETED WORD (inferred): 'effected'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[8] question_id=beetle_154ed367
+    gold=contradictory  orig_score=1.0  pert_score=1.0
+    Q:    Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.
+    ORIG: Because the positive circuit has a voltage of 1.5 volts.
+    PERT: the positive circuit has a voltage of 1.5 volts.
+    DELETED WORD (inferred): 'Because'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[9] question_id=beetle_4de891f2
+    gold=correct  orig_score=0.5  pert_score=0.5
+    Q:    What is the relationship between the voltage reading between two terminals and their electrical states?
+    ORIG: the difference in voltage between the two terminals
+    PERT: the difference in voltage the two terminals
+    DELETED WORD (inferred): 'between'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[10] question_id=beetle_154ed367
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.
+    ORIG: because there was no gap from the positive terminal of the battery
+    PERT: because there was no gap from the positive of the battery
+    DELETED WORD (inferred): 'terminal'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[11] question_id=beetle_601bd8e3
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Finally, consider finding a burned out light bulb in a long string of lights. One approach would be to place one lead of the multimeter on a battery terminal an
+    ORIG: When the voltage changes to 0.
+    PERT: When the changes to 0.
+    DELETED WORD (inferred): 'voltage'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[12] question_id=beetle_31c4fc94
+    gold=correct  orig_score=1.0  pert_score=1.0
+    Q:    Why does an open switch impact a circuit?
+    ORIG: There is no closed path
+    PERT: is no closed path
+    DELETED WORD (inferred): 'There'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[13] question_id=beetle_4ffd319c
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Why do you think those terminals and the negative battery terminal are in the same state?
+    ORIG: they do not create a closed circuit
+    PERT: they do not create a closed
+    DELETED WORD (inferred): 'circuit'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[14] question_id=beetle_4ffd319c
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Why do you think those terminals and the negative battery terminal are in the same state?
+    ORIG: They are located the closest to each other
+    PERT: They are located the closest to other
+    DELETED WORD (inferred): 'each'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[15] question_id=beetle_154ed367
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal.
+    ORIG: Terminal 1 was not connected to the negative terminal.
+    PERT: Terminal 1 was not connected to the terminal.
+    DELETED WORD (inferred): 'negative'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+==========================================================================================
+GRADER: L1   (random sample 15 of 2361 missed deletion cases, seed=42)
+==========================================================================================
+
+[1] question_id=beetle_ed312c92
+    gold=correct  orig_score=1.0  pert_score=1.0
+    Q:    Explain why you got a voltage reading of 0 for terminal 6 and the positive terminal.
+    ORIG: Terminal 6 and the positive battery terminal are connected
+    PERT: Terminal 6 and the positive battery are connected
+    DELETED WORD (inferred): 'terminal'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[2] question_id=beetle_af1b409b
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    What is voltage?
+    ORIG: the difference in connections between terminals
+    PERT: the difference in between terminals
+    DELETED WORD (inferred): 'connections'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[3] question_id=beetle_df0f80ac
+    gold=partially_correct_incomplete  orig_score=0.5  pert_score=0.5
+    Q:    When switch X was closed and switch Y was open, why was bulb A on?
+    ORIG: switch Y does not affect bulb a
+    PERT: switch Y does not affect a
+    DELETED WORD (inferred): 'bulb'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[4] question_id=beetle_5d4bf979
+    gold=correct  orig_score=1.0  pert_score=1.0
+    Q:    Why was bulb C off when switch Z was open?
+    ORIG: Bulb C was off when switch Z was oped because switch Z created a break in the path. The path was no longer closed.
+    PERT: Bulb C was off when switch Z was oped switch Z created a break in the path. The path was no longer closed.
+    DELETED WORD (inferred): 'because'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[5] question_id=beetle_975721b8
+    gold=correct  orig_score=1.0  pert_score=1.0
+    Q:    Why was bulb A on when switch Y was open and switch Z was closed?
+    ORIG: The battery is conatained in a closed path with bulb a
+    PERT: The battery is conatained in a path with bulb a
+    DELETED WORD (inferred): 'closed'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[6] question_id=beetle_6f930d19
+    gold=partially_correct_incomplete  orig_score=0.5  pert_score=0.5
+    Q:    Why does measuring voltage help you locate a burned out bulb? Try to answer in terms of electrical states, connections and/ or a gap.
+    ORIG: you can see where the gap is
+    PERT: you can see the gap is
+    DELETED WORD (inferred): 'where'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[7] question_id=beetle_2673ce82
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Why?
+    ORIG: battery will always have a voltage
+    PERT: battery will have a voltage
+    DELETED WORD (inferred): 'always'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[8] question_id=beetle_7c6b6bec
+    gold=correct  orig_score=0.5  pert_score=0.5
+    Q:    Why did it happen?
+    ORIG: because bulb a was in a open path
+    PERT: because bulb a was in a path
+    DELETED WORD (inferred): 'open'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[9] question_id=beetle_ed312c92
+    gold=correct  orig_score=1.0  pert_score=1.0
+    Q:    Explain why you got a voltage reading of 0 for terminal 6 and the positive terminal.
+    ORIG: terminal 6 and the  positive terminal are connected.
+    PERT: terminal 6 and the terminal are connected.
+    DELETED WORD (inferred): 'positive'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[10] question_id=beetle_37bd0fe7
+    gold=contradictory  orig_score=1.0  pert_score=1.0
+    Q:    Explain why circuit 2 is not a short circuit.
+    ORIG: Circuit 2 is not a short circuit because it is not a closed circuit.
+    PERT: 2 is not a short circuit because it is not a closed circuit.
+    DELETED WORD (inferred): 'Circuit'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[11] question_id=beetle_af1b409b
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    What is voltage?
+    ORIG: a measure of the strength of electricity
+    PERT: a measure of the of electricity
+    DELETED WORD (inferred): 'strength'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[12] question_id=beetle_af1b409b
+    gold=partially_correct_incomplete  orig_score=0.5  pert_score=0.5
+    Q:    What is voltage?
+    ORIG: a difference between two terminals with a measurement
+    PERT: a difference between two with a measurement
+    DELETED WORD (inferred): 'terminals'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[13] question_id=beetle_2673ce82
+    gold=partially_correct_incomplete  orig_score=0.5  pert_score=0.5
+    Q:    Why?
+    ORIG: Because it is the difference of the electrical state between the two battery terminals
+    PERT: Because it is the of the electrical state between the two battery terminals
+    DELETED WORD (inferred): 'difference'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[14] question_id=beetle_40919a78
+    gold=partially_correct_incomplete  orig_score=0.5  pert_score=0.5
+    Q:    Describe the paths in this diagram and explain how those paths account for the results.
+    ORIG: A is in it"s own path with the battery. B and C are also in their own path. However, the path
+    PERT: A is in it"s own path with the battery. B and C are also in their own path. However, the
+    DELETED WORD (inferred): 'path'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)
+
+[15] question_id=beetle_975721b8
+    gold=contradictory  orig_score=0.5  pert_score=0.5
+    Q:    Why was bulb A on when switch Y was open and switch Z was closed?
+    ORIG: Because switch y does not affect the circuit that bulb a is on
+    PERT: Because switch y does not affect the circuit that a is on
+    DELETED WORD (inferred): 'bulb'
+    CATEGORY: [_____________]  (fill in: article / domain_concept / verb / connective / other)
+    SEVERITY: [_____________]  (fill in: meaning_preserved / meaning_degraded / meaning_inverted)

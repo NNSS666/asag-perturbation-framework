@@ -1,0 +1,163 @@
+{
+  "family_a": {
+    "L0": {
+      "key_concept_deletion vs negation_insertion": {
+        "chi2": 390.12594458438286,
+        "p_value": 7.770679263767393e-87,
+        "table": [
+          [
+            2051,
+            1433
+          ],
+          [
+            552,
+            1032
+          ]
+        ],
+        "discordant_b": 1433,
+        "discordant_c": 552,
+        "n": 5068
+      },
+      "key_concept_deletion vs semantic_contradiction": {
+        "chi2": 860.5524965002334,
+        "p_value": 3.693582946824433e-189,
+        "table": [
+          [
+            1733,
+            1751
+          ],
+          [
+            392,
+            1192
+          ]
+        ],
+        "discordant_b": 1751,
+        "discordant_c": 392,
+        "n": 5068
+      },
+      "negation_insertion vs semantic_contradiction": {
+        "chi2": 140.46869187848728,
+        "p_value": 2.1024362870054986e-32,
+        "table": [
+          [
+            1667,
+            1045
+          ],
+          [
+            568,
+            1919
+          ]
+        ],
+        "discordant_b": 1045,
+        "discordant_c": 568,
+        "n": 5199
+      }
+    },
+    "L1": {
+      "key_concept_deletion vs negation_insertion": {
+        "chi2": 1240.9920668058455,
+        "p_value": 7.528404642384723e-272,
+        "table": [
+          [
+            1730,
+            2060
+          ],
+          [
+            335,
+            944
+          ]
+        ],
+        "discordant_b": 2060,
+        "discordant_c": 335,
+        "n": 5069
+      },
+      "key_concept_deletion vs semantic_contradiction": {
+        "chi2": 1399.681332236842,
+        "p_value": 2.4642016319206116e-306,
+        "table": [
+          [
+            1651,
+            2139
+          ],
+          [
+            293,
+            986
+          ]
+        ],
+        "discordant_b": 2139,
+        "discordant_c": 293,
+        "n": 5069
+      },
+      "negation_insertion vs semantic_contradiction": {
+        "chi2": 12.576419213973798,
+        "p_value": 0.00039064448002879666,
+        "table": [
+          [
+            1542,
+            633
+          ],
+          [
+            512,
+            2512
+          ]
+        ],
+        "discordant_b": 633,
+        "discordant_c": 512,
+        "n": 5199
+      }
+    }
+  },
+  "family_b": {
+    "negation_insertion": {
+      "chi2": 156.7354064375341,
+      "p_value": 5.847462237864223e-36,
+      "table": [
+        [
+          1527,
+          1185
+        ],
+        [
+          648,
+          1839
+        ]
+      ],
+      "discordant_b": 1185,
+      "discordant_c": 648,
+      "n": 5199
+    },
+    "key_concept_deletion": {
+      "chi2": 51.48523676880223,
+      "p_value": 7.213752985934454e-13,
+      "table": [
+        [
+          2739,
+          745
+        ],
+        [
+          1050,
+          534
+        ]
+      ],
+      "discordant_b": 745,
+      "discordant_c": 1050,
+      "n": 5068
+    },
+    "semantic_contradiction": {
+      "chi2": 17.243214475784992,
+      "p_value": 3.288699850321784e-05,
+      "table": [
+        [
+          1205,
+          1030
+        ],
+        [
+          849,
+          2115
+        ]
+      ],
+      "discordant_b": 1030,
+      "discordant_c": 849,
+      "n": 5199
+    }
+  }
+}
