@@ -252,6 +252,65 @@ A symmetric artefact affects SSR_directional: answers already scored 0.0 cannot 
 
 The floor effect is not a flaw in the metric design per se, because SSR_directional is correct in counting floor pairs as "no decrease observed." Rather, it is a methodological consideration that researchers should report alongside headline SSR values. The analysis script is included in the repository (`scripts/analyze_floor_effect.py`) for full reproducibility.
 
+### 5.4  Sensitivity Blindness Gradient
+
+Section 5.2 reported the LLM's aggregate SSR as substantially better than the trained baseline's. Disaggregating SSR by perturbation type, however, reveals that the LLM's residual sensitivity failures are not uniform but follow a stable hierarchy.
+
+**Table 4. Per-type miss rates with 95% bootstrap CI (10,000 resamples).** Miss rate is the percentage of sensitivity pairs in which the perturbed score equalled the original score (the grader did not respond to the perturbation).
+
+| Grader | Deletion | Negation | Contradiction |
+|---|---|---|---|
+| L0 | 68.7% [67.4, 70.0] | 52.2% [50.8, 53.5] | 43.0% [41.7, 44.3] |
+| L1 | 74.8% [73.6, 76.0] | 41.8% [40.5, 43.2] | 39.6% [38.3, 40.9] |
+
+The pattern holds for both prompting levels: the grader is most blind to concept deletions, intermediate on negations, and least blind on outright contradictions. The 95% bootstrap CIs of the three types do not overlap within either grader, indicating that the gradient is not a sampling artefact.
+
+**Statistical significance of the gradient.** To test whether the differences between perturbation types within each grader are statistically robust against the natural pairing of the data (each student answer is perturbed in multiple ways), we ran paired McNemar tests on the answers for which both perturbation types of a pair were graded. Table 5 reports the six within-grader comparisons.
+
+**Table 5. McNemar paired tests on within-grader miss patterns.** *b* and *c* are the discordant cells (cases where exactly one of the two compared perturbation types was missed); χ² uses the Yates continuity correction.
+
+| Grader | Comparison | n | b | c | χ² | p |
+|---|---|---|---|---|---|---|
+| L0 | deletion vs negation | 5,068 | 1,433 | 552 | 390 | <0.0001 |
+| L0 | deletion vs contradiction | 5,068 | 1,751 | 392 | 861 | <0.0001 |
+| L0 | negation vs contradiction | 5,199 | 1,045 | 568 | 140 | <0.0001 |
+| L1 | deletion vs negation | 5,069 | 2,060 | 335 | 1,241 | <0.0001 |
+| L1 | deletion vs contradiction | 5,069 | 2,139 | 293 | 1,400 | <0.0001 |
+| L1 | negation vs contradiction | 5,199 | 633 | 512 | 13 | 0.0004 |
+
+All six comparisons are significant at p<0.001. The very large χ² values for the L1 comparisons involving deletion (1,241 and 1,400) reflect the magnitude of the L1 deletion blindness relative to the other two types.
+
+**The L1 deletion paradox.** A second pattern emerges across (rather than within) graders. Adding the reference answer (moving from L0 to L1) reduces the miss rate on negation by 10.4 pp (from 52.2% to 41.8%) and on contradiction by 3.4 pp (from 43.0% to 39.6%) — both consistent with the intuition that more grading information should yield better detection. On deletion, however, L1 *increases* the miss rate by 6.1 pp (from 68.7% to 74.8%). To test whether this paradoxical degradation is statistically robust on the same answer set, we ran a paired McNemar comparison of L0 vs L1 on the deletion pairs (one observation per answer, one perturbation per type per answer). The result, summarised in Table 6, confirms the paradox.
+
+**Table 6. McNemar paired test of L0 vs L1 on each sensitivity type.** *b* counts pairs where only L0 missed; *c* counts pairs where only L1 missed. *c* > *b* indicates that L1 misses more often than L0.
+
+| Type | n | b (L0 miss only) | c (L1 miss only) | χ² | p | Verdict |
+|---|---|---|---|---|---|---|
+| Negation | 5,199 | 1,185 | 648 | 157 | <0.0001 | L1 helps |
+| **Deletion** | **5,068** | **745** | **1,050** | **51** | **<0.0001** | **L1 hurts (paradox)** |
+| Contradiction | 5,199 | 1,030 | 849 | 17 | <0.0001 | L1 helps weakly |
+
+The deletion paradox is statistically certain: out of the 1,795 pairs in which the two graders disagreed on the deletion outcome, L1 missed in 1,050 cases and L0 missed in 745 — a 305-pair excess of L1-only misses, far beyond what could plausibly arise from sampling.
+
+**Qualitative characterisation of deletion blindness.** To characterise the mechanism behind the high deletion miss rate, we manually reviewed 30 randomly sampled missed-deletion cases (15 from L0 and 15 from L1, drawn with a fixed seed to support reproducibility from `runs/analysis/deletion_missed_cases_annotated.txt`). Each case was coded along two dimensions: the *category* of the deleted word (article/determiner, domain concept, verb, connective, other) and the *severity* of the meaning change (preserved, degraded, inverted). Aggregate counts are reported in Table 7.
+
+**Table 7. Cross-tabulation of deleted-word category and meaning-change severity (n = 30; combined L0 + L1).**
+
+| Category | preserved | degraded | inverted | Total |
+|---|---:|---:|---:|---:|
+| domain concept | 1 | 12 | 4 | **17 (57%)** |
+| other (pronoun, quantifier, generic noun) | 5 | 1 | 2 | 8 (27%) |
+| connective | 3 | 0 | 0 | 3 (10%) |
+| verb | 1 | 0 | 1 | 2 (7%) |
+| article/determiner | 0 | 0 | 0 | 0 (0%) |
+| **Total** | **10 (33%)** | **13 (43%)** | **7 (23%)** | 30 |
+
+Three patterns are visible in the cross-tabulation. First, **57% of missed deletions involve a domain-specific concept** (terminal, battery, circuit, voltage, bulb, path, gap, closed, open, positive, negative); the remaining 43% spans pronouns, quantifiers, generic nouns, connectives and verbs. Second, of the 17 missed domain-concept deletions, **16 (94%) were judged to degrade or invert the answer's meaning**; only one case (where the referent was fully transparent from the question) was meaning-preserved. Third, the three connective deletions (one occurrence of "because", two of "between") and most pronoun or expletive deletions ("both", "they", "there", "each", "where") were correctly judged meaning-preserved by the annotator and tolerated by the grader. The grader is therefore not exhibiting a benign tolerance of grammatical noise; it is failing precisely on the content-bearing words that distinguish a correct technical explanation from an incomplete or ill-formed one.
+
+A representative inverted case from the L1 sample illustrates the failure mode at its most consequential: for the question "Why was bulb A on when switch Y was open and switch Z was closed?", the original answer "The battery is contained in *a closed path* with bulb a" (gold = correct, original score = 1.0) is perturbed by deleting "closed" to "The battery is contained in *a path* with bulb a", and the L1 grader assigns score 1.0 to the perturbed version as well. The closed/open distinction is the central conceptual axis of the Beetle physics task; the grader treats the modified and unmodified versions as equivalent. A second case from the same sample shows the same pattern with "open path" deleted to "path" in a different question (gold also correct, again preserved at score 1.0). Two more inverted cases involve the deletion of the head noun in a definitional answer ("voltage" deleted from "When the voltage changes to 0", and "difference" deleted from "Because it is the difference of the electrical state...") — here the sentence becomes syntactically broken, but the grader still preserves the original score because the surrounding domain tokens still match a plausible correct response.
+
+**Reading the gradient honestly.** Miss rates in Table 4 include floor pairs (Section 5.3); floor adjustment lowers all three rates uniformly without changing the ordering. We emphasise that even at the bottom of the gradient — approximately 40% miss rate on contradiction in L1 — the failure rate represents a substantive deployment risk, not a "well-handled" condition. The structured nature of the gradient should be read as a description of *how* the model fails, not as evidence that any of the three types is robustly detected.
+
 ---
 
 ## 6  Discussion
@@ -280,11 +339,13 @@ This pattern recurs across multiple negation insertions in the dataset, suggesti
 
 ### 6.3  The Reference-Answer Trade-Off
 
-The most pedagogically interesting finding is the reference-answer trade-off documented in Section 5.2. Adding the reference answer to the LLM prompt is the kind of intervention any practitioner would expect to improve grading: more information should yield better judgement. And it does, for invariance and sensitivity. But for gaming, the same intervention almost doubles vulnerability.
+The most pedagogically interesting finding is the reference-answer trade-off documented in Section 5.2. Adding the reference answer to the LLM prompt is the kind of intervention any practitioner would expect to improve grading: more information should yield better judgement. And it does, for invariance and sensitivity (in aggregate). But for gaming, the same intervention almost doubles vulnerability; and as Section 5.4 shows, it also degrades sensitivity detection on one specific perturbation type — concept deletion — even while improving it on the other two.
 
-The mechanism deserves emphasis because it generalises beyond our specific prompt. When the model is instructed to compare the student answer against a reference, the reference becomes the basis for the comparison. Any token that overlaps with the reference is evidence of correctness in the model's reasoning. An adversarial student who knows or can guess what the reference looks like, and in many real settings the rubric or reference is publicly available, can game this comparison directly.
+**A single mechanism, two trade-offs.** The mechanism deserves emphasis because it generalises beyond our specific prompt and explains both surprising effects under a single hypothesis. When the model is instructed to compare the student answer against a reference, the reference becomes the basis for the comparison: any token that overlaps with the reference is evidence of correctness in the model's reasoning. This token-level matching has two failure modes. (a) For *gaming*, an adversarial student who knows or can guess what the reference looks like — and in many real settings the rubric or reference is publicly available — can directly insert reference keywords into a wrong response and exploit the comparison. (b) For *deletion*, the same matching procedure is silently defeated by a different mechanism: when a domain concept is removed, the reference has no token to compare against for the missing word, while the surrounding tokens still match. The grader reads continued overlap as continued correctness and tolerates the omission. Substitutions and negations, by contrast, *replace* a token rather than removing it, so the comparison registers a discrepancy.
 
-We do not claim that this trade-off is unfixable. Prompt engineering, chain-of-thought instructions that require the model to assess internal coherence before keyword overlap, or few-shot examples demonstrating gaming attempts could plausibly mitigate it. The point is rather that the trade-off exists at all, that it is invisible if one measures only invariance or only accuracy, and that perturbation-first multi-dimensional evaluation is what surfaces it. The framework's contribution is detecting such trade-offs before deployment, regardless of which prompting strategy is ultimately chosen.
+Reference-anchored prompting therefore fails on the same axis on which it succeeds: token-level matching helps detect substitutions and negations but cannot detect what is no longer present to be matched, and it also rewards keywords inserted by an adversary. Gaming vulnerability and deletion blindness are two faces of the same reliance on token overlap.
+
+**Mitigations and their trade-offs.** We do not claim that this trade-off is unfixable. Prompt engineering, chain-of-thought instructions that require the model to assess internal coherence before keyword overlap, or few-shot examples demonstrating both gaming attempts and deletion artefacts could plausibly mitigate both failure modes simultaneously. The point is rather that the trade-offs exist at all, that they are invisible if one measures only invariance or only accuracy or even only aggregate sensitivity, and that perturbation-first multi-dimensional evaluation — disaggregated by perturbation type — is what surfaces them. The framework's contribution is detecting such trade-offs before deployment, regardless of which prompting strategy is ultimately chosen. The deletion-paradox interpretation should be treated as a working hypothesis: it is consistent with the observed pattern and with the qualitative review of Section 5.4, but a definitive test would require an ablation that controls token-overlap signal independently from semantic content (for example, by comparing prompts that withhold the reference but supply an external concept checklist). Such an ablation is left to future work.
 
 ### 6.4  Practitioner Implications
 
@@ -306,7 +367,11 @@ Several limitations bound the generality of these findings, and we discuss them 
 
 **Single dataset.** We evaluate on the Beetle corpus only, covering one science domain (electrical circuits). The SemEval 2013 Task 7 also includes the SciEntsBank corpus (covering a broader range of science topics), which is planned for the journal extension. Generalisation to other domains (humanities, mathematics, programming) and to datasets with different answer length distributions remains an open question.
 
-**Single LLM tested.** At the time of writing, results are available for GPT-5.4 mini only. The planned experimental design includes the frontier GPT-5.4 model (to analyse the effect of model capability within the same vendor) and Gemini 2.5 Flash (to assess cross-vendor consistency). These additional configurations will allow analysis of whether the patterns observed here (the reference-answer trade-off, keyword anchoring, the invariance-gaming tension) are model-specific or reflect more general properties of LLM-based grading.
+**Single LLM tested.** Results in this paper come from GPT-5.4 mini at two prompting levels. Additional configurations — the frontier GPT-5.4 model (effect of model capability within the same vendor) and Gemini 2.5 Flash (cross-vendor consistency) — are left to future work. These would allow analysis of whether the patterns observed here (the reference-answer trade-off, the deletion paradox, the keyword-anchoring failure mode in Section 6.2) are model-specific or reflect more general properties of LLM-based grading.
+
+**Single-rater qualitative coding.** The qualitative review of 30 missed-deletion cases (Section 5.4) was coded by a single annotator. A second-rater study with Cohen's kappa agreement is planned for the journal extension. The illustrative nature of the qualitative analysis is acknowledged; quantitative claims about the gradient and the L1 paradox rest on the n>5,000 statistical analysis of Section 5.4 (bootstrap CI, McNemar tests), not on the n=30 qualitative sample.
+
+**The L1 deletion paradox is unfalsified, not yet confirmed.** Section 6.3 advances a single-mechanism hypothesis (token-level overlap) for both the gaming trade-off and the deletion paradox. This is consistent with the data and with the qualitative review, but a definitive causal test would require an ablation that holds token-overlap signal constant while varying semantic content of the reference. Such ablations are left to future work.
 
 **No rubric in the SemEval dataset.** The Beetle corpus does not include structured per-question rubrics, so we use Level 0 vs. Level 1 prompting as a contrastive proxy for the effect of additional grading information. A structured rubric (specifying required concepts, acceptable phrasings, and common misconceptions) might produce different robustness profiles, and datasets with rubrics are an important direction for future work.
 
@@ -760,3 +825,46 @@ Gate 2 functions as a safety net for cases that Gate 1 might miss: two sentences
 The two gates operate sequentially. Gate 1 first filters synonym substitution candidates by embedding similarity. Gate 2 then filters all surviving invariance candidates (from both synonym substitution and typo insertion) by negation/antonym detection. A candidate must pass both gates to be included in the final perturbation set.
 
 The combined effect of the two gates is to ensure that all invariance perturbations in the final dataset are genuinely meaning-preserving: they are semantically close to the original (Gate 1) and do not introduce meaning inversions (Gate 2). The rejected candidates are not regenerated, and the rejection rates are reported as research results quantifying the inherent difficulty of producing valid invariance perturbations in technical domains.
+
+---
+
+## Appendix D: Qualitative Analysis of Deletion Failures
+
+This appendix details the manual review introduced in Section 5.4. The goal is to characterise the *mechanism* underlying the deletion miss rate — that is, to understand which kinds of word the grader is willing to overlook and what semantic damage that overlooking causes.
+
+### D.1  Sampling Procedure
+
+From the missed-deletion cases identified in the L0 and L1 grade caches (i.e., pairs in which the perturbed score equalled the original score and the original score was strictly greater than zero), we drew a fixed-seed random sample of 15 cases per grader (30 total). Sampling code is committed at `scripts/extract_deletion_cases.py` (random seed = 42) and the resulting case file at `runs/analysis/deletion_missed_cases.txt`. Selecting only non-floor cases removes the sampling artefact in which an answer with original score 0 cannot decrease further regardless of the grader's behaviour.
+
+### D.2  Coding Scheme
+
+Each case was annotated by the author along two dimensions:
+
+- **Category of the deleted word**: `article` (articles, determiners), `domain_concept` (technical Beetle vocabulary: terminal, battery, voltage, circuit, current, switch, bulb, path, gap, plus polar markers closed, open, positive, negative), `verb` (main or auxiliary), `connective` (prepositions, conjunctions: because, and, between, where, etc.), or `other` (pronouns, modifying adverbs, deictics, quantifiers like both/each/always, generic nouns).
+- **Severity of meaning change**: `meaning_preserved` (a human grader would not penalise the answer; the deletion is benign), `meaning_degraded` (less precise or partial loss but recoverable from context), or `meaning_inverted` (meaning seriously broken, lost or contradicted).
+
+Each case was given a one-line rationale explaining the choice. The full annotated file is in the repository at `runs/analysis/deletion_missed_cases_annotated.txt` together with a tabular summary at `runs/analysis/deletion_review_summary.md`.
+
+### D.3  Aggregate Counts
+
+The cross-tabulation of category by severity, summed across L0 and L1 (n = 30), is reproduced in Section 5.4 (Table 7). The headline figures: 17 cases (57%) involved deletion of a domain concept, of which 16 (94%) were judged degraded or inverted; the 3 connective deletions and 5 of the 8 "other" deletions were correctly judged preserved. The cleanest pattern is the contrast between the two extremes: domain-concept deletions are almost always non-benign in this sample, while connective deletions are always benign.
+
+### D.4  Selected Cases
+
+To support transparent inspection, we list six representative cases (three "preserved", three "inverted") drawn from the 30-case sample. Numbering follows the position in the random sample.
+
+**Preserved cases (the grader is right not to penalise).**
+
+- *L0 [1]* — Q: "How does a damaged bulb compare to an open switch?" Original: "they both creat gaps in the path" (gold = correct). Deleted: `both`. Perturbed: "they creat gaps in the path". The pronoun "they" already encodes plurality; "both" is redundant emphasis and the meaning is intact.
+- *L0 [8]* — Q: "Explain why you got a voltage reading of 1.5 for terminal 1 and the positive terminal." Original: "Because the positive circuit has a voltage of 1.5 volts." Deleted: `Because`. The causal marker is dropped but the explanation content is intact; a human grader would accept this in answer to "explain why".
+- *L1 [4]* — Q: "Why was bulb C off when switch Z was open?" Deleted: `because` between two clauses. The two facts are still asserted and the logical relation is inferable.
+
+**Inverted cases (the grader should penalise but does not).**
+
+- *L1 [5]* — Q: "Why was bulb A on when switch Y was open and switch Z was closed?" Original: "The battery is conatained in *a closed path* with bulb a" (gold = correct, score 1.0). Deleted: `closed`. Perturbed: "The battery is conatained in *a path* with bulb a", L1 score = 1.0. The closed/open distinction is the central conceptual axis of the Beetle physics task.
+- *L1 [11]* — Q: "What is voltage?" Original: "a measure of the strength of electricity" (gold = contradictory, original score = 0.5). Deleted: `strength`. Perturbed: "a measure of the of electricity", L1 score = 0.5. The head noun is removed and the surface fragment "measure of the of electricity" is broken; the proposed definition has no content left, but the grader continues to register the original tokens.
+- *L0 [11]* — Q: "Finally, consider finding a burned out light bulb in a long string of lights..." Original: "When the voltage changes to 0." (gold = contradictory, original score = 0.5). Deleted: `voltage`. Perturbed: "When the changes to 0.", L0 score = 0.5. The subject of the change is removed; the answer's diagnostic content (voltage going to 0) is lost.
+
+### D.5  Limitations of the Qualitative Analysis
+
+The analysis is illustrative, not inferential. It is single-rater (no second-rater Cohen's kappa), based on n = 30, and its purpose is to characterise a mechanism rather than to estimate population proportions. Quantitative claims about the sensitivity blindness gradient and the L1 deletion paradox rely on the n > 5,000 statistical analysis of Section 5.4 (bootstrap CI, paired McNemar tests), not on this qualitative review. A full second-rater study with inter-annotator agreement is planned for the journal extension, together with an ablation that distinguishes the contribution of token-overlap signal from semantic content of the reference.
