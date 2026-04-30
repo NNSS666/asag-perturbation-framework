@@ -8,7 +8,7 @@
 
 ## TITLE
 
-Perturbation-First Robustness Evaluation of Automated Short Answer Grading: Quantifying the Hidden Fragility of Trained and Zero-Shot Graders
+Perturbation-First Robustness Evaluation of Automated Short Answer Grading
 
 ## AUTHORS
 
@@ -23,9 +23,9 @@ Automated Short Answer Grading (ASAG) is increasingly deployed in high-stakes ed
 
 We propose a perturbation-first evaluation framework that assesses robustness across three validity-theoretic dimensions: invariance to construct-irrelevant variation, sensitivity to meaning-altering changes, and resistance to adversarial gaming. The framework combines rule-based perturbation generators, two-gate quality validation, and self-referential metrics that compare the grader against its own output rather than against gold labels, isolating robustness from accuracy. A dual-protocol design contrasts within-question evaluation, the optimistic scenario typically reported in the literature, with cross-question evaluation, the realistic deployment scenario, capturing how trained graders degrade under distribution shift.
 
-We apply the framework to a benchmark ASAG dataset of science short answers and compare a trained machine-learning baseline with zero-shot Large Language Model graders evaluated at two prompting levels, with and without access to a reference answer. Three findings emerge. First, trained graders exhibit substantial robustness degradation under realistic cross-question evaluation, suggesting that standard within-question benchmarks overestimate operational reliability. Second, zero-shot LLM graders exhibit stronger robustness on invariance and sensitivity dimensions while remaining comparatively less vulnerable to adversarial manipulation, although residual sensitivity failures display a stable hierarchy across perturbation types. Finally, providing reference answers introduces a subtle trade-off, with improved consistency on meaning-preserving variations but increased susceptibility to keyword-based gaming, which is invisible to single-metric evaluation.
+We apply the framework to a benchmark ASAG dataset of science short answers and compare a trained machine-learning baseline with zero-shot Large Language Model (LLM) graders evaluated at two prompting levels, with and without access to a reference answer. Three findings emerge. First, trained graders exhibit substantial robustness degradation under realistic cross-question evaluation, suggesting that standard within-question benchmarks overestimate operational reliability. Second, zero-shot LLM graders exhibit stronger robustness on invariance and sensitivity dimensions while remaining comparatively less vulnerable to adversarial manipulation, although residual sensitivity failures display a stable hierarchy across perturbation types. Finally, providing reference answers introduces a subtle trade-off, with improved consistency on meaning-preserving variations but increased susceptibility to keyword-based gaming, which is invisible to single-metric evaluation.
 
-We argue that multi-dimensional robustness evaluation should complement accuracy metrics in ASAG systems intended for consequential use, and release an open-source framework to support this approach.
+We argue that multi-dimensional robustness evaluation should complement accuracy-based metrics in ASAG systems intended for high-stakes educational use, and we release an open-source framework that operationalises the approach and is freely available to the research community.
 
 ## KEYWORDS
 
@@ -47,7 +47,7 @@ We apply this framework to the SemEval 2013 Beetle dataset (5,199 answers, 42 qu
 
 ![Figure 1: Framework overview and headline finding](figures/figure_1_overview.png)
 
-**Figure 1.** Framework overview and headline finding. **(a)** Pipeline: seven generators across three perturbation families produce paired (original, perturbed) inputs to the grader; three self-referential metrics (IVR, SSR, ASR) compare it against itself. **(b)** Sensitivity-blindness gradient in GPT-5.4 mini with 95% bootstrap CI. Reference prompting (L1) reduces missing on negation and contradiction but **increases** it on deletion: the L1 paradox.
+Figure 1: Framework overview and headline finding. (a) Pipeline: seven generators across three perturbation families produce paired (original, perturbed) inputs to the grader; three self-referential metrics — Invariance Violation Rate (IVR), Sensitivity Success Rate (SSR), and Adversarial Success Rate (ASR) — compare it against itself. (b) Sensitivity-blindness gradient in GPT-5.4 mini with 95% bootstrap confidence intervals. Reference prompting (L1) reduces missing on negation and contradiction but increases it on deletion: the L1 paradox.
 
 ---
 
@@ -73,19 +73,19 @@ The evaluation framework follows a unidirectional pipeline (Figure 1a): data loa
 
 Seven rule-based generators produce up to ten perturbation variants per student answer, organised into three families.
 
-**Invariance family.** Synonym substitution replaces content words with WordNet synonyms, producing up to two variants per answer (selected deterministically for reproducibility); typo insertion introduces a single character-level modification (swap, deletion, or duplication) into one content word.
+*Invariance family.* Synonym substitution replaces content words with WordNet synonyms, producing up to two variants per answer (selected deterministically for reproducibility); typo insertion introduces a single character-level modification (swap, deletion, or duplication) into one content word.
 
-**Sensitivity family.** Negation insertion adds "not" after auxiliary verbs or prepends "It is not true that" as a fallback. Key concept deletion removes one domain-relevant content word selected via seeded random sampling. Semantic contradiction replaces domain terms with curated antonyms (e.g., "open" → "closed", "series" → "parallel") drawn from a 40-pair dictionary covering physics and biology vocabulary.
+*Sensitivity family.* Negation insertion adds "not" after auxiliary verbs or prepends "It is not true that" as a fallback. Key concept deletion removes one domain-relevant content word selected via seeded random sampling. Semantic contradiction replaces domain terms with curated antonyms (e.g., "open" → "closed", "series" → "parallel") drawn from a 40-pair dictionary covering physics and biology vocabulary.
 
-**Gaming family.** Rubric keyword echoing appends reference-answer keywords absent from the student response, simulating keyword stuffing; fluent wrong extension appends a confident but factually incorrect domain statement from a curated pool of plausible-sounding misconceptions.
+*Gaming family.* Rubric keyword echoing appends reference-answer keywords absent from the student response, simulating keyword stuffing; fluent wrong extension appends a confident but factually incorrect domain statement from a curated pool of plausible-sounding misconceptions.
 
-Illustrative examples for each perturbation type are reported below, with the perturbation marked in **bold**:
+Illustrative examples for each perturbation type are reported below, with the perturbation marked in italics:
 
-- *Synonym (invariance):* "the **bulb** lights up" → "the **lamp** lights up"
-- *Negation (sensitivity):* "the terminals are connected" → "the terminals are **not** connected"
-- *Deletion (sensitivity):* "the battery is in **a closed path**" → "the battery is in **a path**"
-- *Contradiction (sensitivity):* "switches connected in **series**" → "switches connected in **parallel**"
-- *Gaming:* "the bulb stays on" → "the bulb stays on **because voltage flows backwards**"
+- *Synonym (invariance):* "the *bulb* lights up" → "the *lamp* lights up"
+- *Negation (sensitivity):* "the terminals are connected" → "the terminals are *not* connected"
+- *Deletion (sensitivity):* "the battery is in *a closed path*" → "the battery is in *a path*"
+- *Contradiction (sensitivity):* "switches connected in *series*" → "switches connected in *parallel*"
+- *Gaming:* "the bulb stays on" → "the bulb stays on *because voltage flows backwards*"
 
 Invariance perturbations undergo two validation gates before acceptance. Gate 1 applies only to synonym substitution: candidate texts must achieve cosine similarity of at least 0.85 with the original, measured via sentence-BERT embeddings (all-MiniLM-L6-v2). Gate 2 applies to all invariance types: candidates introducing new negation markers or antonyms not present in the original are rejected. Rejected candidates are not regenerated, and the rejection rate is reported as a research result. The gates encode the *perturbation-level* ground truth (whether a candidate variant preserves meaning as intended), as distinguished from the *answer-level* gold labels supplied by the dataset (Section 4), which encode whether the original student answer is correct.
 
@@ -93,13 +93,13 @@ Invariance perturbations undergo two validation gates before acceptance. Gate 1 
 
 All metrics compare the grader's score on the original answer against its score on the perturbed answer, isolating robustness from accuracy.
 
-**IVR_flip** (Invariance Violation Rate, binary): the proportion of invariance pairs where the score changed at all; lower is better.
+*IVR_flip* (Invariance Violation Rate, binary): the proportion of invariance pairs where the score changed at all; lower is better.
 
-**IVR_absdelta** (Invariance Violation Rate, continuous): the mean absolute score difference across invariance pairs, capturing violation magnitude.
+*IVR_absdelta* (Invariance Violation Rate, continuous): the mean absolute score difference across invariance pairs, capturing violation magnitude.
 
-**SSR_directional** (Sensitivity Success Rate): the proportion of sensitivity pairs where the perturbed score strictly decreased; higher is better, and no-change counts as a failure to detect the modification.
+*SSR_directional* (Sensitivity Success Rate): the proportion of sensitivity pairs where the perturbed score strictly decreased; higher is better, and no-change counts as a failure to detect the modification.
 
-**ASR_thresholded** (Adversarial Success Rate): the proportion of gaming pairs where the score crossed from below the passing threshold (0.5) to at or above it. Already-passing answers that increase further are excluded.
+*ASR_thresholded* (Adversarial Success Rate): the proportion of gaming pairs where the score crossed from below the passing threshold (0.5) to at or above it. Already-passing answers that increase further are excluded.
 
 The four metrics are reported on their canonical scales rather than aggregated into a composite index, which preserves continuity with the validity-theoretic constructs each metric targets and avoids the arbitrariness of weighting heterogeneous dimensions whose practical importance varies by deployment context. Joint reading across the three dimensions, illustrated in Section 5.1, surfaces the trade-offs that single-metric evaluation hides.
 
@@ -107,7 +107,7 @@ The four metrics are reported on their canonical scales rather than aggregated i
 
 The dual-protocol design targets trained graders and quantifies how much robustness they lose on unseen questions. Protocol A (Leave-One-Question-Out) implements cross-question evaluation: for each of 42 questions the grader is trained on answers from all other questions and tested on the held-out one, with a leakage diagnostic verifying that no held-out question text appears in training. This is the realistic deployment scenario. Protocol B (within-question 80/20) implements in-distribution evaluation: for each question independently, answers are split 80/20 with stratified sampling on gold labels and the grader is trained and tested on the same question. This is the optimistic scenario typically reported in the literature.
 
-The **robustness drop** is the difference between A and B aggregate metrics, macro-averaged across questions. Zero-shot LLM graders receive an identical prompt regardless of split, so their A and B results are equivalent up to sampling noise, and we evaluate them on absolute metrics and compare against the trained baseline's Protocol A, the most demanding condition.
+The *robustness drop* is the difference between A and B aggregate metrics, macro-averaged across questions. Zero-shot LLM graders receive an identical prompt regardless of split, so their A and B results are equivalent up to sampling noise, and we evaluate them on absolute metrics and compare against the trained baseline's Protocol A, the most demanding condition.
 
 ---
 
@@ -117,9 +117,9 @@ We use the SemEval 2013 Task 7 Beetle dataset (Dzikovska et al., 2013), comprisi
 
 ### 4.1  Graders
 
-**Hybrid ML baseline.** A logistic regression classifier trained on 388-dimensional feature vectors: four handcrafted linguistic features (lexical overlap, length ratio, negation flag, reference-token recall) concatenated with 384-dimensional sentence-BERT embeddings (all-MiniLM-L6-v2; Reimers and Gurevych, 2019). Class weights are balanced to handle label imbalance. This configuration is broadly representative of strong feature-based ASAG baselines (Sung et al., 2019; Condor et al., 2021).
+*Hybrid ML baseline.* A logistic regression classifier trained on 388-dimensional feature vectors: four handcrafted linguistic features (lexical overlap, length ratio, negation flag, reference-token recall) concatenated with 384-dimensional sentence-BERT embeddings (all-MiniLM-L6-v2; Reimers and Gurevych, 2019). Class weights are balanced to handle label imbalance. This configuration is broadly representative of strong feature-based ASAG baselines (Sung et al., 2019; Condor et al., 2021).
 
-**LLM grader.** Zero-shot prompting of GPT-5.4 mini at two information levels. Level 0 supplies the question and the student answer only; Level 1 additionally supplies the reference answer and instructs the model to compare the student response against it. Temperature is set to 0.0 for near-deterministic output, with a fixed seed for reproducibility, and the model outputs a JSON object with a label and a confidence score mapped to the same [0, 1] scale as the gold labels. Because the model operates in a zero-shot regime, the dual-protocol distinction does not alter its input, and it is evaluated once against the HybridGrader's Protocol A.
+*LLM grader.* Zero-shot prompting of GPT-5.4 mini at two information levels. Level 0 supplies the question and the student answer only; Level 1 additionally supplies the reference answer and instructs the model to compare the student response against it. Temperature is set to 0.0 for near-deterministic output, with a fixed seed for reproducibility, and the model outputs a JSON object with a label and a confidence score mapped to the same [0, 1] scale as the gold labels. Because the model operates in a zero-shot regime, the dual-protocol distinction does not alter its input, and it is evaluated once against the HybridGrader's Protocol A.
 
 ### 4.2  Perturbation Statistics
 
@@ -133,14 +133,14 @@ Results are organised in four blocks: a dual-protocol analysis of the trained Hy
 
 Table 1 reports the HybridGrader's aggregate robustness metrics under both evaluation protocols.
 
-**Table 1. HybridGrader robustness metrics by evaluation protocol.**
+Table 1: HybridGrader robustness metrics by evaluation protocol.
 
 | Metric | Protocol B (in-distribution) | Protocol A (cross-question) | Drop (A − B) |
 |---|---|---|---|
-| IVR_flip (↓) | 0.179 | 0.337 | **+0.158** |
-| IVR_absdelta (↓) | 0.125 | 0.242 | **+0.118** |
+| IVR_flip (↓) | 0.179 | 0.337 | +0.158 |
+| IVR_absdelta (↓) | 0.125 | 0.242 | +0.118 |
 | SSR_directional (↑) | 0.120 | 0.140 | +0.020 |
-| ASR_thresholded (↓) | 0.115 | 0.188 | **+0.074** |
+| ASR_thresholded (↓) | 0.115 | 0.188 | +0.074 |
 
 Invariance violations nearly double from Protocol B to A (IVR_flip 0.179 → 0.337): the grader changes its score on meaning-preserving perturbations 33.7% of the time on unseen questions, versus 17.9% on familiar ones. Gaming vulnerability follows the same pattern (ASR 0.115 → 0.188), with adversarial inputs 64% more effective on novel questions. Sensitivity detection remains low under both protocols (SSR ≈ 0.13), indicating that the HybridGrader's failure to detect meaning-altering perturbations is a structural limitation of feature-based scoring rather than a distribution-shift effect. The +15.8 pp IVR_flip and +7.4 pp ASR drops quantify the extent to which within-question evaluations overestimate operational robustness.
 
@@ -148,14 +148,14 @@ Invariance violations nearly double from Protocol B to A (IVR_flip 0.179 → 0.3
 
 Table 2 reports the zero-shot LLM's absolute robustness metrics, compared against the HybridGrader's Protocol A results.
 
-**Table 2. Cross-paradigm robustness comparison (HybridGrader at Protocol A; LLM zero-shot, single-run).**
+Table 2: Cross-paradigm robustness comparison (HybridGrader at Protocol A; LLM zero-shot, single-run).
 
 | Metric | HybridGrader (A) | GPT-5.4 mini L0 | GPT-5.4 mini L1 |
 |---|---|---|---|
-| IVR_flip (↓) | 0.337 | 0.243 | **0.134** |
-| IVR_absdelta (↓) | 0.242 | 0.126 | **0.071** |
-| SSR_directional (↑) | 0.140 | 0.420 | **0.461** |
-| ASR_thresholded (↓) | 0.188 | **0.067** | 0.118 |
+| IVR_flip (↓) | 0.337 | 0.243 | 0.134 |
+| IVR_absdelta (↓) | 0.242 | 0.126 | 0.071 |
+| SSR_directional (↑) | 0.140 | 0.420 | 0.461 |
+| ASR_thresholded (↓) | 0.188 | 0.067 | 0.118 |
 
 Four observations can be drawn from the comparison. *First, the LLM is more robust to surface variation.* GPT-5.4 mini Level 0 achieves IVR_flip of 0.243 versus 0.337 for the HybridGrader under Protocol A (a 28% relative reduction); with the reference answer available (Level 1) invariance violations fall to 0.134, a 60% reduction over the baseline. The reference appears to act as a semantic anchor against which meaning-preserving variations are recognised.
 
@@ -171,12 +171,12 @@ To rule out the possibility that the lower IVR is an artefact of score compressi
 
 A symmetric artefact affects SSR_directional: answers already scored 0.0 cannot decrease further under sensitivity perturbations, mechanically producing SSR = 0% on those pairs regardless of grader quality. We term this the floor effect. Table 3 reports SSR with and without floor-affected pairs.
 
-**Table 3. SSR floor-effect analysis: overall vs. restricted to answers with original score > 0.**
+Table 3: SSR floor-effect analysis — overall vs. restricted to answers with original score > 0.
 
 | Configuration | Pairs | Floor pairs (orig=0) | SSR overall | SSR non-floor (orig>0) | Delta |
 |---|---|---|---|---|---|
-| GPT-5.4 mini L0 | 13,155 | 3,012 (22.9%) | 0.423 | **0.549** | +12.6 pp |
-| GPT-5.4 mini L1 | 12,309 | 4,219 (34.3%) | 0.480 | **0.731** | +25.0 pp |
+| GPT-5.4 mini L0 | 13,155 | 3,012 (22.9%) | 0.423 | 0.549 | +12.6 pp |
+| GPT-5.4 mini L1 | 12,309 | 4,219 (34.3%) | 0.480 | 0.731 | +25.0 pp |
 
 The floor effect is larger for Level 1 because the reference answer makes the grader more discriminative, increasing the proportion of untestable pairs. After correction Level 1 detects 73.1% of meaning-altering perturbations on testable pairs, against 48.0% uncorrected.
 
@@ -184,14 +184,14 @@ The floor effect is larger for Level 1 because the reference answer makes the gr
 
 Disaggregating SSR by perturbation type reveals that the LLM's sensitivity failures follow a stable hierarchy (Figure 1b, Table 4): the grader is blindest to deletions, intermediate on negations, and least blind on outright contradictions, and the pattern holds for both prompting levels.
 
-**Table 4. Per-type miss rates (% same-score pairs) with 95% bootstrap CI (10k resamples).**
+Table 4: Per-type miss rates (% same-score pairs) with 95% bootstrap CI (10k resamples).
 
 | Grader | Deletion | Negation | Contradiction |
 |---|---|---|---|
 | L0 | 68.7 [67.4, 70.0] | 52.2 [50.8, 53.5] | 43.0 [41.7, 44.3] |
 | L1 | 74.8 [73.6, 76.0] | 41.8 [40.5, 43.2] | 39.6 [38.3, 40.9] |
 
-Pairwise McNemar tests confirm that the gradient is significant (all six within-grader comparisons p < 0.001). A further side-effect emerges between graders: adding the reference answer (L1) reduces the miss rate on negation (−10 pp) and contradiction (−3 pp) but **increases** it on deletion (+6 pp), a paradox confirmed by paired McNemar on the same answer set (χ² = 51, p < 0.0001). Floor adjustment (Section 5.2) lowers all three rates uniformly without changing the ordering, and even at the bottom (~40% on contradiction in L1) the failure rate constitutes a substantive deployment risk.
+Pairwise McNemar tests confirm that the gradient is significant (all six within-grader comparisons p < 0.001). A further side-effect emerges between graders: adding the reference answer (L1) reduces the miss rate on negation (−10 pp) and contradiction (−3 pp) but *increases* it on deletion (+6 pp), a paradox confirmed by paired McNemar on the same answer set (χ² = 51, p < 0.0001). Floor adjustment (Section 5.2) lowers all three rates uniformly without changing the ordering, and even at the bottom (~40% on contradiction in L1) the failure rate constitutes a substantive deployment risk.
 
 A manual review of 30 random missed deletions characterises the mechanism. Of 17 cases involving deletion of a domain concept (terminal, battery, circuit, voltage, open/closed), 16 materially degraded or inverted answer meaning, while connective deletions ("because", "between") were correctly tolerated as benign. The grader systematically fails on content-bearing words. A representative inverted case is "the battery is in *a closed path*" → "the battery is in *a path*" (gold = correct, score 1.0 → 1.0): the closed/open distinction is the central conceptual axis of Beetle, and the Level 1 grader treats the two versions as equivalent.
 
