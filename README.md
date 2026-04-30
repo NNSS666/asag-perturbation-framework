@@ -249,7 +249,7 @@ Gate 1 rejects about 40% of synonym substitutions, itself a finding about the un
 
 ## Papers
 
-- **IFKAD 2026 conference paper** (~5,000 words): [`paper/IFKAD2026_Sasso_DeMauro_v3.docx`](paper/IFKAD2026_Sasso_DeMauro_v3.docx)
+- **IFKAD 2026 conference paper** (~5,000 words): [`paper/IFKAD2026_Sasso_DeMauro_v4.docx`](paper/IFKAD2026_Sasso_DeMauro_v4.docx)
 - **Extended version** (11,000+ words, with appendices and package documentation): [`paper/arxiv_extended.md`](paper/arxiv_extended.md)
 
 ## References
