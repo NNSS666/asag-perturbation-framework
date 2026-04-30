@@ -4,7 +4,7 @@ Perturbation-based robustness evaluation framework for Automated Short Answer Gr
 
 Companion repository for the paper presented at **IFKAD 2026** (Budapest, 1-3 July):
 
-> **Sasso, F. & De Mauro, A.** (2026). *[Title TBD]*. Proceedings of IFKAD 2026.
+> **Sasso, F. & De Mauro, A.** (2026). *Perturbation-First Robustness Evaluation of Automated Short Answer Grading: Quantifying the Hidden Fragility of Trained and Zero-Shot Graders*. Proceedings of IFKAD 2026.
 
 ## Research question
 
@@ -267,7 +267,7 @@ If you use this framework in your research, please cite:
 
 ```bibtex
 @inproceedings{sasso2026asag,
-  title     = {[Title TBD]},
+  title     = {Perturbation-First Robustness Evaluation of Automated Short Answer Grading: Quantifying the Hidden Fragility of Trained and Zero-Shot Graders},
   author    = {Sasso, Ferdinando and De Mauro, Andrea},
   booktitle = {Proceedings of IFKAD 2026},
   year      = {2026},
