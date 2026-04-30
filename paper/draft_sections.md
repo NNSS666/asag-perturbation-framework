@@ -53,21 +53,13 @@ We apply this framework to the SemEval 2013 Beetle dataset (5,199 answers, 42 qu
 
 ## 2  Theoretical Background
 
-### 2.1  ASAG Methods and the Limits of Accuracy-Centred Evaluation
-
 The ASAG literature spans nearly two decades of methodological progress, from lexical and dependency-based approaches (Mohler et al., 2011; Burrows et al., 2015) to transformer-based models (Sung et al., 2019; Condor et al., 2021). Across this trajectory, evaluation has predominantly reported agreement with human raters via accuracy, Quadratic Weighted Kappa, or correlation, while the gap between in-distribution agreement scores and operational reliability has long been a concern of the educational measurement community (Heilman and Madnani, 2015; Williamson et al., 2012; Deane, 2013).
 
-### 2.2  Construct Validity as a Theoretical Foundation
-
 The limits of agreement-based evaluation are best understood through construct validity, that is, the degree to which an assessment measures what it claims to measure (Messick, 1989; Kane, 2006). Messick's framework identifies two principal threats: *construct-irrelevant variance* (scores influenced by factors unrelated to the construct, e.g. a grader penalising a correct answer for a typo) and *construct underrepresentation* (the assessment fails to capture meaningful aspects of the construct, e.g. a grader missing a negation that inverts meaning). To these, the literature on automated scoring has added a third threat specific to algorithmic systems, *adversarial gaming*, in which surface manipulations such as keyword stuffing artificially inflate scores (Williamson et al., 2012; Ferrara and Qunbar, 2022).
-
-### 2.3  Adversarial and Perturbation-Based Evaluation
 
 Perturbation-based evaluation is a standard methodology for assessing NLP model robustness. Ribeiro et al. (2020) introduced CheckList, a behavioural testing framework that systematically probes model capabilities through invariance, directional, and minimum-functionality tests. The general adversarial-NLP literature provides a wide toolkit of attack strategies, surveyed in Wang et al. (2022).
 
 Within automated scoring, adversarial vulnerabilities have been documented but not systematically addressed. Ding et al. (2020) showed that content scoring systems could be fooled by random character strings, Kumar et al. (2020) attacked essay scoring with simple perturbations, and Filighera et al. (2024) extended this work to ASAG via adversarial adjectives and adverbs. Each focuses on a single attack family, and none proposes a unified, multi-dimensional framework anchored to validity theory.
-
-### 2.4  LLM-Based Scoring and Open Questions
 
 The emergence of large language models has introduced a new paradigm in which scoring is performed via zero-shot or few-shot prompting rather than supervised training (Mizumoto and Eguchi, 2023; Naismith et al., 2023; Latif and Zhai, 2024). These studies report encouraging accuracy figures but do not characterise robustness. Two questions are pressing: whether the cross-question robustness drop documented for trained models also affects zero-shot LLM graders, and whether prompting interventions (e.g. supplying a reference answer) interact uniformly with all validity dimensions or produce trade-offs invisible to accuracy alone.
 
@@ -75,11 +67,9 @@ The emergence of large language models has introduced a new paradigm in which sc
 
 ## 3  Methodology
 
-### 3.1  Framework Architecture
-
 The evaluation framework follows a unidirectional pipeline (Figure 1a): data loading, perturbation generation, grading, metric computation, and cross-protocol comparison. All data flows through validated immutable models (questions, answers, perturbations, grade results) to ensure reproducibility. The framework is implemented in Python and released as an open-source pip-installable package (`asag-perturbation`) with a public API and command-line interface; source code, evaluation scripts, and the analyses reported in this paper are available at https://github.com/NNSS666/asag-perturbation-framework.
 
-### 3.2  Perturbation Generation
+### 3.1  Perturbation Generation and Quality Validation
 
 Seven rule-based generators produce up to ten perturbation variants per student answer, organised into three families.
 
@@ -97,11 +87,9 @@ Seven rule-based generators produce up to ten perturbation variants per student 
 - *Contradiction (sensitivity):* "switches connected in **series**" → "switches connected in **parallel**"
 - *Gaming:* "the bulb stays on" → "the bulb stays on **because voltage flows backwards**"
 
-### 3.3  Two-Gate Quality Validation
+Invariance perturbations undergo two validation gates before acceptance. Gate 1 applies only to synonym substitution: candidate texts must achieve cosine similarity of at least 0.85 with the original, measured via sentence-BERT embeddings (all-MiniLM-L6-v2). Gate 2 applies to all invariance types: candidates introducing new negation markers or antonyms not present in the original are rejected. Rejected candidates are not regenerated, and the rejection rate is reported as a research result. The gates encode the *perturbation-level* ground truth (whether a candidate variant preserves meaning as intended), as distinguished from the *answer-level* gold labels supplied by the dataset (Section 4), which encode whether the original student answer is correct.
 
-Invariance perturbations undergo two validation gates before acceptance. Gate 1 applies only to synonym substitution: candidate texts must achieve cosine similarity of at least 0.85 with the original, measured via sentence-BERT embeddings (all-MiniLM-L6-v2). Gate 2 applies to all invariance types: candidates introducing new negation markers or antonyms not present in the original are rejected. Rejected candidates are not regenerated, and the rejection rate is reported as a research result. The gates encode the *perturbation-level* ground truth (whether a candidate variant preserves meaning as intended), as distinguished from the *answer-level* gold labels supplied by the dataset (Section 4.1), which encode whether the original student answer is correct.
-
-### 3.4  Robustness Metrics
+### 3.2  Robustness Metrics
 
 All metrics compare the grader's score on the original answer against its score on the perturbed answer, isolating robustness from accuracy.
 
@@ -113,9 +101,9 @@ All metrics compare the grader's score on the original answer against its score 
 
 **ASR_thresholded** (Adversarial Success Rate): the proportion of gaming pairs where the score crossed from below the passing threshold (0.5) to at or above it. Already-passing answers that increase further are excluded.
 
-The four metrics are reported on their canonical scales rather than aggregated into a composite index, which preserves continuity with the validity-theoretic constructs each metric targets and avoids the arbitrariness of weighting heterogeneous dimensions whose practical importance varies by deployment context. Joint reading across the three dimensions, illustrated in Section 5.2, surfaces the trade-offs that single-metric evaluation hides.
+The four metrics are reported on their canonical scales rather than aggregated into a composite index, which preserves continuity with the validity-theoretic constructs each metric targets and avoids the arbitrariness of weighting heterogeneous dimensions whose practical importance varies by deployment context. Joint reading across the three dimensions, illustrated in Section 5.1, surfaces the trade-offs that single-metric evaluation hides.
 
-### 3.5  Dual-Protocol Evaluation
+### 3.3  Dual-Protocol Evaluation
 
 The dual-protocol design targets trained graders and quantifies how much robustness they lose on unseen questions. Protocol A (Leave-One-Question-Out) implements cross-question evaluation: for each of 42 questions the grader is trained on answers from all other questions and tested on the held-out one, with a leakage diagnostic verifying that no held-out question text appears in training. This is the realistic deployment scenario. Protocol B (within-question 80/20) implements in-distribution evaluation: for each question independently, answers are split 80/20 with stratified sampling on gold labels and the grader is trained and tested on the same question. This is the optimistic scenario typically reported in the literature.
 
@@ -125,17 +113,15 @@ The **robustness drop** is the difference between A and B aggregate metrics, mac
 
 ## 4  Experimental Setup
 
-### 4.1  Dataset
+We use the SemEval 2013 Task 7 Beetle dataset (Dzikovska et al., 2013), comprising 5,199 student answers to 42 science questions about electrical circuits. Answers are labelled on a five-way scale (correct, partially_correct_incomplete, contradictory, non_domain, irrelevant) and normalised to a continuous [0, 1] scale (correct = 1.0, partial = 0.5, others = 0.0) following the ASAG2024 benchmark convention. These dataset-supplied labels constitute the *answer-level* ground truth used to interpret robustness results; the *perturbation-level* ground truth is enforced by the two-gate validation of Section 3.1 and by the rule-based construction of each perturbation type. The robustness metrics themselves do not consult either ground truth, since they compare the grader against itself.
 
-We use the SemEval 2013 Task 7 Beetle dataset (Dzikovska et al., 2013), comprising 5,199 student answers to 42 science questions about electrical circuits. Answers are labelled on a five-way scale (correct, partially_correct_incomplete, contradictory, non_domain, irrelevant) and normalised to a continuous [0, 1] scale (correct = 1.0, partial = 0.5, others = 0.0) following the ASAG2024 benchmark convention. These dataset-supplied labels constitute the *answer-level* ground truth used to interpret robustness results; the *perturbation-level* ground truth is enforced by the two-gate validation of Section 3.3 and by the rule-based construction of each perturbation type. The robustness metrics themselves do not consult either ground truth, since they compare the grader against itself.
-
-### 4.2  Graders
+### 4.1  Graders
 
 **Hybrid ML baseline.** A logistic regression classifier trained on 388-dimensional feature vectors: four handcrafted linguistic features (lexical overlap, length ratio, negation flag, reference-token recall) concatenated with 384-dimensional sentence-BERT embeddings (all-MiniLM-L6-v2; Reimers and Gurevych, 2019). Class weights are balanced to handle label imbalance. This configuration is broadly representative of strong feature-based ASAG baselines (Sung et al., 2019; Condor et al., 2021).
 
 **LLM grader.** Zero-shot prompting of GPT-5.4 mini at two information levels. Level 0 supplies the question and the student answer only; Level 1 additionally supplies the reference answer and instructs the model to compare the student response against it. Temperature is set to 0.0 for near-deterministic output, with a fixed seed for reproducibility, and the model outputs a JSON object with a label and a confidence score mapped to the same [0, 1] scale as the gold labels. Because the model operates in a zero-shot regime, the dual-protocol distinction does not alter its input, and it is evaluated once against the HybridGrader's Protocol A.
 
-### 4.3  Perturbation Statistics
+### 4.2  Perturbation Statistics
 
 The perturbation engine generated 41,444 perturbations across all seven types from 5,199 source answers, averaging 8.0 perturbations per answer (theoretical maximum 10). Gate 1 rejected 40.3% of synonym substitution candidates, indicating that nearly half of WordNet synonym replacements produce semantically divergent texts in the science domain; Gate 2 provided additional filtering for meaning-inverting substitutions. The rejection rate is reported as a research result, since it quantifies the inherent difficulty of producing valid invariance perturbations in technical domains and motivates the two-gate design.
 
@@ -143,9 +129,9 @@ The perturbation engine generated 41,444 perturbations across all seven types fr
 
 ## 5  Results
 
-Results are organised in four parts: dual-protocol analysis of the trained HybridGrader (5.1); cross-paradigm comparison with the zero-shot LLM, including reference-answer availability (5.2); score-distribution artefacts and the floor effect (5.3); and the structured sensitivity-blindness gradient (5.4).
+Results are organised in four blocks: a dual-protocol analysis of the trained HybridGrader; a cross-paradigm comparison with the zero-shot LLM, including reference-answer availability (Section 5.1); score-distribution artefacts and the floor effect (Section 5.2); and the structured sensitivity-blindness gradient (Section 5.3). We begin with the dual-protocol analysis.
 
-### 5.1  Dual-Protocol Analysis: Robustness Drop of the Trained Grader
+Table 1 reports the HybridGrader's aggregate robustness metrics under both evaluation protocols.
 
 **Table 1. HybridGrader robustness metrics by evaluation protocol.**
 
@@ -158,7 +144,7 @@ Results are organised in four parts: dual-protocol analysis of the trained Hybri
 
 Invariance violations nearly double from Protocol B to A (IVR_flip 0.179 → 0.337): the grader changes its score on meaning-preserving perturbations 33.7% of the time on unseen questions, versus 17.9% on familiar ones. Gaming vulnerability follows the same pattern (ASR 0.115 → 0.188), with adversarial inputs 64% more effective on novel questions. Sensitivity detection remains low under both protocols (SSR ≈ 0.13), indicating that the HybridGrader's failure to detect meaning-altering perturbations is a structural limitation of feature-based scoring rather than a distribution-shift effect. The +15.8 pp IVR_flip and +7.4 pp ASR drops quantify the extent to which within-question evaluations overestimate operational robustness.
 
-### 5.2  Cross-Paradigm Comparison: Trained ML vs. Zero-Shot LLM
+### 5.1  Cross-Paradigm Comparison: Trained ML vs. Zero-Shot LLM
 
 Table 2 reports the zero-shot LLM's absolute robustness metrics, compared against the HybridGrader's Protocol A results.
 
@@ -179,7 +165,7 @@ Four observations can be drawn from the comparison. *First, the LLM is more robu
 
 *Fourth, multi-metric evaluation reveals trade-offs invisible to any single metric.* On invariance alone, Level 1 dominates Level 0; on gaming alone, Level 0 dominates Level 1; on sensitivity alone, the two are comparable. The same point applies to the trained baseline: under Protocol B its IVR_flip of 0.179 looks reasonable, yet SSR_directional of 0.120 reveals that this stability partly reflects indiscrimination, with the grader rarely changing its score even when it should.
 
-### 5.3  Score Distribution Effects
+### 5.2  Score Distribution Effects
 
 To rule out the possibility that the lower IVR is an artefact of score compression, we examined the LLM's label distribution. At Level 0, GPT-5.4 mini exhibits a conservative scoring pattern: 54.3% of answers receive the partially_correct_incomplete label (score 0.5), against 23.1% in the gold distribution. Compression toward the midpoint mechanically reduces IVR, since scores at 0.5 have less room to flip. At Level 1, the distribution becomes substantially more discriminative, closer to the gold distribution, yet IVR_flip continues to fall (0.243 → 0.134). This rules out the score-compression explanation, and the invariance robustness observed reflects genuine semantic stability rather than a statistical artefact.
 
@@ -194,7 +180,7 @@ A symmetric artefact affects SSR_directional: answers already scored 0.0 cannot 
 
 The floor effect is larger for Level 1 because the reference answer makes the grader more discriminative, increasing the proportion of untestable pairs. After correction Level 1 detects 73.1% of meaning-altering perturbations on testable pairs, against 48.0% uncorrected.
 
-### 5.4  Sensitivity Blindness Gradient
+### 5.3  Sensitivity Blindness Gradient
 
 Disaggregating SSR by perturbation type reveals that the LLM's sensitivity failures follow a stable hierarchy (Figure 1b, Table 4): the grader is blindest to deletions, intermediate on negations, and least blind on outright contradictions, and the pattern holds for both prompting levels.
 
@@ -205,7 +191,7 @@ Disaggregating SSR by perturbation type reveals that the LLM's sensitivity failu
 | L0 | 68.7 [67.4, 70.0] | 52.2 [50.8, 53.5] | 43.0 [41.7, 44.3] |
 | L1 | 74.8 [73.6, 76.0] | 41.8 [40.5, 43.2] | 39.6 [38.3, 40.9] |
 
-Pairwise McNemar tests confirm that the gradient is significant (all six within-grader comparisons p < 0.001). A further side-effect emerges between graders: adding the reference answer (L1) reduces the miss rate on negation (−10 pp) and contradiction (−3 pp) but **increases** it on deletion (+6 pp), a paradox confirmed by paired McNemar on the same answer set (χ² = 51, p < 0.0001). Floor adjustment (Section 5.3) lowers all three rates uniformly without changing the ordering, and even at the bottom (~40% on contradiction in L1) the failure rate constitutes a substantive deployment risk.
+Pairwise McNemar tests confirm that the gradient is significant (all six within-grader comparisons p < 0.001). A further side-effect emerges between graders: adding the reference answer (L1) reduces the miss rate on negation (−10 pp) and contradiction (−3 pp) but **increases** it on deletion (+6 pp), a paradox confirmed by paired McNemar on the same answer set (χ² = 51, p < 0.0001). Floor adjustment (Section 5.2) lowers all three rates uniformly without changing the ordering, and even at the bottom (~40% on contradiction in L1) the failure rate constitutes a substantive deployment risk.
 
 A manual review of 30 random missed deletions characterises the mechanism. Of 17 cases involving deletion of a domain concept (terminal, battery, circuit, voltage, open/closed), 16 materially degraded or inverted answer meaning, while connective deletions ("because", "between") were correctly tolerated as benign. The grader systematically fails on content-bearing words. A representative inverted case is "the battery is in *a closed path*" → "the battery is in *a path*" (gold = correct, score 1.0 → 1.0): the closed/open distinction is the central conceptual axis of Beetle, and the Level 1 grader treats the two versions as equivalent.
 
@@ -217,9 +203,9 @@ In this section we discuss the results of the study, distill implications for pr
 
 The most consequential methodological finding is that within-question evaluations systematically overestimate the robustness of trained ASAG graders. The HybridGrader's invariance violation rate nearly doubles between the in-distribution and cross-question protocols, and its gaming susceptibility rises by roughly two-thirds, effects large enough to materially affect deployment. Published ASAG evaluations should therefore include cross-question results alongside in-distribution ones, and report the gap explicitly as a robustness drop.
 
-The advantage that the zero-shot LLM exhibits on invariance and sensitivity arises from a form of semantic processing that feature-based scoring lacks. The HybridGrader relies on lexical overlap that shifts with surface form, whereas the LLM processes the answer as language: a negation, deletion or antonym leaves surface features intact while shifting meaning, defeating feature-based scoring yet remaining at least partially visible to a semantic processor. The residual weaknesses in Section 5.4 refine rather than undermine this conclusion, showing that semantic processing handles meaning-preserving variation more reliably than meaning-altering omission.
+The advantage that the zero-shot LLM exhibits on invariance and sensitivity arises from a form of semantic processing that feature-based scoring lacks. The HybridGrader relies on lexical overlap that shifts with surface form, whereas the LLM processes the answer as language: a negation, deletion or antonym leaves surface features intact while shifting meaning, defeating feature-based scoring yet remaining at least partially visible to a semantic processor. The residual weaknesses in Section 5.3 refine rather than undermine this conclusion, showing that semantic processing handles meaning-preserving variation more reliably than meaning-altering omission.
 
-Adding the reference answer is an intervention practitioners commonly expect to improve grading uniformly. It does so for invariance and sensitivity, but for gaming it nearly doubles vulnerability. The mechanism generalises beyond the particular prompt employed here: when the model is instructed to compare the student answer against a reference, any token overlap becomes evidence of correctness, which an adversarial student can exploit. The same checklist mechanism plausibly explains the deletion paradox of Section 5.4: when a domain concept is removed, the reference has no token to compare against while surrounding tokens still match, so the grader reads continued overlap as continued correctness and tolerates the omission. Reference-anchored prompting therefore fails on the same axis on which it succeeds, since token-level matching detects substitutions and negations but cannot detect what is no longer present. Prompt engineering and coherence-first instructions are plausible mitigations, yet such trade-offs remain invisible to single-metric evaluation.
+Adding the reference answer is an intervention practitioners commonly expect to improve grading uniformly. It does so for invariance and sensitivity, but for gaming it nearly doubles vulnerability. The mechanism generalises beyond the particular prompt employed here: when the model is instructed to compare the student answer against a reference, any token overlap becomes evidence of correctness, which an adversarial student can exploit. The same checklist mechanism plausibly explains the deletion paradox of Section 5.3: when a domain concept is removed, the reference has no token to compare against while surrounding tokens still match, so the grader reads continued overlap as continued correctness and tolerates the omission. Reference-anchored prompting therefore fails on the same axis on which it succeeds, since token-level matching detects substitutions and negations but cannot detect what is no longer present. Prompt engineering and coherence-first instructions are plausible mitigations, yet such trade-offs remain invisible to single-metric evaluation.
 
 As an outcome of the study, several implications can be drawn for practitioners and researchers. Practitioners should conduct perturbation evaluation across the three validity dimensions before placing a grader in consequential use, and should compare alternative prompting strategies on all dimensions rather than on accuracy alone, since gains in agreement with human raters can mask increased gaming exposure. Cross-question performance should be treated as the realistic baseline against which deployment decisions are made. From a research standpoint, the present findings position robustness alongside fairness as a precondition for responsible automated scoring (Loukina et al., 2019), and motivate further investigation of prompt designs capable of mitigating the trade-offs documented here.
 
@@ -241,7 +227,7 @@ This study uses publicly available data from the SemEval 2013 Task 7 Beetle benc
 
 ## AI declaration
 
-Artificial intelligence tools were used in two ways. First, OpenAI's GPT-5.4 mini was the object of evaluation as one of the graders studied; its prompting configuration, decoding parameters, and access conditions are documented in Section 4.2, and the resulting outputs are reported without modification. Second, general-purpose LLMs (Anthropic Claude and OpenAI GPT) were employed as writing assistants during manuscript preparation, specifically for grammar and style proof-reading, terminology consistency checks, and rephrasing suggestions on author-drafted text. All scientific content, research design, analyses, results, and interpretations are the authors' own. AI-generated wording was reviewed, edited, and retained only where consistent with the authors' intent and with the underlying empirical evidence.
+Artificial intelligence tools were used in two ways. First, OpenAI's GPT-5.4 mini was the object of evaluation as one of the graders studied; its prompting configuration, decoding parameters, and access conditions are documented in Section 4.1, and the resulting outputs are reported without modification. Second, general-purpose LLMs (Anthropic Claude and OpenAI GPT) were employed as writing assistants during manuscript preparation, specifically for grammar and style proof-reading, terminology consistency checks, and rephrasing suggestions on author-drafted text. All scientific content, research design, analyses, results, and interpretations are the authors' own. AI-generated wording was reviewed, edited, and retained only where consistent with the authors' intent and with the underlying empirical evidence.
 
 ---
 
