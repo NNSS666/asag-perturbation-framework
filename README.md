@@ -42,7 +42,7 @@ Built on the [SemEval 2013 Task 7](https://aclanthology.org/S13-2045/) benchmark
 | Beetle | Electricity & circuits | 42 | 5,199 |
 | SciEntsBank | General science | 195 | 10,804 |
 
-The loader interface is pluggable: integrating a new dataset requires only a loader module that maps to the canonical schema.
+The IFKAD 2026 paper reports results on Beetle only; SciEntsBank is supported by the framework and reserved for the journal extension. The loader interface is pluggable: integrating a new dataset requires only a loader module that maps to the canonical schema.
 
 ## Results (Beetle corpus)
 
@@ -51,7 +51,7 @@ The loader interface is pluggable: integrating a new dataset requires only a loa
 | Metric | Protocol A | Protocol B | Drop |
 |---|:---:|:---:|:---:|
 | IVR_flip | 33.7% | 17.9% | +15.8 pp |
-| IVR_absdelta | 0.242 | 0.125 | +11.8 pp |
+| IVR_absdelta | 0.242 | 0.125 | +0.118 |
 | SSR_directional | 14.0% | 12.0% | +2.0 pp |
 | ASR_thresholded | 18.8% | 11.5% | +7.4 pp |
 
@@ -78,7 +78,7 @@ src/asag/
 │   └── generators/    # Invariance, sensitivity, and gaming generators
 ├── evaluation/        # EvaluationEngine (Protocol A/B loops, robustness drop)
 └── infra/             # Seeds, storage, run directories, versioning
-tests/                 # 77 unit + E2E tests
+tests/                 # 123 unit + E2E tests
 scripts/               # Experiment runner
 bibliography/          # 33-entry annotated bibliography with BibTeX
 docs/                  # Methodology proposal and project documentation
@@ -249,7 +249,7 @@ Gate 1 rejects about 40% of synonym substitutions, itself a finding about the un
 
 ## Papers
 
-- **IFKAD 2026 conference paper** (3,000-5,000 words): [`paper/IFKAD2026_Sasso_DeMauro.docx`](paper/IFKAD2026_Sasso_DeMauro.docx)
+- **IFKAD 2026 conference paper** (~5,000 words): [`paper/IFKAD2026_Sasso_DeMauro_v3.docx`](paper/IFKAD2026_Sasso_DeMauro_v3.docx)
 - **Extended version** (11,000+ words, with appendices and package documentation): [`paper/arxiv_extended.md`](paper/arxiv_extended.md)
 
 ## References
