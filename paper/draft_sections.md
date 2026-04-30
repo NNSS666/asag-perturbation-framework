@@ -79,7 +79,7 @@ Seven rule-based generators produce up to ten perturbation variants per student 
 
 **Gaming family.** Rubric keyword echoing appends reference-answer keywords absent from the student response, simulating keyword stuffing; fluent wrong extension appends a confident but factually incorrect domain statement from a curated pool of plausible-sounding misconceptions.
 
-**Box 1. Examples** (perturbation in **bold**):
+Illustrative examples for each perturbation type are reported below, with the perturbation marked in **bold**:
 
 - *Synonym (invariance):* "the **bulb** lights up" → "the **lamp** lights up"
 - *Negation (sensitivity):* "the terminals are connected" → "the terminals are **not** connected"
